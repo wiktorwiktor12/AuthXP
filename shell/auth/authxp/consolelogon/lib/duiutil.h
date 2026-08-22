@@ -257,3 +257,18 @@ static HRESULT SHRegGetBOOLWithREGSAM(HKEY key, LPCWSTR subKey, LPCWSTR value, R
 
 	return S_OK;
 }
+
+inline void SetElementAccessability(DirectUI::Element* pe, bool bAccessible, int iRole, LPCWSTR pszAccName)
+{
+	if (pe)
+	{
+		pe->SetAccessible(bAccessible);
+		pe->SetAccRole(iRole);
+		pe->SetAccName(pszAccName);
+	}
+}
+
+#define DUIQuickGetter(t, gv, p, i)                     { DirectUI::Value* pv; t v = (pv = GetValue(p##Prop, DirectUI::PI_##i,0))->gv; pv->Release(); return v; }
+#define DUIQuickGetterInd(gv, p, i)                     { return (*ppv = GetValue(p##Prop, DirectUI::PI_##i,0))->gv; }
+#define DUIQuickSetter(cv, p)                           { DirectUI::Value* pv = DirectUI::Value::cv; if (!pv) return E_OUTOFMEMORY; HRESULT hr = SetValue(p##Prop, DirectUI::PI_Local, pv); pv->Release(); return hr; }
+

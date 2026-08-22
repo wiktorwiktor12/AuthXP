@@ -78,7 +78,7 @@ HRESULT UserList::AddTileFromData(const Microsoft::WRL::ComPtr<LCPD::ICredential
 		RETURN_IF_FAILED(userTile->fieldsArray.Add(fieldWrapper));
 	}
 
-	if (CLogonFrame::GetSingleton()->m_currentReason != LC::LogonUIRequestReason_LogonUIChange)
+	if (CLogonFrame7::GetSingleton()->m_currentReason != LC::LogonUIRequestReason_LogonUIChange)
 	{
 		Microsoft::WRL::Wrappers::HString status;
 		if (user.Get())
@@ -346,14 +346,14 @@ HRESULT UserList::ZoomTile(CDUIUserTileElement* userTile)
 		SendMessageW(EditFieldToFocus->GetHWND(), 0xB1u, 0, -1);
 	}
 
-    //CLogonFrame::GetSingleton()->SetOptions(257 & ~0x20u);
-	if (CLogonFrame::GetSingleton()->m_currentReason == LC::LogonUIRequestReason_LogonUIChange)
-		CLogonFrame::GetSingleton()->SetOptions(MessageOptionFlag::Cancel | MessageOptionFlag::Accessibility | MessageOptionFlag::ShutDownFrame);
+    //CLogonFrame7::GetSingleton()->SetOptions(257 & ~0x20u);
+	if (CLogonFrame7::GetSingleton()->m_currentReason == LC::LogonUIRequestReason_LogonUIChange)
+		CLogonFrame7::GetSingleton()->SetOptions(MessageOptionFlag::Cancel | MessageOptionFlag::Accessibility | MessageOptionFlag::ShutDownFrame);
 	else
-		CLogonFrame::GetSingleton()->SetOptions(MessageOptionFlag::SwitchUser | MessageOptionFlag::Accessibility | MessageOptionFlag::ShutDownFrame);
+		CLogonFrame7::GetSingleton()->SetOptions(MessageOptionFlag::SwitchUser | MessageOptionFlag::Accessibility | MessageOptionFlag::ShutDownFrame);
 
-	//CLogonFrame::GetSingleton()->m_nativeHost->Host(m_UserListSelector);
-	//CLogonFrame::GetSingleton()->m_nativeHost->Host(CLogonFrame::GetSingleton());
+	//CLogonFrame7::GetSingleton()->m_nativeHost->Host(m_UserListSelector);
+	//CLogonFrame7::GetSingleton()->m_nativeHost->Host(CLogonFrame7::GetSingleton());
 
     if (cookie)
         EndDefer(cookie);
@@ -424,7 +424,7 @@ HRESULT UserList::UnzoomList(CDUIUserTileElement* userTile)
 
 	_SetUnzoomedWidth();
 
-	CLogonFrame::GetSingleton()->SetOptions(MessageOptionFlag::Accessibility | MessageOptionFlag::ShutDownFrame);
+	CLogonFrame7::GetSingleton()->SetOptions(MessageOptionFlag::Accessibility | MessageOptionFlag::ShutDownFrame);
 
 	return S_OK;
 }

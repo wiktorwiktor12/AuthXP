@@ -2,9 +2,16 @@
 
 #include "consoleuimanager.h"
 
+#include <cassert>
+#include <uxtheme.h>
+
+#include "advisablebutton.h"
 #include "animationstrip.h"
+#include "backgroundwindow.h"
 #include "combobox.h"
 #include "labeledcheckbox.h"
+#include "logonaccount.h"
+#include "logonaccountlist.h"
 #include "logonframe.h"
 #include "restrictededit.h"
 #include "DirectUI/DirectUI.h"
@@ -105,6 +112,18 @@ DWORD ConsoleUIManager::s_UIThreadHostThreadProc(void* parameter)
 	return hr;
 }
 
+void CALLBACK LogonParseError(LPCWSTR pszError, LPCWSTR pszToken, int dLine, void* pContext)
+{
+	WCHAR buf[201];
+
+	if (dLine != -1)
+		swprintf(buf, 201,L"%s '%s' at line %d", pszError, pszToken, dLine);
+	else
+		swprintf(buf, 201, L"%s '%s'", pszError, pszToken);
+
+	MessageBoxW(NULL, buf, L"Parser Message", MB_OK);
+}
+
 DWORD ConsoleUIManager::UIThreadHostThreadProc()
 {
 	DWORD dwIndex = WAIT_IO_COMPLETION;
@@ -118,20 +137,160 @@ DWORD ConsoleUIManager::UIThreadHostThreadProc()
 	DirectUI::InitThread(2);
 	DirectUI::RegisterAllControls();
 
+	CBackgroundWindow   backgroundWindow(HINST_THISCOMPONENT);
+
 	CDUIAnimationStrip::Register();
-	CLogonFrame::Register();
+	//CLogonFrame7::Register();
+	LogonFrame::Register();
+	LogonAccount::Register();
+	LogonAccountList::Register();
 	CDUIUserTileElement::Register();
 	CDUIZoomableElement::Register();
 	CDUIRestrictedEdit::Register();
 	CDUIComboBox::Register();
 	UserList::Register();
+	CAdvisableButton::Register();
 	CDUIFieldContainer::Register();
 	CDUILabeledCheckbox::Register();
 
-	CLogonNativeHWNDHost* nativeHWNDHost = nullptr;
-	THROW_IF_FAILED(CLogonNativeHWNDHost::Create(0,0,GetSystemMetrics(SM_CXSCREEN),GetSystemMetrics(SM_CYSCREEN),&nativeHWNDHost));
 
-	CLogonFrame::Create(nativeHWNDHost);
+	DirectUI::DUIXmlParser* pParser = NULL;
+	DirectUI::NativeHWNDHost* pnhh = NULL;
+	DirectUI::DisableAnimations();
+
+    // Create host
+    HMONITOR hMonitor;
+    POINT pt;
+    MONITORINFO monitorInfo;
+
+    // Determine initial size of the host. This is desired to be the entire
+    // primary monitor resolution because the host always runs on the secure
+    // desktop. If magnifier is brought up it will call SHAppBarMessage which
+    // will change the work area and we will respond to it appropriately from
+    // the listener in shgina that sends us HM_DISPLAYRESIZE messages.
+
+    pt.x = pt.y = 0;
+    hMonitor = MonitorFromPoint(pt, MONITOR_DEFAULTTOPRIMARY);
+    assert(hMonitor != NULL, "NULL HMONITOR returned from MonitorFromPoint");
+    monitorInfo.cbSize = sizeof(monitorInfo);
+    if (GetMonitorInfo(hMonitor, &monitorInfo) == FALSE)
+    {
+        SystemParametersInfo(SPI_GETWORKAREA, 0, &monitorInfo.rcMonitor, 0);
+    }
+#define NHHO_IgnoreClose          1  // Ignore WM_CLOSE (i.e. Alt-F4, 'X' button), must be closed via DestroyWindow
+    DirectUI::NativeHWNDHost::Create(L"Windows Logon", backgroundWindow.Create(), NULL, monitorInfo.rcMonitor.left, monitorInfo.rcMonitor.top,
+        monitorInfo.rcMonitor.right - monitorInfo.rcMonitor.left, monitorInfo.rcMonitor.bottom - monitorInfo.rcMonitor.top, 0, WS_POPUP, NHHO_IgnoreClose, &pnhh);
+    //int initWidth = 1280;
+    //int initHeight = 720;
+//
+    //RECT rcWindow;
+    //rcWindow.left = monitorInfo.rcWork.left + (monitorInfo.rcWork.right - monitorInfo.rcWork.left - initWidth) / 2;
+    //rcWindow.top = monitorInfo.rcWork.top + (monitorInfo.rcWork.bottom - monitorInfo.rcWork.top - initHeight) / 2;
+    //rcWindow.right = rcWindow.left + initWidth;
+    //rcWindow.bottom = rcWindow.top + initHeight;
+//
+    //DirectUI::NativeHWNDHost::Create(L"Windows Logon", NULL, NULL, rcWindow.left, rcWindow.top,
+    //    initWidth, initHeight, 0, WS_POPUP, NHHO_IgnoreClose, &pnhh);
+    if (!pnhh)
+        goto Failure;
+
+    // Populate handle list for theme style parsing
+    g_rgH[0] = HINST_THISCOMPONENT; // Default HINSTANCE
+    g_rgH[SCROLLBARHTHEME] = OpenThemeData(pnhh->GetHWND(), L"Scrollbar");
+
+    // Frame creation
+
+    DirectUI::DUIXmlParser::Create(&pParser, nullptr, nullptr, LogonParseError, nullptr);
+
+    if (!pParser)
+        goto Failure;
+
+    if (FAILED(pParser->SetXMLFromResource(MAKEINTRESOURCE(IDR_LOGONUI), HINST_THISCOMPONENT, 0)))
+        goto Failure;
+
+
+    {
+
+        // Always double buffer
+        LogonFrame::Create(pnhh->GetHWND(), true, 0, 0,(DirectUI::Element**)&g_plf);
+        if (!g_plf)
+        {
+            goto Failure;
+        }
+
+        g_plf->SetNativeHost(pnhh);
+
+        DirectUI::Element* pe;
+        pParser->CreateElement(L"main", g_plf, 0,0,&pe);
+
+        if (pe) // Fill contents using substitution
+        {
+            // Frame tree is built
+            if (FAILED(g_plf->OnTreeReady(pParser)))
+            {
+                goto Failure;
+            }
+
+            //if (fShutdownLaunch || fWait)
+            //{
+            //    g_plf->SetTitle(IDS_PLEASEWAIT);
+            //}
+//
+            //if (!fStatusLaunch)
+            //{
+            //    // Build contents of account list
+            //    g_plf->EnterLogonMode(false);
+            //}
+            //else
+            //{
+            //    g_plf->EnterPreStatusMode(false);
+            //}
+
+            // Host
+            pnhh->Host(g_plf);
+
+            g_plf->SetButtonLabels();
+
+            DirectUI::Element* peLogoArea = g_plf->FindDescendent(DirectUI::StrToID(L"product"));
+
+            //if (!g_fNoAnimations)
+            //{
+            //    pnhh->ShowWindow(SW_SHOW);
+            //    DoFadeWindow(pnhh->GetHWND());
+            //    if (peLogoArea)
+            //    {
+            //        peLogoArea->SetAlpha(0);
+            //    }
+            //}
+
+            // Set visible and focus
+            g_plf->SetVisible(true);
+            g_plf->SetKeyFocus();
+
+            // Do initial show
+            pnhh->ShowWindow(SW_SHOW);
+
+            //if (!g_fNoAnimations)
+            //{
+            //    DirectUI::EnableAnimations();
+            //}
+
+            if (peLogoArea)
+            {
+                peLogoArea->SetAlpha(255);
+            }
+            //g_plf->HideDateTimeArea();
+            g_plf->ShowDateTimeArea();
+            //g_plf->EnterSecurityOptionsMode();
+            //g_plf->SetTitle(TEXT("HI"));
+
+            //g_plf->SetStatus(L"Updating transformation... Stage 2 of 5 - 5% complete.\nDo not turn off your computer.");
+
+            //DirectUI::StartMessagePump();
+
+            // psf will be deleted by native HWND host when destroyed
+        }
+    }
 
 	while (dwIndex == WAIT_IO_COMPLETION)
 	{
@@ -150,6 +309,26 @@ DWORD ConsoleUIManager::UIThreadHostThreadProc()
 		CoWaitForMultipleHandles(
 			COWAIT_ALERTABLE | COWAIT_INPUTAVAILABLE | COWAIT_DISPATCH_CALLS | COWAIT_DISPATCH_WINDOW_MESSAGES,
 			INFINITE, ARRAYSIZE(waitHandles), waitHandles, &dwIndex);
+	}
+
+	goto ok;
+
+Failure:
+	MessageBox(0,L"Failure",L"Failure",0);
+
+ok:
+	if (pnhh)
+		pnhh->Destroy();
+	if (pParser)
+		pParser->Destroy();
+
+	//DirectUI::ReleaseStatusHost();
+
+	//DirectUI::FreeLayoutInfo(LAYOUT_DEF_USER);
+
+	if (g_rgH[SCROLLBARHTHEME])  // Scrollbar
+	{
+		CloseThemeData(g_rgH[SCROLLBARHTHEME]);
 	}
 
 	if (m_Dispatcher.Get())

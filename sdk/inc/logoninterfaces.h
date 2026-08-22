@@ -6,6 +6,210 @@
 #include <windows.storage.streams.h>
 #include "version.h"
 
+typedef enum
+{
+	TRIBIT_UNDEFINED = 0,
+	TRIBIT_TRUE,
+	TRIBIT_FALSE,
+} TRIBIT;
+
+typedef struct {
+	LANGID LangID;
+	BOOL   bInstalled;
+} MUIINSTALLLANG, * LPMUIINSTALLLANG;
+
+static LANGID Mirror_GetUserDefaultUILanguage(void)
+{
+	return GetUserDefaultUILanguage();
+}
+
+static BOOL ConvertHexStringToIntA(CHAR* pszHexNum, int* piNum)
+{
+	int   n = 0L;
+	CHAR* psz = pszHexNum;
+
+
+	for (n = 0; ; psz = CharNextA(psz))
+	{
+		if ((*psz >= '0') && (*psz <= '9'))
+			n = 0x10 * n + *psz - '0';
+		else
+		{
+			CHAR ch = *psz;
+			int n2;
+
+			if (ch >= 'a')
+				ch -= 'a' - 'A';
+
+			n2 = ch - 'A' + 0xA;
+			if (n2 >= 0xA && n2 <= 0xF)
+				n = 0x10 * n + n2;
+			else
+				break;
+		}
+	}
+
+	/*
+	 * Update results
+	 */
+	*piNum = n;
+
+	return (psz != pszHexNum);
+}
+
+static BOOL ConvertHexStringToIntW(WCHAR* pszHexNum, int* piNum)
+{
+	int   n = 0L;
+	WCHAR* psz = pszHexNum;
+
+
+	for (n = 0; ; psz = CharNextW(psz))
+	{
+		if ((*psz >= '0') && (*psz <= '9'))
+			n = 0x10 * n + *psz - '0';
+		else
+		{
+			WCHAR ch = *psz;
+			int n2;
+
+			if (ch >= 'a')
+				ch -= 'a' - 'A';
+
+			n2 = ch - 'A' + 0xA;
+			if (n2 >= 0xA && n2 <= 0xF)
+				n = 0x10 * n + n2;
+			else
+				break;
+		}
+	}
+
+	/*
+	 * Update results
+	 */
+	*piNum = n;
+
+	return (psz != pszHexNum);
+}
+
+static BOOL CALLBACK Mirror_EnumUILanguagesProc(LPWSTR lpUILanguageString, LONG_PTR lParam)
+{
+	int langID = 0;
+
+	ConvertHexStringToIntW(lpUILanguageString, &langID);
+
+	if ((LANGID)langID == ((LPMUIINSTALLLANG)lParam)->LangID)
+	{
+		((LPMUIINSTALLLANG)lParam)->bInstalled = TRUE;
+		return FALSE;
+	}
+	return TRUE;
+}
+
+static BOOL Mirror_IsUILanguageInstalled(LANGID langId)
+{
+
+	MUIINSTALLLANG MUILangInstalled = { 0 };
+	EnumUILanguagesW(Mirror_EnumUILanguagesProc, 0, (LONG_PTR)&MUILangInstalled);
+
+	return MUILangInstalled.bInstalled;
+}
+
+static BOOL IsBiDiLocalizedSystemEx(LANGID* pLangID)
+{
+    int           iLCID = 0L;
+    static TRIBIT s_tbBiDi = TRIBIT_UNDEFINED;
+    static LANGID s_langID = MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL);
+
+    if (s_tbBiDi == TRIBIT_UNDEFINED)
+    {
+        BOOL bRet = FALSE;
+        if (IsOS(OS_WIN2000ORGREATER))
+        {
+            /*
+             * Need to use NT5 detection method (Multiligual UI ID)
+             */
+            s_langID = Mirror_GetUserDefaultUILanguage();
+
+            if (s_langID)
+            {
+                WCHAR wchLCIDFontSignature[16];
+                iLCID = MAKELCID(s_langID, SORT_DEFAULT);
+
+                /*
+                 * Let's verify this is a RTL (BiDi) locale. Since reg value is a hex string, let's
+                 * convert to decimal value and call GetLocaleInfo afterwards.
+                 * LOCALE_FONTSIGNATURE always gives back 16 WCHARs.
+                 */
+
+                if (GetLocaleInfoW(iLCID,
+                    LOCALE_FONTSIGNATURE,
+                    (WCHAR*)&wchLCIDFontSignature[0],
+                    (sizeof(wchLCIDFontSignature) / sizeof(WCHAR))))
+                {
+
+                    /* Let's verify the bits we have a BiDi UI locale */
+                    if ((wchLCIDFontSignature[7] & (WCHAR)0x0800) && Mirror_IsUILanguageInstalled(s_langID))
+                    {
+                        bRet = TRUE;
+                    }
+                }
+            }
+        }
+        else {
+
+            /*
+             * Check if BiDi-Memphis is running with Lozalized Resources (
+             * i.e. Arabic/Hebrew systems) -It should be enabled ofcourse-.
+             */
+            if ((IsOS(OS_WIN98ORGREATER)) && (GetSystemMetrics(SM_MIDEASTENABLED)))
+            {
+                HKEY          hKey;
+
+                if (RegOpenKeyExA(HKEY_CURRENT_USER,
+                    "Control Panel\\Desktop\\ResourceLocale",
+                    0,
+                    KEY_READ, &hKey) == ERROR_SUCCESS)
+                {
+                    CHAR szResourceLocale[12];
+                    DWORD dwSize = sizeof(szResourceLocale);
+                    RegQueryValueExA(hKey, "", 0, NULL, (LPBYTE)szResourceLocale, &dwSize);
+                    szResourceLocale[(sizeof(szResourceLocale) / sizeof(CHAR)) - 1] = 0;
+
+                    RegCloseKey(hKey);
+
+                    if (ConvertHexStringToIntA(szResourceLocale, &iLCID))
+                    {
+                        iLCID = PRIMARYLANGID(LANGIDFROMLCID(iLCID));
+                        if ((LANG_ARABIC == iLCID) || (LANG_HEBREW == iLCID))
+                        {
+                            bRet = TRUE;
+                            s_langID = LANGIDFROMLCID(iLCID);
+                        }
+                    }
+                }
+            }
+        }
+
+        //COMPILETIME_ASSERT(sizeof(s_tbBiDi) == sizeof(long));
+        //  close multiproc race on startup
+        InterlockedExchange((long*)&s_tbBiDi, bRet ? TRIBIT_TRUE : TRIBIT_FALSE);
+    }
+
+    if (s_tbBiDi == TRIBIT_TRUE && pLangID)
+    {
+        *pLangID = s_langID;
+    }
+
+    return (s_tbBiDi == TRIBIT_TRUE);
+}
+
+static BOOL IsBiDiLocalizedSystem(void)
+{
+    return IsBiDiLocalizedSystemEx(NULL);
+}
+
+#define IS_BIDI_LOCALIZED_SYSTEM()       IsBiDiLocalizedSystem()
+
 namespace Windows::Internal
 {
 }

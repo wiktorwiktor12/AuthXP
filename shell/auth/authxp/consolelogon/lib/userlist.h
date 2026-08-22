@@ -42,5 +42,5 @@ public:
 
 	bool m_bIsActive;
 
-	friend class CLogonFrame;
+	friend class CLogonFrame7;
 };

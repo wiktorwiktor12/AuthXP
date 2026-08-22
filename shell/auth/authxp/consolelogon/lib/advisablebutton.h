@@ -15,7 +15,12 @@ public:
 
 	CAdvisableButton& operator=(const CAdvisableButton&) = delete;
 
+	static DirectUI::IClassInfo* Class;
+	DirectUI::IClassInfo* GetClassInfoW() override;
+	static DirectUI::IClassInfo* GetClassInfoPtr();
+
 	static HRESULT Create(DirectUI::Element* pParent, unsigned long* pdwDeferCookie, DirectUI::Element** ppElement);
+	static HRESULT Register();
 
 	HRESULT Advise(LCPD::ICredentialField* dataSource);
 	HRESULT UnAdvise();

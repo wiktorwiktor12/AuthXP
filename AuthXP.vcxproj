@@ -1,60 +1,222 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug.RS5|Win32"><Configuration>Debug.RS5</Configuration><Platform>Win32</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Debug.RS5|x64"><Configuration>Debug.RS5</Configuration><Platform>x64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Debug.RS5|ARM64"><Configuration>Debug.RS5</Configuration><Platform>ARM64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Debug.19H1|Win32"><Configuration>Debug.19H1</Configuration><Platform>Win32</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Debug.19H1|x64"><Configuration>Debug.19H1</Configuration><Platform>x64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Debug.19H1|ARM64"><Configuration>Debug.19H1</Configuration><Platform>ARM64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Debug.VB|Win32"><Configuration>Debug.VB</Configuration><Platform>Win32</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Debug.VB|x64"><Configuration>Debug.VB</Configuration><Platform>x64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Debug.VB|ARM64"><Configuration>Debug.VB</Configuration><Platform>ARM64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Debug.MN|Win32"><Configuration>Debug.MN</Configuration><Platform>Win32</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Debug.MN|x64"><Configuration>Debug.MN</Configuration><Platform>x64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Debug.MN|ARM64"><Configuration>Debug.MN</Configuration><Platform>ARM64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Debug.FE|Win32"><Configuration>Debug.FE</Configuration><Platform>Win32</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Debug.FE|x64"><Configuration>Debug.FE</Configuration><Platform>x64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Debug.FE|ARM64"><Configuration>Debug.FE</Configuration><Platform>ARM64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Debug.CO|Win32"><Configuration>Debug.CO</Configuration><Platform>Win32</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Debug.CO|x64"><Configuration>Debug.CO</Configuration><Platform>x64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Debug.CO|ARM64"><Configuration>Debug.CO</Configuration><Platform>ARM64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Debug.NI|Win32"><Configuration>Debug.NI</Configuration><Platform>Win32</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Debug.NI|x64"><Configuration>Debug.NI</Configuration><Platform>x64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Debug.NI|ARM64"><Configuration>Debug.NI</Configuration><Platform>ARM64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Debug.ZN|Win32"><Configuration>Debug.ZN</Configuration><Platform>Win32</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Debug.ZN|x64"><Configuration>Debug.ZN</Configuration><Platform>x64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Debug.ZN|ARM64"><Configuration>Debug.ZN</Configuration><Platform>ARM64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Debug.GE|Win32"><Configuration>Debug.GE</Configuration><Platform>Win32</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Debug.GE|x64"><Configuration>Debug.GE</Configuration><Platform>x64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Debug.GE|ARM64"><Configuration>Debug.GE</Configuration><Platform>ARM64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Release.RS5|Win32"><Configuration>Release.RS5</Configuration><Platform>Win32</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Release.RS5|x64"><Configuration>Release.RS5</Configuration><Platform>x64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Release.RS5|ARM64"><Configuration>Release.RS5</Configuration><Platform>ARM64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Release.19H1|Win32"><Configuration>Release.19H1</Configuration><Platform>Win32</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Release.19H1|x64"><Configuration>Release.19H1</Configuration><Platform>x64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Release.19H1|ARM64"><Configuration>Release.19H1</Configuration><Platform>ARM64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Release.VB|Win32"><Configuration>Release.VB</Configuration><Platform>Win32</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Release.VB|x64"><Configuration>Release.VB</Configuration><Platform>x64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Release.VB|ARM64"><Configuration>Release.VB</Configuration><Platform>ARM64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Release.MN|Win32"><Configuration>Release.MN</Configuration><Platform>Win32</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Release.MN|x64"><Configuration>Release.MN</Configuration><Platform>x64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Release.MN|ARM64"><Configuration>Release.MN</Configuration><Platform>ARM64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Release.FE|Win32"><Configuration>Release.FE</Configuration><Platform>Win32</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Release.FE|x64"><Configuration>Release.FE</Configuration><Platform>x64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Release.FE|ARM64"><Configuration>Release.FE</Configuration><Platform>ARM64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Release.CO|Win32"><Configuration>Release.CO</Configuration><Platform>Win32</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Release.CO|x64"><Configuration>Release.CO</Configuration><Platform>x64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Release.CO|ARM64"><Configuration>Release.CO</Configuration><Platform>ARM64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Release.NI|Win32"><Configuration>Release.NI</Configuration><Platform>Win32</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Release.NI|x64"><Configuration>Release.NI</Configuration><Platform>x64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Release.NI|ARM64"><Configuration>Release.NI</Configuration><Platform>ARM64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Release.ZN|Win32"><Configuration>Release.ZN</Configuration><Platform>Win32</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Release.ZN|x64"><Configuration>Release.ZN</Configuration><Platform>x64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Release.ZN|ARM64"><Configuration>Release.ZN</Configuration><Platform>ARM64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Release.GE|Win32"><Configuration>Release.GE</Configuration><Platform>Win32</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Release.GE|x64"><Configuration>Release.GE</Configuration><Platform>x64</Platform></ProjectConfiguration>
-    <ProjectConfiguration Include="Release.GE|ARM64"><Configuration>Release.GE</Configuration><Platform>ARM64</Platform></ProjectConfiguration>
+    <ProjectConfiguration Include="Debug.RS5|Win32">
+      <Configuration>Debug.RS5</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug.RS5|x64">
+      <Configuration>Debug.RS5</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug.RS5|ARM64">
+      <Configuration>Debug.RS5</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug.19H1|Win32">
+      <Configuration>Debug.19H1</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug.19H1|x64">
+      <Configuration>Debug.19H1</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug.19H1|ARM64">
+      <Configuration>Debug.19H1</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug.VB|Win32">
+      <Configuration>Debug.VB</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug.VB|x64">
+      <Configuration>Debug.VB</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug.VB|ARM64">
+      <Configuration>Debug.VB</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug.MN|Win32">
+      <Configuration>Debug.MN</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug.MN|x64">
+      <Configuration>Debug.MN</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug.MN|ARM64">
+      <Configuration>Debug.MN</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug.FE|Win32">
+      <Configuration>Debug.FE</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug.FE|x64">
+      <Configuration>Debug.FE</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug.FE|ARM64">
+      <Configuration>Debug.FE</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug.CO|Win32">
+      <Configuration>Debug.CO</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug.CO|x64">
+      <Configuration>Debug.CO</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug.CO|ARM64">
+      <Configuration>Debug.CO</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug.NI|Win32">
+      <Configuration>Debug.NI</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug.NI|x64">
+      <Configuration>Debug.NI</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug.NI|ARM64">
+      <Configuration>Debug.NI</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug.ZN|Win32">
+      <Configuration>Debug.ZN</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug.ZN|x64">
+      <Configuration>Debug.ZN</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug.ZN|ARM64">
+      <Configuration>Debug.ZN</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug.GE|Win32">
+      <Configuration>Debug.GE</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug.GE|x64">
+      <Configuration>Debug.GE</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug.GE|ARM64">
+      <Configuration>Debug.GE</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release.RS5|Win32">
+      <Configuration>Release.RS5</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release.RS5|x64">
+      <Configuration>Release.RS5</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release.RS5|ARM64">
+      <Configuration>Release.RS5</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release.19H1|Win32">
+      <Configuration>Release.19H1</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release.19H1|x64">
+      <Configuration>Release.19H1</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release.19H1|ARM64">
+      <Configuration>Release.19H1</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release.VB|Win32">
+      <Configuration>Release.VB</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release.VB|x64">
+      <Configuration>Release.VB</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release.VB|ARM64">
+      <Configuration>Release.VB</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release.MN|Win32">
+      <Configuration>Release.MN</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release.MN|x64">
+      <Configuration>Release.MN</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release.MN|ARM64">
+      <Configuration>Release.MN</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release.FE|Win32">
+      <Configuration>Release.FE</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release.FE|x64">
+      <Configuration>Release.FE</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release.FE|ARM64">
+      <Configuration>Release.FE</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release.CO|Win32">
+      <Configuration>Release.CO</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release.CO|x64">
+      <Configuration>Release.CO</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release.CO|ARM64">
+      <Configuration>Release.CO</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release.NI|Win32">
+      <Configuration>Release.NI</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release.NI|x64">
+      <Configuration>Release.NI</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release.NI|ARM64">
+      <Configuration>Release.NI</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release.ZN|Win32">
+      <Configuration>Release.ZN</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release.ZN|x64">
+      <Configuration>Release.ZN</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release.ZN|ARM64">
+      <Configuration>Release.ZN</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release.GE|Win32">
+      <Configuration>Release.GE</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release.GE|x64">
+      <Configuration>Release.GE</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release.GE|ARM64">
+      <Configuration>Release.GE</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -127,7 +289,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>shell\auth\authxp\consolelogon\dll\ConsoleLogon.def</ModuleDefinitionFile>
-      <AdditionalDependencies>runtimeobject.lib;Shlwapi.lib;PowrProf.lib;Wtsapi32.lib;gdiplus.lib;comctl32.lib;shcore.lib;slc.lib;Dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>runtimeobject.lib;uxtheme.lib;Shlwapi.lib;PowrProf.lib;Wtsapi32.lib;gdiplus.lib;comctl32.lib;shcore.lib;slc.lib;Dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(_ConfigurationWithoutSpecifier)'=='Release'">
@@ -155,7 +317,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>shell\auth\authxp\consolelogon\dll\ConsoleLogon.def</ModuleDefinitionFile>
-      <AdditionalDependencies>runtimeobject.lib;Shlwapi.lib;PowrProf.lib;Wtsapi32.lib;gdiplus.lib;comctl32.lib;shcore.lib;slc.lib;Dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>runtimeobject.lib;uxtheme.lib;Shlwapi.lib;PowrProf.lib;Wtsapi32.lib;gdiplus.lib;comctl32.lib;shcore.lib;slc.lib;Dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -169,6 +331,7 @@
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\advisablebutton.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\animationstrip.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\backgroundfetcher.cpp" />
+    <ClCompile Include="shell\auth\authxp\consolelogon\lib\backgroundwindow.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\combobox.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\consolebsdrstub.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\authuxlock.cpp" />
@@ -176,9 +339,12 @@
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\authux.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\consoleuimanager.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\DefaultSelector.cpp" />
+    <ClCompile Include="shell\auth\authxp\consolelogon\lib\errorballoon.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\EventDispatcher.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\fieldcontainer.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\labeledcheckbox.cpp" />
+    <ClCompile Include="shell\auth\authxp\consolelogon\lib\logonaccount.cpp" />
+    <ClCompile Include="shell\auth\authxp\consolelogon\lib\logonaccountlist.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\logonframe.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\logonnativehwndhost.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\logonviewmanager.cpp" />
@@ -213,14 +379,18 @@
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\advisablebutton.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\animationstrip.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\backgroundfetcher.h" />
+    <ClInclude Include="shell\auth\authxp\consolelogon\lib\backgroundwindow.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\combobox.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\authuxlockaction.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\consoleuimanager.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\DefaultSelector.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\duiutil.h" />
+    <ClInclude Include="shell\auth\authxp\consolelogon\lib\errorballoon.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\EventDispatcher.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\fieldcontainer.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\labeledcheckbox.h" />
+    <ClInclude Include="shell\auth\authxp\consolelogon\lib\logonaccount.h" />
+    <ClInclude Include="shell\auth\authxp\consolelogon\lib\logonaccountlist.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\logonframe.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\logonnativehwndhost.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\logonviewmanager.h" />
@@ -243,6 +413,117 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <CustomBuild Include="resources\logon.ui">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug.VB|ARM64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug.VB|ARM64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release.FE|ARM64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release.FE|ARM64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug.19H1|ARM64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug.19H1|ARM64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug.GE|ARM64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug.GE|ARM64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug.FE|ARM64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug.FE|ARM64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release.MN|ARM64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release.MN|ARM64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug.MN|ARM64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug.MN|ARM64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release.ZN|ARM64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release.ZN|ARM64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug.ZN|ARM64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug.ZN|ARM64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release.RS5|ARM64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release.RS5|ARM64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release.NI|ARM64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release.NI|ARM64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release.CO|ARM64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release.CO|ARM64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug.RS5|ARM64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug.RS5|ARM64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release.19H1|ARM64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release.19H1|ARM64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug.NI|ARM64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug.NI|ARM64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug.CO|ARM64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug.CO|ARM64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release.VB|ARM64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release.VB|ARM64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release.GE|ARM64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release.GE|ARM64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug.VB|Win32'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug.VB|Win32'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release.FE|Win32'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release.FE|Win32'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug.19H1|Win32'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug.19H1|Win32'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug.GE|Win32'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug.GE|Win32'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug.FE|Win32'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug.FE|Win32'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release.MN|Win32'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release.MN|Win32'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug.MN|Win32'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug.MN|Win32'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release.ZN|Win32'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release.ZN|Win32'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug.ZN|Win32'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug.ZN|Win32'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release.RS5|Win32'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release.RS5|Win32'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release.NI|Win32'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release.NI|Win32'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release.CO|Win32'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release.CO|Win32'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug.RS5|Win32'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug.RS5|Win32'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release.19H1|Win32'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release.19H1|Win32'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug.NI|Win32'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug.NI|Win32'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug.CO|Win32'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug.CO|Win32'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release.VB|Win32'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release.VB|Win32'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release.GE|Win32'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release.GE|Win32'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug.VB|x64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug.VB|x64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release.FE|x64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release.FE|x64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug.19H1|x64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug.19H1|x64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug.GE|x64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug.GE|x64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug.FE|x64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug.FE|x64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release.MN|x64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release.MN|x64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug.MN|x64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug.MN|x64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release.ZN|x64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release.ZN|x64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug.ZN|x64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug.ZN|x64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release.RS5|x64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release.RS5|x64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release.NI|x64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release.NI|x64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release.CO|x64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release.CO|x64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug.RS5|x64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug.RS5|x64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release.19H1|x64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release.19H1|x64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug.NI|x64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug.NI|x64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug.CO|x64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug.CO|x64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release.VB|x64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release.VB|x64'">$(InputPath)resources\logon.uipp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release.GE|x64'">cl /EP /C- "$(InputPath)resources\logon.ui" &gt; $(InputPath)resources\logon.uipp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release.GE|x64'">$(InputPath)resources\logon.uipp</Outputs>
+    </CustomBuild>
     <None Include="shell\auth\authxp\consolelogon\dll\ConsoleLogon.def" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

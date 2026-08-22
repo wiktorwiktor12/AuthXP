@@ -163,5 +163,5 @@ private:
 	Microsoft::WRL::ComPtr<LCPD::ICredentialSerialization> m_cachedSerialization;
 	Microsoft::WRL::ComPtr<IInputSwitchControl> m_inputSwitchControl;
 
-	friend class CLogonFrame;
+	friend class CLogonFrame7;
 };

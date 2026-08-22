@@ -1,0 +1,493 @@
+//
+// Logon resource file
+//
+
+#include "../resource.h"
+#include "directuipp.h"
+
+/*****************************************************
+ * Element resources
+ *****************************************************/
+<duixml>
+	<stylesheets>
+			
+			<style resid="CheckboxStyle">
+				<element background="argb(0, 0, 0, 0)" foreground="white" fontface="Segoe UI"/>
+				<if id="atom(Checkbox)">
+					<button width="sysmetric(71)" height="sysmetric(72)" margin="rect(0rp, 0rp, 5rp, 0rp)"/>
+					<if keyfocused="true">
+						<button contentalign="focusrect"/>
+					</if>
+				</if>
+				<if id="atom(Label)">
+					<button width="sysmetric(71)" height="sysmetric(72)" margin="rect(0rp, 0rp, 5rp, 0rp)"/>
+				</if>
+			</style>
+			
+			<style resid="CommandlinkStyle">
+				<if class="Link">
+					<AdvisableButton font="9;normal;shadow|underline;Segoe UI" shadowintensity="75" cursor="hand" contentalign="middleleft"/>
+					<if keyfocused="true">
+						<button contentalign="middlecenter|focusrect"/>
+					</if>
+					<if mousefocused="true">
+						<button fontstyle="underline"/>
+					</if>
+				</if>
+			</style>
+			
+			<style resid="CommandLinks">
+				<button layoutpos="top" cursor="hand" contentalign="middleleft" content=PROP(resbmp(IDB_OPT,3,-1,28rp,29rp,0,0)) padding="rect(5rp,0,11rp,0)" margin="rect(0rp, 0rp, 0rp, 6rp)" background="argb(0,255,0,0)" accessible="true" accrole="43" minsize="size(190rp,30rp)" bordercolor="gray" borderstyle="raised"/>
+				<element foreground="white" fontface="franklin gothic medium" font="14.25pt" fontstyle="None" contentalign="MiddleCenter" padding="rect(29rp,7rp,0rp,7rp)" background="argb(0,0,255,0)" />
+				<RichText foreground="white" fontface="franklin gothic medium" font="14.25pt" fontstyle="None" contentalign="MiddleCenter" padding="rect(29rp,7rp,0rp,7rp)" background="argb(0,0,255,0)" />
+				<if keyfocused="true">
+					<button cursor="hand" content=PROP(resbmp(IDB_OPT,3,-1,28rp,29rp,0,0)) />
+					<element fontface="franklin gothic medium" fontstyle="underline"/>
+					<RichText fontface="franklin gothic medium" fontstyle="underline"/>
+				</if>
+				<if mousefocused="true">
+					<button cursor="hand" content=PROP(resbmp(IDB_OPT,3,-1,28rp,29rp,0,0)) />
+					<element fontface="franklin gothic medium" fontstyle="underline"/>
+					<RichText fontface="franklin gothic medium" fontstyle="underline"/>
+				</if>
+				<if pressed="true">
+					<button content=PROP(resbmp(IDB_OPTKF,3,-1,28rp,29rp,0,0)) />
+				</if>
+				<if class="CancelLink">
+					<button cursor="hand" layoutpos="top" contentalign="middleleft" content=PROP(resbmp(IDB_CLOSE,3,-1,28rp,29rp,0,0)) padding="rect(5rp,0,11rp,0)" margin="rect(0rp, 18rp, 0rp, 0rp)" accessible="true" accrole="43" minsize="size(190rp,30rp)" bordercolor="gray" borderstyle="raised"/>
+					<element foreground="white" contentalign="MiddleCenter" padding="rect(29rp,7rp,0rp,7rp)"/>
+					<RichText foreground="white" contentalign="MiddleCenter" padding="rect(29rp,7rp,0rp,7rp)"/>
+					<if keyfocused="true">
+						<button cursor="hand" content=PROP(resbmp(IDB_CLOSE,3,-1,28rp,29rp,0,0)) />
+						<element fontface="franklin gothic medium" fontstyle="underline"/>
+						<RichText fontface="franklin gothic medium" fontstyle="underline"/>
+					</if>
+					<if mousefocused="true">
+						<button cursor="hand" content=PROP(resbmp(IDB_CLOSE,3,-1,28rp,29rp,0,0)) />
+						<element fontface="franklin gothic medium" fontstyle="underline"/>
+						<RichText fontface="franklin gothic medium" fontstyle="underline"/>
+					</if>
+					<if pressed="true">
+						<button cursor="hand" content=PROP(resbmp(IDB_CLOSEKF,3,-1,28rp,29rp,0,0)) />
+					</if>
+				</if>
+			</style>
+			<style resid="GenericButtons">
+			    <button background="themeable(argb(0, 0, 0, 0),window)"/>
+			    <element background="argb(0, 0, 0, 0)" fontstyle="None" font="gtf(FLYOUTSTYLE, 4, 1)"/>
+			    <expando background="argb(0, 0, 0, 0)"/>
+			    <if keyfocused="true">
+			    	<button contentalign="focusrect"/>
+			    	<element contentalign="wrapleft | endellipsis"/>
+			    </if>
+			    <if class="pushbutton">
+				    <button minsize="size(93rp,28rp)" background="dtb(Button, 1, 1)" padding="rect(4rp,4rp,4rp,4rp)" contentalign="middlecenter" foreground="buttontext"/>
+				    <if keyfocused="true">
+					    <button contentalign="middlecenter | focusrect"/>
+				    </if>
+				    <if selected="true">
+					    <button background="dtb(Button, 1, 5)"/>
+				    </if>
+				    <if mousefocused="true">
+					    <button background="dtb(Button, 1, 2)"/>
+				    </if>
+				    <if pressed="true">
+					    <button background="dtb(Button, 1, 3)"/>
+				    </if>
+				    <if enabled="false">
+					    <button background="dtb(Button, 1, 4)" foreground="graytext"/>
+				    </if>
+			    </if>
+
+			</style>
+			<style resid="framess">
+				<element background="argb(0,0,0,0)"/>
+				<if id="atom(contentcontainer)">
+					<element background="rgb(90,126,220)"/>
+				</if>
+				<button background=PROP(resbmp(IDB_SELECTION,6,16711935,0,0,0,0)) borderthickness="rect(8,8,0,8)"/>
+			</style>
+			<style resid="toppanelss">
+				<element background="argb(0,0,0,0)"/>
+				<if id="atom(toppanel)">
+					//<element background="rgb(0,48,156)"/>
+					<element background="rgb(0,48,156)" padding="rect(25rp, 0rp, 25rp, 20rp)"/>
+				</if>
+				<if id="atom(divider)">
+					<element background=PROP(resbmp(IDB_HDIVIDERTOP,6,16711935,0,0,0,0))/>
+				</if>
+				<if id="atom(time)">
+					<element foreground="white" fontface="franklin gothic medium" fontsize="24pt"/>
+				</if>
+				<if id="atom(date)">
+					<element foreground="white" fontface="tahoma" fontsize="9pt"/>
+				</if>
+			</style>
+			<style resid="bottompanelss">
+				<element background="argb(0,0,0,0)"/>
+				<if id="atom(bottompanel)">
+					<element background="gradient(argb(0,57,52,173), argb(0,0,48,156), 0)" fontface=PROP(resstr(IDS_OPTIONSFONT))/>
+				</if>
+				<if id="atom(divider)">
+					<element background=PROP(resbmp(IDB_HDIVIDERBOT,6,16711935,0,0,0,0))/>
+				</if>
+				<if id="atom(options)">
+					<element padding="rect(25rp, 20rp, 25rp, 20rp)"/>
+				</if>
+				<button font=PROP(resstr(IDS_TURNOFFFONTSIZE)) foreground="white" cursor="hand"/>
+				<if mousefocused="true">
+					<button fontstyle="underline"/>
+				</if>
+				<if keyfocused="true">
+					<button fontstyle="underline"/>
+				</if>
+				<if id="atom(instruct)">
+					<element contentalign="wrapleft" padding="rect(18rp,0,0,0)" font=PROP(resstr(IDS_INSTRUCTFONTSIZE)) foreground="white"/>
+				</if>
+			</style>
+			<style resid="leftpanelss">
+				<element background="argb(0,0,0,0)" fontface=PROP(resstr(IDS_WELCOMEFONT))/>
+				<if id="atom(product)">
+					<element animation="alpha | s | mediumslow"/>
+				</if>
+				<if id="atom(leftpanel)">
+					<element foreground="rgb(239,247,255)"/>
+				</if>
+				<if id="atom(welcome)">
+					<element fontstyle="italic" font=PROP(resstr(IDS_WELCOMEFONTSIZE)) fontweight="bold" padding="rect(0rp,0rp,22rp,0)" contentalign="topright"/>
+				</if>
+				<if id="atom(welcomeshadow)">
+					<element foreground="rgb(49,81,181)" fontstyle="italic" font=PROP(resstr(IDS_WELCOMEFONTSIZE)) fontweight="bold" padding="rect(2rp,3rp,20rp,0)" contentalign="topright"/>
+				</if>
+				<if id="atom(help)">
+					<element font=PROP(resstr(IDS_HELPFONTSIZE)) padding="rect(81rp,81rp,0,0)" contentalign="wrapright"/>
+				</if>
+			</style>
+			<style resid="rightpanelss">
+				<element background="argb(0,0,0,0)"/>
+				<if id="atom(divider)">
+					<element background=PROP(resbmp(IDB_VDIVIDER,6,16711935,0,0,0,0))/>
+				</if>
+				<if vertical="true">
+					<scrollbar layoutpos="nineright" background="rgb(115,146,231)"/>
+				</if>
+				<viewer layoutpos="nineclient"/>
+				<thumb background=PROP(resbmp(IDB_SBTHUMBV,6,16711935,0,0,0,0)) borderthickness="rect(3,3,3,3)"/>
+				<if id="atom(lineup)">
+					<repeatbutton content=PROP(resbmp(IDB_SBLINEUPV,3,-1,sysmetric(SM_CYVSCROLL),sysmetric(SM_CYVSCROLL),0,0))/>
+				</if>
+				<if id="atom(linedown)">
+					<repeatbutton content=PROP(resbmp(IDB_SBLINEDOWNV,3,-1,sysmetric(SM_CYVSCROLL),sysmetric(SM_CYVSCROLL),0,0))/>
+				</if>
+			</style>
+			<style resid="hotaccountlistss">
+				<element background="argb(0,0,0,0)" fontface=PROP(resstr(IDS_ACCOUNTLISTFONT))/>
+				<selector padding="rect(0rp,26rp,5rp,26rp)"/>
+				<logonaccount cursor="hand" foreground="rgb(239,247,255)" background="rgb(90,126,220)" animation="alpha | log | fast" alpha="96"/>
+				<if logonstate="1">
+					<logonaccount animation="rectangle | s | mediumfast" cursor="arrow" alpha="255"/>
+				</if>
+				<if mousewithin="true">
+					<logonaccount cursor="hand" alpha="255"/>
+				</if>
+				<if selected="true">
+					<logonaccount cursor="hand" alpha="255"/>
+				</if>
+				<if id="atom(userpane)">
+					<element padding="rect(2rp,2rp,14rp,2rp)" borderthickness="rect(5,5,0,5)" bordercolor="rgb(90,126,220)" font=PROP(resstr(IDS_HELPFONTSIZE))/>
+					<if selected="true">
+						<element background=PROP(resbmp(IDB_SELECTION,6,16711935,0,0,0,0))/>
+					</if>
+				</if>
+				<if selected="true">
+					<logonaccount alpha="255"/>
+				</if>
+				<if id="atom(pictureframe)">
+					<element background=PROP(resbmp(IDB_USERFRAME,7,255,0,0,1,0)) borderthickness="rect(5,5,5,5)" margin="rect(0,0, 7rp,0)"/>
+
+					<if mousefocused="true">
+						<element background=PROP(resbmp(IDB_USERFRAMESEL,7,255,0,0,1,0)) borderthickness="rect(5,5,5,5)" margin="rect(0,0,7rp,0)" alpha="255"/>
+					</if>
+					<if selected="true">
+						<element background=PROP(resbmp(IDB_USERFRAMESEL,7,255,0,0,1,0)) borderthickness="rect(5,5,5,5)" margin="rect(0,0,7rp,0)" alpha="255"/>
+					</if>
+				</if>
+				<if id="atom(username)">
+					<element foreground="rgb(239,247,255)" contentalign="endellipsis"/>
+				</if>
+				<if class="status">
+					<button background="argb(0,0,0,0)" foreground="rgb(0,48,156)" font=PROP(resstr(IDS_STATUSFONTSIZE)) fontweight="bold"/>
+					<if mousefocused="true">
+						<button fontstyle="underline"/>
+					</if>
+					<if keyfocused="true">
+						<button fontstyle="underline"/>
+					</if>
+					<if selected="true">
+						<button foreground="rgb(239,247,255)" font=PROP(resstr(IDS_STATUSFONTSIZE)) fontweight="bold"/>
+					</if>
+				</if>
+			</style>
+			<style resid="accountlistss">
+				<element background="argb(0,0,0,0)" fontface=PROP(resstr(IDS_ACCOUNTLISTFONT))/>
+				<selector padding="rect(0rp,26rp,5rp,26rp)"/>
+				<logonaccount cursor="hand" animation="alpha | log | fast" background="rgb(90,126,220)"/>
+				<if logonstate="1">
+					<logonaccount animation="rectangle | s | mediumfast" cursor="arrow"/>
+				</if>
+				<if id="atom(userpane)">
+					<element padding="rect(2rp,2rp,14rp,2rp)" borderthickness="rect(5,5,0,5)" bordercolor="rgb(90,126,220)" font=PROP(resstr(IDS_HELPFONTSIZE))/>
+					<if selected="true">
+						<element background=PROP(resbmp(IDB_SELECTION,6,16711935,0,0,0,0))/>
+					</if>
+				</if>
+				<if id="atom(pictureframe)">
+					<element background=PROP(resbmp(IDB_USERFRAME,7,255,0,0,1,0)) borderthickness="rect(5,5,5,5)" margin="rect(0,0,7rp,0)"/>
+				</if>
+				<if id="atom(username)">
+					<element foreground="rgb(239,247,255)" contentalign="endellipsis"/>
+				</if>
+				<if class="status">
+					<button background="argb(0,0,0,0)" foreground="rgb(0,48,156)" font=PROP(resstr(IDS_STATUSFONTSIZE)) fontweight="bold" contentalign="wrapleft"/>
+
+					<if mousefocused="true">
+						<button fontstyle="underline"/>
+					</if>
+					<if keyfocused="true">
+						<button fontstyle="underline"/>
+					</if>
+					<if selected="true">
+						<button foreground="rgb(239,247,255)" font=PROP(resstr(IDS_STATUSFONTSIZE)) fontweight="bold"/>
+					</if>
+				</if>
+			</style>
+			<style resid="passwordpaness">
+				<element background="argb(0,0,0,0)"/>
+				<if id="atom(passwordpanelayer)">
+					<element padding="rect(71rp,31rp,0,0)"/>
+				</if>
+				<if id="atom(instruct)">
+					<element fontface=PROP(resstr(IDS_HELPFONT)) font=PROP(resstr(IDS_PWINSTRUCTFONTSIZE)) foreground="white" padding="rect(3rp,0,0,3rp)"/>
+				</if>
+				<if id="atom(password)">
+					<RestrictedEdit background=PROP(resbmp(IDB_EDITFRAME,6,16711935,0,0,0,0)) borderthickness="rect(3,3,5,5)" passwordcharacter="9679" fontface="arial" font="16pt"/>
+				</if>
+				<if id="atom(go)">
+					<button margin="rect(5rp,0,0,0)" content=PROP(resbmp(IDB_GO,3,-1,26rp,26rp,0,0)) padding="rect(0rp,1rp,0,1rp)"/>
+
+					<if keyfocused="true">
+						<button content=PROP(resbmp(IDB_GOKF,3,-1,26rp,26rp,0,0))/>
+					</if>
+				</if>
+				<if id="atom(info)">
+					<button margin="rect(5rp,0,0,0)" content=PROP(resbmp(IDB_INFO,3,-1,28rp,28rp,0,0))/>
+					<if keyfocused="true">
+						<button content=PROP(resbmp(IDB_INFO,3,-1,28rp,28rp,0,0))/>
+					</if>
+				</if>
+				<if id="atom(keyboard)">
+					<element cursor="arrow" margin="rect(5rp,0,0,0)"/>
+				</if>
+			</style>
+			<style resid="scroller">
+				<scrollbar layoutpos="ninebottom"/>
+				<if vertical="true">
+					<scrollbar layoutpos="nineright"/>
+				</if>
+				<viewer layoutpos="nineclient"/>
+				<thumb background=PROP(dtb(ScrollBar, SBP_THUMBBTNVERT, SCRBS_NORMAL)) content=PROP(dtb(ScrollBar, SBP_GRIPPERVERT, SCRBS_NORMAL)) contentalign="middlecenter"/>
+				<if mousefocused="true">
+					<thumb background=PROP(dtb(ScrollBar, SBP_THUMBBTNVERT, SCRBS_HOT)) content=PROP(dtb(ScrollBar, SBP_GRIPPERVERT, SCRBS_HOT))/>
+				</if>
+				<if captured="true">
+					<thumb background=PROP(dtb(ScrollBar, SBP_THUMBBTNVERT, SCRBS_PRESSED)) content=PROP(dtb(ScrollBar, SBP_GRIPPERVERT, SCRBS_PRESSED))/>
+				</if>
+				<if id="atom(lineup)">
+					<repeatbutton background=PROP(dtb(ScrollBar, SBP_ARROWBTN, ABS_UPNORMAL)) width=PROP(sysmetric(SM_CXVSCROLL)) height=PROP(sysmetric(SM_CYVSCROLL))/>
+					<if mousefocused="true">
+						<repeatbutton background=PROP(dtb(ScrollBar, SBP_ARROWBTN, ABS_UPHOT))/>
+					</if>
+					<if pressed="true">
+						<repeatbutton background=PROP(dtb(ScrollBar, SBP_ARROWBTN, ABS_UPPRESSED))/>
+					</if>
+				</if>
+				<if id="atom(linedown)">
+					<repeatbutton background=PROP(dtb(ScrollBar, SBP_ARROWBTN, ABS_DOWNNORMAL)) width=PROP(sysmetric(SM_CXVSCROLL)) height=PROP(sysmetric(SM_CYVSCROLL))/>
+					<if mousefocused="true">
+						<repeatbutton background=PROP(dtb(ScrollBar, SBP_ARROWBTN, ABS_DOWNHOT))/>
+					</if>
+					<if pressed="true">
+						<repeatbutton background=PROP(dtb(ScrollBar, SBP_ARROWBTN, ABS_DOWNPRESSED))/>
+					</if>
+				</if>
+				<if id="atom(pageup)">
+					<repeatbutton background=PROP(dtb(ScrollBar, SBP_UPPERTRACKVERT, SCRBS_NORMAL))/>
+					<if mousefocused="true">
+						<repeatbutton background=PROP(dtb(ScrollBar, SBP_UPPERTRACKVERT, SCRBS_HOT))/>
+					</if>
+					<if pressed="true">
+						<repeatbutton background=PROP(dtb(ScrollBar, SBP_UPPERTRACKVERT, SCRBS_PRESSED))/>
+					</if>
+				</if>
+				<if id="atom(pagedown)">
+					<repeatbutton background=PROP(dtb(ScrollBar, SBP_LOWERTRACKVERT, SCRBS_NORMAL))/>
+					<if mousefocused="true">
+						<repeatbutton background=PROP(dtb(ScrollBar, SBP_LOWERTRACKVERT, SCRBS_HOT))/>
+					</if>
+					<if pressed="true">
+						<repeatbutton background=PROP(dtb(ScrollBar, SBP_LOWERTRACKVERT, SCRBS_PRESSED))/>
+					</if>
+				</if>
+			</style>
+	</stylesheets>
+
+
+//
+// Logon frame
+//
+
+	<logonframe resid="main" id="atom(frame)" sheet="framess" layout="borderlayout()">
+
+		<element id="atom(toppanel)" sheet="toppanelss" layout="borderlayout()" padding="rect(0rp, 0rp, 0rp, 0rp)" layoutpos="top" height="80rp">
+			<element id="atom(divider)" layoutpos="bottom" padding="rect(0rp, 0rp, 0rp, 0rp)" height="2rp" />
+			<element id="atom(dateandtime)" layout="borderlayout()" layoutpos="right" padding="rect(25rp, 0rp, 25rp, 20rp)" contentalign="bottomright">
+				<element id="atom(date)" content="Monday, September 23, 2002"/>
+				<element id="atom(time)" content="1:38 PM"/>
+			</element>
+		</element>
+
+		<element id="atom(bottompanel)" sheet="bottompanelss" layout="borderlayout()" layoutpos="bottom">
+			<element id="atom(divider)" layoutpos="top" height="2rp" />
+			<element id="atom(options)" layout="borderlayout()" layoutpos="client">
+				<element layout="borderlayout()" layoutpos="left">
+					<button id="atom(power)" layout="borderlayout()" layoutpos="top" accessible="true" accRole="43" accName=PROP(resstr(IDS_POWER))>
+						<element layoutpos="left" content=PROP(resbmp(IDB_POWER,3,-1,26rp,26rp,0,0))  />
+						<element id="atom(label)" layoutpos="client" margin="rect(2rp,0,0,0)" />
+					</button>
+					<button id="atom(undock)" layout="borderlayout()" layoutpos="top" margin="rect(0,2rp,0,0)" accessible="true" accRole="43" accName=PROP(resstr(IDS_UNDOCK))>
+						<element layoutpos="left" content=PROP(resbmp(IDB_UNDOCK,3,-1,26rp,26rp,0,0)) />
+						<element id="atom(label)" layoutpos="client" margin="rect(2rp,0,0,0)" />
+					</button>
+				</element>
+				<element id="atom(instruct)" layoutpos="right" content=PROP(resstr(IDS_MANAGEACCOUNTS)) width="325rp" />
+			</element>
+		</element>
+
+		<element id="atom(contentcontainer)" layout="flowlayout(1,3,2,3)" layoutpos="client" content=PROP(resbmp(IDB_BACKGROUND,0,0,219rp,207rp,0,0))>
+			<element id="atom(leftpanel)" sheet="leftpanelss" layout="filllayout()" layoutpos="left">
+				<element id="atom(logoarea)" layout="verticalflowlayout(0,3,3,2)">
+					<element id="atom(product)" contentalign="topright" padding="rect(0rp,0rp,20rp,20rp)" content=PROP(resbmp(IDB_PRODUCTNAME,3,-1,137,86,0,0)) background="rgb(90,126,220)" />
+					<element id="atom(help)" contentalign="wrapright" width="384rp" padding="rect(0rp,0rp,40rp,0rp)" />
+				</element>
+				<element id="atom(msgarea)" layout="verticalflowlayout(0,0,0,2)" >
+					<element layout="filllayout()" width="384rp">
+						<element id="atom(welcomeshadow)" content=PROP(resstr(IDS_WELCOME)) />
+						<element id="atom(welcome)" content=PROP(resstr(IDS_WELCOME)) />
+					</element>
+				</element>
+			</element>
+
+			<element id="atom(rightpanel)" sheet="rightpanelss" layout="borderlayout()" layoutpos="left" width="384rp">
+				<element id="atom(divider)" layoutpos="left" width="1rp" />
+				<styledscrollviewer id="atom(scroller)" sheet="scroller" layoutpos="left" xscrollable="false" margin="rect(26rp,0rp,0rp,0rp)">
+					<logonaccountlist id="atom(accountlist)" sheet="accountlistss" layout=PROP(verticalflowlayout(0,ALIGN_JUSTIFY,ALIGN_JUSTIFY,ALIGN_CENTER)) />
+				</styledscrollviewer>
+				<styledscrollviewer id="atom(SecurityOptions)" sheet="scroller" xscrollable="false" layoutpos="client" visible="false">
+					<element layout=PROP(verticalflowlayout(0,ALIGN_LEFT,ALIGN_LEFT,ALIGN_CENTER)) sheet="CommandLinks" padding="rect(5rp, 9rp, 0rp, 9rp)">
+						<button id="atom(SecurityLock)" accname="Lock this Computer" layoutpos="none" layout="flowlayout()" class="SecurityCommandLink">
+							<element content="Lock this Computer" shortcut="auto"/>
+						</button>
+						<button id="atom(SecuritySwitchUser)" accname="Switch User" layoutpos="none" layout="flowlayout()" class="SecurityCommandLink">
+							<element content="Switch User" shortcut="auto"/>
+						</button>
+						<button id="atom(SecurityLogOff)" accname="Log Off" layoutpos="none" layout="flowlayout()" class="SecurityCommandLink">
+							<element content="Log Off" shortcut="auto"/>
+						</button>
+						<button id="atom(SecurityChange)" accname="Change a password" layoutpos="none" layout="flowlayout()" class="SecurityCommandLink">
+							<element content="Change a password" shortcut="auto"/>
+						</button>
+						<button id="atom(SecurityTaskManager)" accname="Start Task Manager" layoutpos="none" layout="flowlayout()" class="SecurityCommandLink">
+							<element content="Start Task Manager" shortcut="auto"/>
+						</button>
+						<button id="atom(SecurityTaskManager)" accname="Start Task Manager" layoutpos="none" layout="flowlayout()" class="SecurityCommandLink">
+							<element content="Start Task Manager" shortcut="auto"/>
+						</button>
+						<button id="atom(CancelSecurityOptions)" accname="Cancel" layoutpos="none" layout="flowlayout()" class="CancelLink">
+							<element content="Cancel" shortcut="auto" class="CancelLink"/>
+						</button>
+						<element id="atom(DialogButtons)" layout="flowlayout(0,1,2,2)" layoutpos="none" sheet="GenericButtons" padding="rect(0rp, 10rp, 0rp, 0rp)" margin="rect(0rp, 30rp, 0rp, 5rp)">
+						    <button margin="rect(0rp, 0rp, 0rp, 6rp)" layout="flowlayout(0,2,2,2)" active="keyboard|mouse" accessible="true" accrole="pushbutton" class="pushbutton">
+						        <element padding="rect(8rp,0rp,8rp,0rp)" shortcut="auto" content="OK" foreground="buttontext"/>
+				            </button>
+						    <button margin="rect(0rp, 0rp, 0rp, 6rp)" layout="flowlayout(0,2,2,2)" active="keyboard|mouse" accessible="true" accrole="pushbutton" class="pushbutton">
+						        <element padding="rect(8rp,0rp,8rp,0rp)" shortcut="auto" content="Cancel" foreground="buttontext"/>
+						    </button>
+						</element>
+
+					</element>
+				</styledscrollviewer>
+			</element>
+
+		</element>
+
+	</logonframe>
+
+//
+// Logon Account
+//
+
+	<logonaccount resid="accountitem" id="atom(accountitem)" layout="filllayout()" accessible="true" accRole="43">
+		<element id="atom(userpanelayer)" layout="borderlayout()" height="80rp" layoutpos="top">
+			<element id="atom(userpane)" layout="borderlayout()" layoutpos="top">
+				<element id="atom(pictureframe)" layout="flowlayout(0,2,2)" layoutpos="left" width="58rp" height="58rp">
+				   <element id="atom(picture)"  />
+				</element>
+				<element id="atom(username)" layoutpos="top" />
+				<button id="atom(status0)" class="status" layoutpos="none" />
+				<button id="atom(status1)" class="status" layoutpos="none" />
+			</element>
+		</element>
+		<element id="atom(passwordpanelcontainer)" layout="verticalflowlayout(0,0,2)"/>
+	</logonaccount>
+
+
+//
+// Edit Control
+//
+	<element resid="editcontrol" layout="borderlayout()" layoutpos="bottom">
+		<RestrictedEdit id="atom(password)" layoutpos="left" width="163rp" />
+		<element id="atom(keyboard)" layoutpos="left" />
+		<button id="atom(go)" layoutpos="left" accessible="true" accRole="43" accName=PROP(resstr(IDS_ACDSC_PWD)) />
+		<button id="atom(info)" layoutpos="left" accessible="true" accRole="43" accName=PROP(resstr(IDS_PASSWORDHINTTITLE)) />
+	</element>
+	
+//
+// Checkbox Control
+//
+	<DUILabeledCheckbox resid="checkboxcontrol" layout="flowlayout(0,2,0,2)" sheet="CheckboxStyle" layoutpos="bottom">
+		<element id="atom(ForceHeight)" width="0rp" height="30rp"/>
+		<button id="atom(Checkbox)"/>
+		<element id="atom(Label)"/>
+	</DUILabeledCheckbox>
+	
+//
+// Commandlink Control
+//
+	<AdvisableButton resid="commandlinkcontrol" layout="flowlayout(0,2,0,2)" class="Link" id="atom(CommandLink)" sheet="CommandlinkStyle" layoutpos="bottom">
+		<element id="atom(ForceHeight)" width="0rp" height="30rp"/>
+	</AdvisableButton>
+
+//
+// Password pane
+//
+
+	<element resid="passwordpanel" id="atom(passwordpanelayer)" sheet="passwordpaness" layout="borderlayout()" >
+		<element id="atom(instruct)" layoutpos="top" content=PROP(resstr(IDS_TYPEPASSWORD)) />
+		
+
+
+		
+
+
+	</element>
+</duixml>

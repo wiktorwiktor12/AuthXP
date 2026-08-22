@@ -13,10 +13,27 @@ CAdvisableButton::~CAdvisableButton()
 {
 }
 
+DirectUI::IClassInfo* CAdvisableButton::Class = nullptr;
+
+DirectUI::IClassInfo* CAdvisableButton::GetClassInfoW()
+{
+	return Class;
+}
+
+DirectUI::IClassInfo* CAdvisableButton::GetClassInfoPtr()
+{
+	return Class;
+}
+
 HRESULT CAdvisableButton::Create(DirectUI::Element* pParent, unsigned long* pdwDeferCookie,
-	DirectUI::Element** ppElement)
+                                 DirectUI::Element** ppElement)
 {
 	return DirectUI::CreateAndInit<CAdvisableButton, int>(3, pParent, pdwDeferCookie, ppElement);
+}
+
+HRESULT CAdvisableButton::Register()
+{
+	return DirectUI::ClassInfo<CAdvisableButton, DirectUI::Button>::RegisterGlobal(HINST_THISCOMPONENT, L"AdvisableButton", nullptr, 0);
 }
 
 HRESULT CAdvisableButton::Advise(LCPD::ICredentialField* dataSource)

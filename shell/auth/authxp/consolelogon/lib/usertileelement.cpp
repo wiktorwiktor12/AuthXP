@@ -577,7 +577,7 @@ HRESULT CDUIUserTileElement::_CreateCommandLinkField(int index, DirectUI::Elemen
 
 		element->GetParent()->Remove(element);
 
-		CLogonFrame::GetSingleton()->m_Window->FindDescendent(DirectUI::StrToID(L"DialogButtonFrame"))->Add(element);
+		CLogonFrame7::GetSingleton()->m_Window->FindDescendent(DirectUI::StrToID(L"DialogButtonFrame"))->Add(element);
 	}*/
 
 	scopeExit.release();
