@@ -14,8 +14,8 @@ CDUILabeledCheckbox::CDUILabeledCheckbox() : m_checkbox(nullptr)
 	, m_checkedBackgroundFill(nullptr)
 	, m_uncheckedBackgroundFill(nullptr)
 	, m_isChecked(FALSE)
-	, m_index(-1)
-	, m_owningElement(nullptr)
+	//, m_index(-1)
+	//, m_owningElement(nullptr)
 	, m_token(0)
 {
 }
@@ -215,24 +215,49 @@ void CDUILabeledCheckbox::OnDestroy()
 HRESULT CDUILabeledCheckbox::Invoke(LCPD::ICredentialField* sender, LCPD::CredentialFieldChangeKind args)
 {
 	LOG_HR_MSG(E_FAIL,"CDUILabeledCheckbox::Invoke\n");
-	if (m_owningElement && m_owningElement->m_containersArray[m_index])
+	//if (m_owningElement && m_owningElement->m_containersArray[m_index])
 	{
-		CFieldWrapper* fieldData;
-		m_owningElement->fieldsArray.GetAt(m_index,fieldData);
+		//CFieldWrapper* fieldData;
+		//m_owningElement->fieldsArray.GetAt(m_index,fieldData);
 
 		bool bShouldUpdateString = false;
 
-		if (args == LCPD::CredentialFieldChangeKind_State)
+		if (args == LCPD::CredentialFieldChangeKind_SetString || args == LCPD::CredentialFieldChangeKind_SetCheckbox || args == LCPD::CredentialFieldChangeKind_State)
 		{
 			bool bOldVisibility = GetVisible();
-			m_owningElement->SetFieldVisibility(m_index,m_FieldInfo);
-			if (bOldVisibility != GetVisible())
+
+			LCPD::CredentialFieldKind kind = LCPD::CredentialFieldKind_StaticText;
+			if (m_FieldInfo.Get() != nullptr)
+				RETURN_IF_FAILED(m_FieldInfo->get_Kind(&kind));
+
+			BOOLEAN bIsVisibleInDeselectedTile = TRUE;
+			BOOLEAN bIsVisibleInSelectedTile = TRUE;
+			BOOLEAN isHidden = FALSE;
+
+			if (m_FieldInfo.Get() != nullptr)
+			{
+				RETURN_IF_FAILED(m_FieldInfo->get_IsVisibleInDeselectedTile(&bIsVisibleInDeselectedTile));
+				RETURN_IF_FAILED(m_FieldInfo->get_IsVisibleInSelectedTile(&bIsVisibleInSelectedTile));
+				RETURN_IF_FAILED(m_FieldInfo->get_IsHidden(&isHidden));
+			}
+
+			if (m_FieldInfo.Get() != nullptr)
+			{
+				LOG_HR_MSG(E_FAIL, "CDUILabeledCheckbox::SetFieldVisibility isHidden %i",isHidden ? 1 : 0);
+				LOG_HR_MSG(E_FAIL, "CDUILabeledCheckbox::SetFieldVisibility bIsVisibleInSelectedTile %i",bIsVisibleInSelectedTile ? 1 : 0);
+			}
+
+			//isVisible = true;
+			bool isVisible = !isHidden && bIsVisibleInSelectedTile != 0;
+
+			if (isVisible != bOldVisibility)
+			{
+				SetLayoutPos(isVisible ? DirectUI::LP_Auto : DirectUI::LP_None);
+				SetVisible(isVisible);
+			}
+
+			if (isVisible != bOldVisibility || args != LCPD::CredentialFieldChangeKind_State)
 				bShouldUpdateString = true;
-		}
-		else if (args == LCPD::CredentialFieldChangeKind_SetString || args == LCPD::CredentialFieldChangeKind_SetCheckbox)
-		{
-			//m_owningElement->SetFieldVisibility(m_owningElement->m_containersArray[m_index],fieldData);
-			bShouldUpdateString = true;
 		}
 		if (bShouldUpdateString)
 		{

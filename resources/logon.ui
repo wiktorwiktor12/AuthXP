@@ -34,6 +34,9 @@
 						<button fontstyle="underline"/>
 					</if>
 				</if>
+				<if class="StaticText">
+                	<AdvisableButton font="9;normal;shadow;Segoe UI" shadowintensity="75" contentalign="middleleft"/>
+                </if>
 			</style>
 			
 			<style resid="CommandLinks">
@@ -455,7 +458,7 @@
 // Edit Control
 //
 	<element resid="editcontrol" layout="borderlayout()" layoutpos="bottom">
-		<RestrictedEdit id="atom(password)" layoutpos="left" width="163rp" />
+		<RestrictedEdit id="atom(password)" class="PasswordEdit" layoutpos="left" width="163rp" />
 		<element id="atom(keyboard)" layoutpos="left" />
 		<button id="atom(go)" layoutpos="left" accessible="true" accRole="43" accName=PROP(resstr(IDS_ACDSC_PWD)) />
 		<button id="atom(info)" layoutpos="left" accessible="true" accRole="43" accName=PROP(resstr(IDS_PASSWORDHINTTITLE)) />
@@ -474,6 +477,14 @@
 // Commandlink Control
 //
 	<AdvisableButton resid="commandlinkcontrol" layout="flowlayout(0,2,0,2)" class="Link" id="atom(CommandLink)" sheet="CommandlinkStyle" layoutpos="bottom">
+		<element id="atom(ForceHeight)" width="0rp" height="30rp"/>
+	</AdvisableButton>
+
+//
+// Static Text Control
+//
+
+	<AdvisableButton resid="statictextcontrol" layout="flowlayout(0,2,0,2)" class="StaticText" id="atom(Text)" sheet="CommandlinkStyle" layoutpos="bottom">
 		<element id="atom(ForceHeight)" width="0rp" height="30rp"/>
 	</AdvisableButton>
 

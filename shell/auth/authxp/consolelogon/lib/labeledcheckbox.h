@@ -45,8 +45,8 @@ public:
 	DirectUI::Value* m_uncheckedBackgroundFill;
 	BOOL m_isChecked;
 
-	int m_index;
-	class CDUIUserTileElement* m_owningElement;
+	//int m_index;
+	//class CDUIUserTileElement* m_owningElement;
 
 private:
 	EventRegistrationToken m_token;

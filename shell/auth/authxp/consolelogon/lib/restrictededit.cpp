@@ -2,6 +2,7 @@
 #include "restrictededit.h"
 #include <windowsx.h>
 
+#include "logonaccount.h"
 #include "usertileelement.h"
 
 static BYTE _uidCDUIRestrictedEditCapsLockWarning = 0;
@@ -216,9 +217,9 @@ void CDUIRestrictedEdit::OnInput(DirectUI::InputEvent* inputEvent)
 		if (keyboardEvent->nCode == DirectUI::GMOUSE_UP)
 		{
 			keyboardEvent->fHandled = keyboardEvent->ch == VK_RETURN;
-			if (keyboardEvent->ch == VK_RETURN && m_owningElement->m_dataSourceCredential.Get())
+			if (keyboardEvent->ch == VK_RETURN && m_owningElement->_tileData.Get())
 			{
-				if (m_owningElement->m_containersArray[m_index]->m_SubmitButton)
+				/*if (m_owningElement->m_containersArray[m_index]->m_SubmitButton)
 					LOG_IF_FAILED(m_owningElement->m_dataSourceCredential->Submit());
 				else
 				{
@@ -243,7 +244,7 @@ void CDUIRestrictedEdit::OnInput(DirectUI::InputEvent* inputEvent)
 						if (nextEdit)
 							nextEdit->SetKeyFocus();
 					}
-				}
+				}*/
 			}
 
 			return;
@@ -301,11 +302,9 @@ void CDUIRestrictedEdit::OnDestroy()
 HRESULT CDUIRestrictedEdit::Invoke(LCPD::ICredentialField* sender, LCPD::CredentialFieldChangeKind args)
 {
 	LOG_HR_MSG(E_FAIL,"CDUIRestrictedEdit::Invoke\n");
-	if (m_owningElement && m_owningElement->m_containersArray[m_index] && args == LCPD::CredentialFieldChangeKind_State)
+	if (m_owningElement&& args == LCPD::CredentialFieldChangeKind_State)
 	{
-		CFieldWrapper* fieldData;
-		m_owningElement->fieldsArray.GetAt(m_index,fieldData);
-		m_owningElement->SetFieldVisibility(m_index,m_fieldData);
+		m_owningElement->SetFieldInitialVisibility(m_fieldData,GetParent());
 		//m_owningElement->SetFieldInitialVisibility(m_owningElement->m_containersArray[m_index],fieldData);
 		LOG_HR_MSG(E_FAIL,"CDUIRestrictedEdit::Invoke SetFieldVisibility\n");
 	}

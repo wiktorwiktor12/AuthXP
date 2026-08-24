@@ -194,15 +194,16 @@ public:
     void HideUndockButton() { _pbUndock->SetVisible(false); }
     void ShowUndockButton() { _pbUndock->SetVisible(true); }
     void SetUndockButtonLabel(LPCWSTR psz) { Element* pe = _pbUndock->FindDescendent(DirectUI::StrToID(L"label")); if (pe) pe->SetContentString(psz); }
-    void SetStatus(LPCWSTR psz) { if (psz) { _peHelp->SetContentString(psz); } }
+    void SetStatus(LPCWSTR psz);
     void SetTitle(UINT uRCID);
     void SetTitle(LPCWSTR pszTitle);
     void SetButtonLabels();
     //HRESULT AddAccount(LPCWSTR pszPicture, BOOL fPicRes, LPCWSTR pszName, LPCWSTR pszUsername, LPCWSTR pszHint, BOOL fPwdNeeded, BOOL fLoggedOn, OUT LogonAccount** ppla);
-    HRESULT AddAccountFromTile(const Microsoft::WRL::ComPtr<LCPD::IUser>& tileData, OUT LogonAccount** ppla);
+    HRESULT AddAccountFromTile(const Microsoft::WRL::ComPtr<LCPD::ICredential>& tileData, const Microsoft::WRL::ComPtr<LCPD::IUser>& user, OUT LogonAccount** ppla);
     DirectUI::NativeHWNDHost* GetNativeHost() { return _pnhh; }
     void SetNativeHost(DirectUI::NativeHWNDHost* pnhh) { _pnhh = pnhh; }
     void UpdateUserStatus(BOOL fRefreshAll = false);
+    LogonAccount* FindUserByCred(Microsoft::WRL::ComPtr<LCPD::ICredential>& cred);
     LogonAccount* FindNamedUser(LPCWSTR pszUsername);
     void SelectUser(LPCWSTR pszUsername);
     void ResetUserList();

@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "logonframe.h"
 
+#include <algorithm>
 #include <cassert>
+#include <string>
 #include <WtsApi32.h>
 #include <uxtheme.h>
 
@@ -1246,6 +1248,56 @@ LPCWSTR LoadResString(UINT nID)
 	return szRes;
 }
 
+void LogonFrame::EnterPreStatusMode(BOOL fLock)
+{
+	if (IsPreStatusLock())
+	{
+		assert(!fLock, "Receiving a lock while already within pre-Status lock");
+		return;
+	}
+
+	if (fLock)
+	{
+		LogonAccount* pAccount;
+		// Entering pre-Status mode with "lock", cannot exit to logon state without an unlock
+		_fPreStatusLock = TRUE;
+		pAccount = static_cast<LogonAccount*>(_peAccountList->GetSelection());
+		if (pAccount != NULL)
+		{
+			lstrcpynW(szLastSelectedName, pAccount->GetUsername(), ARRAYSIZE(szLastSelectedName));
+		}
+	}
+
+	if (GetState() == LAS_Hide)
+	{
+		_pnhh->ShowWindow(SW_SHOW);
+		SetWindowPos(_pnhh->GetHWND(), NULL, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), SWP_NOMOVE | SWP_NOZORDER);
+
+	}
+	DWORD cookie;
+	StartDefer(&cookie);
+
+	SetKeyFocus();  // Removes selection
+
+	HidePowerButton();
+	HideUndockButton();
+	ShowLogoArea();
+	HideWelcomeArea();
+	HideAccountPanel();
+
+	Element* pe;
+	pe = FindDescendent(DirectUI::StrToID(L"instruct"));
+	assert(pe);
+	pe->SetVisible(FALSE);
+
+	SetStatus(LoadResString(IDS_WINDOWSNAME));
+
+	EndDefer(cookie);
+
+	// Set state
+	SetState(LAS_PreStatus);
+}
+
 void LogonFrame::EnterLogonMode(BOOL fUnLock)
 {
     // If currently locked, ignore call if not to unlock
@@ -1261,7 +1313,7 @@ void LogonFrame::EnterLogonMode(BOOL fUnLock)
     }
     else
     {
-        assert(!fUnLock, "Receiving an unlock while not within pre-Status lock");
+        //assert(!fUnLock, "Receiving an unlock while not within pre-Status lock");
     }
 
     assert(GetState() != LAS_Hide, "Cannot enter logon state from hidden state");
@@ -1309,10 +1361,14 @@ void LogonFrame::EnterLogonMode(BOOL fUnLock)
     }
 
     //TODO:
-    BuildAccountList(this, &plaAutoSelect);
+    //BuildAccountList(this, &plaAutoSelect);
 
     DirectUI::StyledScrollViewer* secOpts = (DirectUI::StyledScrollViewer*)FindDescendent(DirectUI::StrToID(L"SecurityOptions"));
     secOpts->SetLayoutPos(DirectUI::LP_None);
+
+	FindDescendent(DirectUI::StrToID(L"scroller"))->SetVisible(TRUE);
+	FindDescendent(DirectUI::StrToID(L"scroller"))->SetLayoutPos(DirectUI::BLP_Left);
+	FindDescendent(DirectUI::StrToID(L"accountlist"))->SetLayoutPos(DirectUI::LP_Auto);
 
     if (szLastSelectedName[0] != L'\0')
     {
@@ -1343,6 +1399,9 @@ void LogonFrame::EnterLogonMode(BOOL fUnLock)
         HideUndockButton();
     }
 
+	ShowLogoArea();
+	HideWelcomeArea();
+
     pe = FindDescendent(DirectUI::StrToID(L"instruct"));
     assert(pe);
     pe->SetVisible(TRUE);
@@ -1371,11 +1430,11 @@ void LogonFrame::EnterLogonMode(BOOL fUnLock)
     SetState(LAS_Logon);
 
     // Set auto-select item, if exists
-    if (plaAutoSelect)
-    {
-        plaAutoSelect->SetKeyFocus();
-        _peAccountList->SetSelection(plaAutoSelect);
-    }
+    //if (plaAutoSelect)
+    //{
+    //    plaAutoSelect->SetKeyFocus();
+    //    _peAccountList->SetSelection(plaAutoSelect);
+    //}
 
     SetButtonLabels();
     SetForegroundWindow(_pnhh->GetHWND());
@@ -1537,6 +1596,7 @@ HRESULT LogonFrame::ShowLockedScreen()
 		return HRESULTFromLastErrorError();
 
 	SetStatus(content);
+	HideAccountPanel();
 }
 
 void LogonFrame::DisplayLogonDialog(LPCWSTR messageCaptionContent, LPCWSTR messageContent, WORD flags)
@@ -1552,7 +1612,7 @@ LRESULT LogonFrame::InteractiveLogonRequest(LPCWSTR pszUsername, LPCWSTR pszPass
 
     if (pla)
     {
-        if (pla->OnAuthenticateUser(pszPassword))
+        if (pla->OnAuthenticateUser())
         {
             lResult = ERROR_SUCCESS;
         }
@@ -1809,6 +1869,35 @@ void LogonFrame::UpdateUserStatus(BOOL fRefreshAll)
     fUpdating = false;
 }
 
+LogonAccount* LogonFrame::FindUserByCred(Microsoft::WRL::ComPtr<LCPD::ICredential>& cred)
+{
+	LogonAccount* plaResult = NULL;
+	DirectUI::Value* pvChildren;
+
+	auto peList = _peAccountList->GetChildren(&pvChildren);
+	if (peList)
+	{
+		for (UINT i = 0; i < peList->GetSize(); i++)
+		{
+			assert(peList->GetItem(i)->GetClassInfo() == LogonAccount::Class, "Account list must contain LogonAccount objects");
+
+			LogonAccount* pla = (LogonAccount*)peList->GetItem(i);
+
+			if (pla)
+			{
+				if (pla->_tileData == cred)
+				{
+					plaResult = pla;
+					break;
+				}
+			}
+		}
+	}
+
+	pvChildren->Release();
+	return plaResult;
+}
+
 LogonAccount* LogonFrame::FindNamedUser(LPCWSTR pszUsername)
 {
     // Early out if:    no user list available
@@ -1953,6 +2042,22 @@ HRESULT LogonFrame::Register()
     return DirectUI::ClassInfo<LogonFrame, HWNDElement, DirectUI::EmptyCreator<LogonFrame>>::Register(L"LogonFrame", NULL, 0);
 }
 
+void LogonFrame::SetStatus(LPCWSTR psz)
+{
+	if (psz)
+	{
+		_peHelp->SetContentString(psz);
+
+		//we can make the welcome text change, but it prob should stay always as welcome like xp
+		/*std::wstring lowerString = psz;
+		std::transform(lowerString.begin(), lowerString.end(), lowerString.begin(),
+			  ::tolower);
+
+		_peMsgArea->FindDescendent(DirectUI::StrToID(L"welcome"))->SetContentString(lowerString.c_str());
+		_peMsgArea->FindDescendent(DirectUI::StrToID(L"welcomeshadow"))->SetContentString(lowerString.c_str());*/
+	}
+}
+
 void LogonFrame::SetTitle(UINT uRCID)
 {
     WCHAR sz[1024];
@@ -2022,12 +2127,15 @@ void LogonFrame::SetButtonLabels()
 }
 
 //TODO: IMPL
-HRESULT LogonFrame::AddAccountFromTile(const Microsoft::WRL::ComPtr<LCPD::IUser>& tileData, OUT LogonAccount** ppla)
+HRESULT LogonFrame::AddAccountFromTile(const Microsoft::WRL::ComPtr<LCPD::ICredential>& tileData, const Microsoft::WRL::ComPtr<LCPD::IUser>& user, OUT LogonAccount** ppla)
 {
-	*ppla = NULL;
-	return E_NOTIMPL;
-    /*HRESULT hr;
+	//*ppla = NULL;
+	//return E_NOTIMPL;
+    HRESULT hr;
     LogonAccount* pla = NULL;
+	Wrappers::HString userName;
+	BOOLEAN isLoggedOn = FALSE;
+	Wrappers::HString hint;
 
     if (!_pParser)
     {
@@ -2040,10 +2148,28 @@ HRESULT LogonFrame::AddAccountFromTile(const Microsoft::WRL::ComPtr<LCPD::IUser>
     if (FAILED(hr))
         goto Failure;
 
-    pla->_tileData = *tileData;
+	//LOG_HR_MSG(E_FAIL,"user %p",user.Get());
+
+	if (user)
+	{
+		RETURN_IF_FAILED(user->get_DisplayName(userName.ReleaseAndGetAddressOf()));
+
+		RETURN_IF_FAILED(user->get_IsLoggedIn(&isLoggedOn));
+	}
+	else
+	{
+		RETURN_IF_FAILED(tileData->get_LogoLabel(userName.ReleaseAndGetAddressOf()));
+	}
+
+	//TODO: figure out a way to retrieve the password hint nicely, a hacky way to do it would be to find the credentialfield with it, but a way to find it no matter the display language would be needed
+
+	hint.Set(L"");
+
+    pla->_tileData = tileData;
+    pla->_pUser = user;
 
     pla->_pParser = _pParser;
-    hr = pla->OnTreeReady(tileData->picture.c_str(), false, tileData->username.c_str(), tileData->username.c_str(), tileData->hint.c_str(), tileData->fPwdNeeded, tileData->fLoggedOn, GetHInstance());
+    hr = pla->OnTreeReady(false, userName.GetRawBuffer(0), userName.GetRawBuffer(0), hint.GetRawBuffer(0), TRUE, isLoggedOn, GetHInstance());
     if (FAILED(hr))
         goto Failure;
 
@@ -2054,7 +2180,7 @@ HRESULT LogonFrame::AddAccountFromTile(const Microsoft::WRL::ComPtr<LCPD::IUser>
 
     if (pla)
     {
-        SetElementAccessability(pla, true, ROLE_SYSTEM_LISTITEM, tileData->username.c_str());
+        SetElementAccessability(pla, true, ROLE_SYSTEM_LISTITEM, userName.GetRawBuffer(0));
     }
 
     if (_nColorDepth <= 8)
@@ -2077,7 +2203,7 @@ HRESULT LogonFrame::AddAccountFromTile(const Microsoft::WRL::ComPtr<LCPD::IUser>
 
 Failure:
 
-    return hr;*/
+    return hr;
 }
 
 //HRESULT LogonFrame::AddAccount(LPCWSTR pszPicture, BOOL fPicRes, LPCWSTR pszName, LPCWSTR pszUsername, LPCWSTR pszHint,
@@ -2205,10 +2331,35 @@ void LogonFrame::OnEvent(DirectUI::Event* pEvent)
     		else
     		{
     			HWNDElement::OnEvent(pEvent);
+    			return;
     		}
 
     		//if (m_bIsInEmergencyRestartDialog == false)
     			OnSecurityOptionSelected(options);
+    	}
+    	if (pEvent->uidType == DirectUI::Button::Click() && pEvent->nStage == DirectUI::GMF_BUBBLED)
+    	{
+    		if (IsElementOfClass(pEvent->peTarget,L"LogonAccount"))
+    		{
+    			LogonAccount* tile = static_cast<LogonAccount*>(pEvent->peTarget);
+    			if (tile->_tileData.Get())
+    			{
+    				ComPtr<IInspectable> inspectable;
+    				LOG_IF_FAILED(tile->_tileData.As(&inspectable));
+    				//m_consoleUIManager->m_credProvDataModel->put_SelectedUserOrV1Credential(tile->m_dataSourceUser.Get());
+    				m_consoleUIManager->m_credProvDataModel->put_SelectedUserOrV1Credential(tile->_pUser.Get() ? tile->_pUser.Get() : inspectable.Get());
+    				LOG_HR_MSG(E_FAIL,"PUTTING THING");
+    				//HRESULT hr = BeginInvoke(m_consoleUIManager->m_Dispatcher.Get(), [=]() -> void
+    				//{
+    				//	UNREFERENCED_PARAMETER(this);
+    				//	thisRef->m_credProvDataModel->put_SelectedUserOrV1Credential(tile->m_dataSourceCredential.Get());
+    				//});
+    			}
+    			else
+    			{
+    				LOG_HR_MSG(E_FAIL,"TILE HAD NO CREDENTIAL DATASOURCE");
+    			}
+    		}
     	}
     }
 
@@ -2393,9 +2544,73 @@ HRESULT LogonFrame::OnLogUserOn(LogonAccount* pla)
     return S_OK;
 }
 
+typedef enum _SHUTDOWNSTYLE
+{
+	SDS_USER = 0,
+	SDS_WIN95,
+	SDS_WIN98,
+	SDS_WINME,
+	SDS_WIN2K,
+	SDS_WINXP,
+	SDS_WINXP_GINA,
+	SDS_WIN03_GINA,
+	SDS_COUNT
+} SHUTDOWNSTYLE;
+
+/**
+  * LOS_USER is passed to DisplayLogoffDialog to use the style from
+  * registry. It *can* be set in registry, and if it is, then the shutdown
+  * style will be mapped to one of these.
+  */
+typedef enum _LOGOFFSTYLE
+{
+	LOS_USER = 0,
+	LOS_WIN98,
+	LOS_WIN2K,
+	LOS_WINXP,
+	LOS_WINXP_GINA,
+	LOS_COUNT
+} LOGOFFSTYLE;
+
+typedef enum _SHUTDOWNTYPE
+{
+	SHTDN_NONE        = 0,
+	SHTDN_LOGOFF      = (1 << 0),
+	SHTDN_SHUTDOWN    = (1 << 1),
+	SHTDN_RESTART     = (1 << 2),
+	SHTDN_RESTART_DOS = (1 << 3),
+	SHTDN_SLEEP       = (1 << 4),
+	SHTDN_HIBERNATE   = (1 << 5),
+	SHTDN_DISCONNECT  = (1 << 6),
+	SHTDN_ALL         = SHTDN_LOGOFF | SHTDN_SHUTDOWN | SHTDN_RESTART |
+						SHTDN_RESTART_DOS |SHTDN_SLEEP | SHTDN_HIBERNATE |
+						SHTDN_DISCONNECT
+} SHUTDOWNTYPE;
+
+/* Options for Windows 2000, XP GINA, and Server 2003 GINA styled shutdown dialogs. */
+typedef struct _SHUTDOWNOPTIONS
+{
+	HBITMAP  hbmBrand;
+	HBITMAP  hbmBar;
+	BOOL     fSolidBanner;
+	COLORREF crBanner;
+} SHUTDOWNOPTIONS, *PSHUTDOWNOPTIONS;
+
 HRESULT LogonFrame::OnPower()
 {
     //TODO
+
+	/*static auto ClassicShutdownDll = LoadLibrary(TEXT("ClassicShutdown.dll"));
+
+	if (!ClassicShutdownDll)
+		return S_OK;
+
+	HRESULT(*DisplayShutdownDialog)(HWND,SHUTDOWNSTYLE,SHUTDOWNTYPE,PSHUTDOWNOPTIONS) = (decltype(DisplayShutdownDialog))(GetProcAddress(ClassicShutdownDll, "DisplayShutdownDialog"));
+	if (!DisplayShutdownDialog)
+		return E_FAIL;
+
+	DisplayShutdownDialog(0,SDS_WINXP,SHTDN_NONE,NULL);*/
+
     return S_OK;
 }
 

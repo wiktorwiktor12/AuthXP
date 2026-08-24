@@ -4,7 +4,7 @@
 #include "DirectUI/DirectUI.h"
 #include "usertileelement.h"
 
-class UserList : public DirectUI::Element
+/*class UserList : public DirectUI::Element
 {
 public:
 
@@ -43,4 +43,4 @@ public:
 	bool m_bIsActive;
 
 	friend class CLogonFrame7;
-};
+};*/

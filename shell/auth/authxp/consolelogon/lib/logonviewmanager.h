@@ -164,4 +164,5 @@ private:
 	Microsoft::WRL::ComPtr<IInputSwitchControl> m_inputSwitchControl;
 
 	friend class CLogonFrame7;
+	friend class LogonFrame;
 };

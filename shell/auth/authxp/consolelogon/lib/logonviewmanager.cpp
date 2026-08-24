@@ -6,6 +6,7 @@
 #include <WtsApi32.h>
 
 #include "EventDispatcher.h"
+#include "logonaccount.h"
 #include "optionaldependencyprovider.h"
 #include "logonframe.h"
 #include "logonguids.h"
@@ -907,13 +908,15 @@ HRESULT LogonViewManager::ShowCredentialView()
 	//if (m_unlockTrigger.Get())
 	//	m_unlockTrigger->TriggerUnlock();
 
-	auto zoomedTile = CLogonFrame7::GetSingleton()->m_LogonUserList->GetZoomedTile();
-	if (zoomedTile)
-	{
-		CLogonFrame7::GetSingleton()->m_LogonUserList->UnzoomList(zoomedTile);
-	}
-
-	CLogonFrame7::GetSingleton()->m_LogonUserList->DestroyAllTiles();
+	//auto zoomedTile = CLogonFrame7::GetSingleton()->m_LogonUserList->GetZoomedTile();
+	//if (zoomedTile)
+	//{
+	//	CLogonFrame7::GetSingleton()->m_LogonUserList->UnzoomList(zoomedTile);
+	//}
+//
+	//CLogonFrame7::GetSingleton()->m_LogonUserList->DestroyAllTiles();
+	g_plf->EnterLogonMode(true);
+	g_plf->ResetUserList();
 
 	//if (!GetSystemMetrics(SM_REMOTESESSION) && m_currentReason == LC::LogonUIRequestReason_LogonUIUnlock)
 	//{
@@ -956,7 +959,8 @@ HRESULT LogonViewManager::ShowCredentialView()
 			RETURN_IF_FAILED(m_selectedCredential->get_LogoLabel(label.ReleaseAndGetAddressOf()));
 
 			LOG_HR_MSG(E_FAIL,"added credential %s\n", label.GetRawBuffer(nullptr));
-			CLogonFrame7::GetSingleton()->m_LogonUserList->AddTileFromData(m_selectedCredential,nullptr,label);
+			g_plf->AddAccountFromTile(m_selectedCredential,nullptr,NULL);
+			//CLogonFrame7::GetSingleton()->m_LogonUserList->AddTileFromData(m_selectedCredential,nullptr,label);
 
 			continue;
 		}
@@ -1005,14 +1009,16 @@ HRESULT LogonViewManager::ShowCredentialView()
 		RETURN_HR_IF_NULL_MSG(E_FAIL,m_selectedCredential.Get(),"FAILED TO GET CREDENTIAL FOR USER");
 
 		LOG_HR_MSG(E_FAIL,"selected Cred for %s\n", userName.GetRawBuffer(nullptr));
-		CLogonFrame7::GetSingleton()->m_LogonUserList->AddTileFromData(m_selectedCredential,user,userName);
+		//CLogonFrame7::GetSingleton()->m_LogonUserList->AddTileFromData(m_selectedCredential,user,userName);
+		g_plf->AddAccountFromTile(m_selectedCredential,user,NULL);
 
 	}
 
 	ComPtr<IInspectable> selectedUserOrCred;
 	RETURN_IF_FAILED(m_credProvDataModel->get_SelectedUserOrV1Credential(&selectedUserOrCred));
 
-	CLogonFrame7::GetSingleton()->SwitchToUserList(CLogonFrame7::GetSingleton()->m_LogonUserList);
+	//CLogonFrame7::GetSingleton()->SwitchToUserList(CLogonFrame7::GetSingleton()->m_LogonUserList);
+	g_plf->SetUserListAvailable(TRUE);
 
 	if (selectedUserOrCred.Get())
 	{
@@ -1062,11 +1068,17 @@ HRESULT LogonViewManager::ShowCredentialView()
 
 		LOG_HR_MSG(E_FAIL,"there is a selectedUserOrCred %s , we should zoom it!\n", userName.GetRawBuffer(nullptr));
 
-		auto tileToZoom = CLogonFrame7::GetSingleton()->m_LogonUserList->FindTileByCredential(m_selectedCredential);
+		//auto tileToZoom = CLogonFrame7::GetSingleton()->m_LogonUserList->FindTileByCredential(m_selectedCredential);
+		auto userToSelect = g_plf->FindUserByCred(m_selectedCredential);
 
-		RETURN_HR_IF_NULL_MSG(E_FAIL,tileToZoom,"FAILED TO FIND TILE FOR SELECTEDCREDENTIAL");
+		RETURN_HR_IF_NULL_MSG(E_FAIL,userToSelect,"FAILED TO FIND userToSelect FOR SELECTEDCREDENTIAL");
 
-		CLogonFrame7::GetSingleton()->m_LogonUserList->ZoomTile(tileToZoom);
+		//CLogonFrame7::GetSingleton()->m_LogonUserList->ZoomTile(tileToZoom);
+		if (userToSelect)
+		{
+			userToSelect->SetKeyFocus();
+			g_plf->_peAccountList->SetSelection(userToSelect);
+		}
 
 		ComPtr<LCPD::IOptionalDependencyProvider> optionalDependencyProvider;
 		RETURN_IF_FAILED(MakeAndInitialize<OptionalDependencyProvider>(&optionalDependencyProvider, m_currentReason, m_autoLogonManager.Get(), m_userSettingManager.Get(), m_displayStateProvider.Get())); // 1084
@@ -1097,7 +1109,8 @@ HRESULT LogonViewManager::ShowCredentialView()
 
 HRESULT LogonViewManager::ShowStatusView(HSTRING status)
 {
-	CLogonFrame7::GetSingleton()->ShowStatusMessage(WindowsGetStringRawBuffer(status, nullptr));
+	//CLogonFrame7::GetSingleton()->ShowStatusMessage(WindowsGetStringRawBuffer(status, nullptr));
+	g_plf->SetStatus(WindowsGetStringRawBuffer(status, nullptr));
 
 	m_currentViewType = LogonView::Status;
 	return S_OK;
@@ -1107,7 +1120,16 @@ HRESULT LogonViewManager::ShowMessageView(
 	HSTRING caption, HSTRING message, UINT messageBoxFlags,
 	WI::AsyncDeferral<WI::CMarshaledInterfaceResult<LC::IMessageDisplayResult>> completion)
 {
-	CLogonFrame7::GetSingleton()->DisplayLogonDialog(WindowsGetStringRawBuffer(caption,nullptr),WindowsGetStringRawBuffer(message,nullptr),messageBoxFlags,completion);
+	auto m_MessageDisplayResultCompletion = wil::make_unique_nothrow<WI::AsyncDeferral<WI::CMarshaledInterfaceResult<LC::IMessageDisplayResult>>>(completion);
+	ComPtr<LC::IMessageDisplayResultFactory> factory;
+	RETURN_IF_FAILED(WF::GetActivationFactory(
+		Wrappers::HStringReference(RuntimeClass_Windows_Internal_UI_Logon_Controller_MessageDisplayResult).Get(), &factory));
+	ComPtr<LC::IMessageDisplayResult> messageResult;
+	RETURN_IF_FAILED(factory->CreateMessageDisplayResult(1, &messageResult));
+	RETURN_IF_FAILED(m_MessageDisplayResultCompletion->GetResult().Set(messageResult.Get()));
+	m_MessageDisplayResultCompletion->Complete(S_OK);
+	m_MessageDisplayResultCompletion.reset();
+	//CLogonFrame7::GetSingleton()->DisplayLogonDialog(WindowsGetStringRawBuffer(caption,nullptr),WindowsGetStringRawBuffer(message,nullptr),messageBoxFlags,completion);
 
 	m_currentViewType = LogonView::Message;
 	return S_OK;
@@ -1115,7 +1137,7 @@ HRESULT LogonViewManager::ShowMessageView(
 
 HRESULT LogonViewManager::ShowSerializationFailedView(HSTRING caption, HSTRING message)
 {
-	CLogonFrame7::GetSingleton()->DisplayLogonDialog(WindowsGetStringRawBuffer(caption,nullptr),WindowsGetStringRawBuffer(message,nullptr),16 | (int)MessageOptionFlag::Ok);
+	//CLogonFrame7::GetSingleton()->DisplayLogonDialog(WindowsGetStringRawBuffer(caption,nullptr),WindowsGetStringRawBuffer(message,nullptr),16 | (int)MessageOptionFlag::Ok);
 
 	m_currentViewType = LogonView::SerializationFailed;
 	return S_OK;

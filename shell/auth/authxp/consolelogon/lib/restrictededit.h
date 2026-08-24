@@ -55,8 +55,8 @@ public:
 	bool m_bIsCapslockPressed;
 
 	Microsoft::WRL::ComPtr<LCPD::ICredentialField> m_fieldData;
-	int m_index;
-	class CDUIUserTileElement* m_owningElement;
+	//int m_index;
+	class LogonAccount* m_owningElement;
 
 	static UID s_CapsLockWarning;
 

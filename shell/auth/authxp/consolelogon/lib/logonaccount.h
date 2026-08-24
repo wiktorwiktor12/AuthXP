@@ -17,16 +17,17 @@ public:
 
     // Account Callbacks
     void OnAuthenticatedUser();
-    BOOL OnAuthenticateUser(LPCWSTR pszInPassword = NULL);
+    BOOL OnAuthenticateUser();
     void OnHintSelect();
     void OnStatusSelect(UINT nLine);
-    HRESULT OnTreeReady(LPCWSTR pszPicture, BOOL fPicRes, LPCWSTR pszName, LPCWSTR pszUsername, LPCWSTR pszHint, BOOL fPwdNeeded, BOOL fLoggedOn, HINSTANCE hInst);
+    HRESULT OnTreeReady(BOOL fPicRes, LPCWSTR pszName, LPCWSTR pszUsername, LPCWSTR pszHint, BOOL fPwdNeeded, BOOL fLoggedOn, HINSTANCE hInst);
 
     // Operations
     void InitCredPanel(Element* pePwdPanel, DirectUI::Edit* pePwdEdit, Button* pbPwdInfo, Element* peKbdIcon) { _pePwdPanel = pePwdPanel; _pePwdEdit = pePwdEdit; _pbPwdInfo = pbPwdInfo; _peKbdIcon = peKbdIcon; }
     HRESULT CreateCredPanelElements();
     HRESULT CreateField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement);
     HRESULT _CreateCommandLinkField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement);
+    HRESULT _CreateStaticTextField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement);
     HRESULT _CreateEditField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement);
     HRESULT _CreateCheckboxField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement);
     HRESULT _CreateComboBoxField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement);
@@ -101,11 +102,12 @@ public:
     DirectUI::Value* _pvHint;
     BOOL _fPwdNeeded;
     BOOL _fLoggedOn;
-    BOOL _fHasPwdPanel;
+    BOOL _fIsShowingPwdPanel;
     DWORD _dwUnreadMail;
     DWORD _dwRunningApps;
 
     DirectUI::DUIXmlParser* _pParser = nullptr;
 
     Microsoft::WRL::ComPtr<LCPD::ICredential> _tileData;
+	Microsoft::WRL::ComPtr<LCPD::IUser> _pUser;
 };

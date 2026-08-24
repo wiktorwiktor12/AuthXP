@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "advisablebutton.h"
 
+#include "logonaccount.h"
 #include "usertileelement.h"
 
 CAdvisableButton::CAdvisableButton() : m_index(-1)
@@ -86,17 +87,15 @@ void CAdvisableButton::OnEvent(DirectUI::Event* pEvent)
 HRESULT CAdvisableButton::Invoke(LCPD::ICredentialField* sender, LCPD::CredentialFieldChangeKind args)
 {
 	LOG_HR_MSG(E_FAIL,"CAdvisableButton::Invoke\n");
-	if (m_owningElement && m_owningElement->m_containersArray[m_index])
+	if (m_owningElement)
 	{
-		CFieldWrapper* fieldData;
-		m_owningElement->fieldsArray.GetAt(m_index,fieldData);
 
 		bool bShouldUpdateString = false;
 
 		if (args == LCPD::CredentialFieldChangeKind_State)
 		{
 			bool bOldVisibility = GetVisible();
-			m_owningElement->SetFieldVisibility(m_index,m_FieldInfo);
+			m_owningElement->SetFieldInitialVisibility(m_FieldInfo,this);
 			if (bOldVisibility != GetVisible())
 				bShouldUpdateString = true;
 		}

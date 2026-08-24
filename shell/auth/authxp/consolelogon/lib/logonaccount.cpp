@@ -9,6 +9,7 @@
 #include "logonframe.h"
 #include "duiutil.h"
 #include "labeledcheckbox.h"
+#include "logonguids.h"
 #include "restrictededit.h"
 
 void LogonAccount::SetKeyboardIcon(HICON hIcon)
@@ -84,7 +85,7 @@ HRESULT LogonAccount::Initialize(Element* pParent, DWORD* pdwDeferCookie)
     _pvHint = NULL;
     _fPwdNeeded = (BOOL)-1; // uninitialized
     _fLoggedOn = FALSE;
-    _fHasPwdPanel = FALSE;
+    _fIsShowingPwdPanel = FALSE;
 
     // Do base class initialization
     HRESULT hr = Button::Initialize(DirectUI::AEF_MouseAndKeyboard,pParent,pdwDeferCookie);
@@ -245,7 +246,7 @@ void LogonAccount::OnAuthenticatedUser()
     g_plf->EnterPostStatusMode();
 }
 
-BOOL LogonAccount::OnAuthenticateUser(LPCWSTR pszInPassword)
+BOOL LogonAccount::OnAuthenticateUser()
 {
     HRESULT hr;
     // Logon requested on this account
@@ -294,20 +295,20 @@ BOOL LogonAccount::OnAuthenticateUser(LPCWSTR pszInPassword)
     //        pobjUser->Release();
     //    }
     //}
-
-    if (vbLogonSucceeded == VARIANT_TRUE)
+	_tileData->Submit();
+    //if (vbLogonSucceeded == VARIANT_TRUE)
     {
         OnAuthenticatedUser();
     }
-    else
-    {
-        if (pszInPassword == NULL)
-        {
-            ShowPasswordIncorrectMessage();
-        }
-    }
-
-    return (vbLogonSucceeded == VARIANT_TRUE);
+    //else
+    //{
+    //    if (pszInPassword == NULL)
+    //    {
+    //        ShowPasswordIncorrectMessage();
+   //     }
+    //}
+	return TRUE;
+    //return (vbLogonSucceeded == VARIANT_TRUE);
 }
 
 void CalcBalloonTargetLocation(HWND hwndParent, DirectUI::Element* pe, POINT* ppt)
@@ -394,13 +395,26 @@ void LogonAccount::OnStatusSelect(UINT nLine)
 #define GRAPHIC_NineGridTransColor          ((BYTE)6)
 #define GRAPHIC_NineGridAlphaConstPerPix    ((BYTE)7)
 
-HRESULT LogonAccount::OnTreeReady(LPCWSTR pszPicture, BOOL fPicRes, LPCWSTR pszName, LPCWSTR pszUsername,
+HRESULT GetBitmapFromUserSID(CoTaskMemNativeString& SID, HBITMAP* outBitmap)
+{
+	Microsoft::WRL::ComPtr<IUserTileStore> tileStore;
+	RETURN_IF_FAILED(CoCreateInstance(CLSID_UserTileStore, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&tileStore)));
+
+	RETURN_IF_FAILED(tileStore->GetLargePicture(SID.Get(), outBitmap));
+
+	return S_OK;
+}
+
+HRESULT LogonAccount::OnTreeReady(BOOL fPicRes, LPCWSTR pszName, LPCWSTR pszUsername,
     LPCWSTR pszHint, BOOL fPwdNeeded, BOOL fLoggedOn, HINSTANCE hInst)
 {
     HRESULT hr;
     Element* pePicture = NULL;
     Element* peName = NULL;
     DirectUI::Value* pv = NULL;
+	HBITMAP bitmap = NULL;
+	Microsoft::WRL::Wrappers::HString sid;
+	CoTaskMemNativeString nativeSID;
 
     UNREFERENCED_PARAMETER(fPwdNeeded);
 
@@ -433,35 +447,17 @@ HRESULT LogonAccount::OnTreeReady(LPCWSTR pszPicture, BOOL fPicRes, LPCWSTR pszN
         goto Failure;
     }
 
-    // CreateGraphic handles NULL bitmaps
-    pv = DirectUI::Value::CreateGraphic(pszPicture, GRAPHIC_NoBlend, 0, 0, 0, (fPicRes) ? hInst : 0,false,false);
-    if (pv)
-    {
-        // Our preferred size is 1/2 inch (36pt) square.
-        USHORT cx = (USHORT)LogonFrame::PointToPixel(36);
-        USHORT cy = cx;
+	if (_pUser)
+	{
+		RETURN_IF_FAILED(_pUser->get_Sid(sid.ReleaseAndGetAddressOf()));
 
-        DirectUI::Graphic* pg = pv->GetGraphic();
+		nativeSID.Initialize(sid.GetRawBuffer(nullptr));
+		RETURN_IF_FAILED(GetBitmapFromUserSID(nativeSID, &bitmap));
 
-        // If it's not square, scale the smaller dimension
-        // to maintain the aspect ratio.
-        if (pg->cx > pg->cy)
-        {
-            cy = (USHORT)MulDiv(cx, pg->cy, pg->cx);
-        }
-        else if (pg->cy > pg->cx)
-        {
-            cx = (USHORT)MulDiv(cy, pg->cx, pg->cy);
-        }
+		pv = CreateGraphicFromHBITMAP(bitmap, (USHORT)LogonFrame::PointToPixel(36), (USHORT)LogonFrame::PointToPixel(36), GRAPHIC_NoBlend);
+	}
 
-        // Did anything change?
-        if (cx != pg->cx || cy != pg->cy)
-        {
-            // Reload the graphic
-            pv->Release();
-            pv = DirectUI::Value::CreateGraphic(pszPicture, GRAPHIC_NoBlend, 0, cx, cy, (fPicRes) ? hInst : 0,false,false);
-        }
-    }
+
     if (!pv)
     {
         // if we can't get the picture, use a default one
@@ -517,11 +513,16 @@ HRESULT LogonAccount::OnTreeReady(LPCWSTR pszPicture, BOOL fPicRes, LPCWSTR pszN
     _fLoggedOn = fLoggedOn;
 
     EndDefer(cookie);
+	if (bitmap)
+		DeleteObject(bitmap);
 
     return S_OK;
 
 
 Failure:
+
+	if (bitmap)
+		DeleteObject(bitmap);
 
     EndDefer(cookie);
 
@@ -550,10 +551,16 @@ HRESULT LogonAccount::CreateCredPanelElements()
     	Microsoft::WRL::ComPtr<LCPD::ICredentialField> field;
     	RETURN_IF_FAILED(fields->GetAt(i, &field));
 
-		DirectUI::Element* fieldElement = nullptr;
-        RETURN_IF_FAILED(CreateField(field, &fieldElement));
+    	BOOLEAN isVisibleInSelectedTile = FALSE;
+    	RETURN_IF_FAILED(field->get_IsVisibleInSelectedTile(&isVisibleInSelectedTile));
+    	if (!isVisibleInSelectedTile)
+    		continue;
 
-        pePwdPanel->Add(fieldElement);
+		DirectUI::Element* fieldElement = nullptr;
+        LOG_HR_IF_MSG(CreateField(field, &fieldElement),fieldElement==nullptr,"failed to create fieldelement, likely unsupported field");
+
+    	if (fieldElement)
+			pePwdPanel->Add(fieldElement);
     }
 
     // Cache password panel edit control
@@ -584,6 +591,9 @@ HRESULT LogonAccount::CreateField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>
     {
     case LCPD::CredentialFieldKind_CommandLink:
         return _CreateCommandLinkField(field, ppOutElement);
+
+    case LCPD::CredentialFieldKind_StaticText:
+    	return _CreateStaticTextField(field, ppOutElement);
 
     case LCPD::CredentialFieldKind_EditText:
         return _CreateEditField(field, ppOutElement);
@@ -621,11 +631,44 @@ HRESULT LogonAccount::_CreateCommandLinkField(Microsoft::WRL::ComPtr<LCPD::ICred
 
     RETURN_IF_FAILED(peCommandLinkControl->SetActive(3));
 
+	RETURN_IF_FAILED(peCommandLinkControl->Advise(field.Get()));
+
     *ppOutElement = peCommandLinkControl;
+	SetFieldInitialVisibility(field, peCommandLinkControl);
 
 	scopeExit.release();
 
     return S_OK;
+}
+
+HRESULT LogonAccount::_CreateStaticTextField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field,
+	DirectUI::Element** ppOutElement)
+{
+	CAdvisableButton* peStaticTextControl;
+	RETURN_IF_FAILED(_pParser->CreateElement(L"statictextcontrol", NULL, 0, 0, (DirectUI::Element**)&peStaticTextControl));
+	auto scopeExit = wil::scope_exit([&]() -> void {peStaticTextControl->Destroy(true);});
+
+	Microsoft::WRL::Wrappers::HString label;
+	RETURN_IF_FAILED(field->get_Label(label.ReleaseAndGetAddressOf()));
+
+	RETURN_IF_FAILED(peStaticTextControl->SetContentString(label.GetRawBuffer(NULL)));
+
+	RETURN_IF_FAILED(peStaticTextControl->SetAccessible(true));
+
+	RETURN_IF_FAILED(peStaticTextControl->SetAccRole(30));
+
+	RETURN_IF_FAILED(peStaticTextControl->SetAccName(label.GetRawBuffer(NULL)));
+
+	RETURN_IF_FAILED(peStaticTextControl->SetActive(3));
+
+	RETURN_IF_FAILED(peStaticTextControl->Advise(field.Get()));
+
+	*ppOutElement = peStaticTextControl;
+	SetFieldInitialVisibility(field, peStaticTextControl);
+
+	scopeExit.release();
+
+	return S_OK;
 }
 
 HRESULT LogonAccount::_CreateEditField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement)
@@ -667,6 +710,8 @@ HRESULT LogonAccount::_CreateEditField(Microsoft::WRL::ComPtr<LCPD::ICredentialF
     else
         (restrictedEdit->SetContentString(content.GetRawBuffer(NULL)));
 
+	RETURN_IF_FAILED(restrictedEdit->Advise(field.Get()));
+
 	*ppOutElement = peEditFieldContainer;
 
     SetFieldInitialVisibility(field, peEditFieldContainer);
@@ -695,10 +740,7 @@ HRESULT LogonAccount::_CreateCheckboxField(Microsoft::WRL::ComPtr<LCPD::ICredent
 
     RETURN_IF_FAILED(peCheckbox->SetAccName(label.GetRawBuffer(NULL)));
 
-    //peCheckbox->m_index = index;
-
-	//TODO: FIXME
-    //peCheckbox->m_owningElement = this;
+	RETURN_IF_FAILED(peCheckbox->Advise(field.Get()));
 
     scopeExit.release();
 
@@ -714,11 +756,6 @@ HRESULT LogonAccount::_CreateComboBoxField(Microsoft::WRL::ComPtr<LCPD::ICredent
     CDUIComboBox* comboBox;
     RETURN_IF_FAILED(CDUIComboBox::Create(nullptr, 0, (DirectUI::Element**)&comboBox));
     auto scopeExit = wil::scope_exit([&]() -> void {comboBox->Destroy(true);});
-
-
-	//TODO: FIXME
-	//comboBox->m_index = index;
-	//comboBox->m_owningElement = this;
 
 	RETURN_IF_FAILED(comboBox->Advise(field.Get()));
 
@@ -801,10 +838,10 @@ HRESULT LogonAccount::SetFieldVisibility(DirectUI::Element* fieldElement, bool b
     RETURN_IF_FAILED(fieldElement->SetVisible(bIsVisible));
 
     if (wasVisible && !bIsVisible)
-    RETURN_IF_FAILED(fieldElement->SetLayoutPos(DirectUI::LP_None));
+		RETURN_IF_FAILED(fieldElement->SetLayoutPos(DirectUI::LP_None));
 
     if (!wasVisible && bIsVisible)
-    RETURN_IF_FAILED(fieldElement->SetLayoutPos(DirectUI::LP_Auto));
+		RETURN_IF_FAILED(fieldElement->SetLayoutPos(DirectUI::LP_Auto));
 
     return S_OK;
 }
@@ -814,25 +851,29 @@ HRESULT LogonAccount::InsertCredPanel()
     HRESULT hr;
 
     // If already have it, or no password is available, or logon state is not pending
-    if (_fHasPwdPanel || IsPasswordBlank() || (GetLogonState() != LS_Pending))
+    if (_fIsShowingPwdPanel || IsPasswordBlank() || (GetLogonState() != LS_Pending))
         goto Done;
 
     DWORD cookie;
     StartDefer(&cookie);
 
-    CreateCredPanelElements();
-    // Add password panel
-    hr = FindDescendent(DirectUI::StrToID(TEXT("passwordpanelcontainer")))->Add(_pePwdPanel);
-    if (FAILED(hr))
-    {
-        EndDefer(cookie);
-        goto Failure;
-    }
+	if (!_pePwdPanel)
+	{
+		CreateCredPanelElements();
+		// Add password panel
+		hr = FindDescendent(DirectUI::StrToID(TEXT("passwordpanelcontainer")))->Add(_pePwdPanel);
+		if (FAILED(hr))
+		{
+			EndDefer(cookie);
+			goto Failure;
+		}
+	}
+
 
     if (_pePwdEdit)
         SetElementAccessability(_pePwdEdit, true, ROLE_SYSTEM_STATICTEXT, _pvUsername->GetString());
 
-    _fHasPwdPanel = TRUE;
+    _fIsShowingPwdPanel = TRUE;
 
 #ifdef GADGET_ENABLE_GDIPLUS
     // Ensure that the Edit control is visible
@@ -852,7 +893,8 @@ HRESULT LogonAccount::InsertCredPanel()
     // Hide status text (do not remove or insert)
     HideStatus(0);
     HideStatus(1);
-
+	_pePwdPanel->SetVisible(true);
+	_pePwdPanel->SetLayoutPos(DirectUI::LP_Auto);
     //LayoutCheckHandler(LAYOUT_DEF_USER);
     // Push focus to edit control
     if (_pePwdEdit)
@@ -876,84 +918,38 @@ void ShowResetWizard(HWND hw)
 }
 #define ECMAGICNUM 3212
 
-LRESULT CALLBACK ECSubClassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uID, ULONG_PTR dwRefData)
-{
-    UNREFERENCED_PARAMETER(uID);
-    UNREFERENCED_PARAMETER(dwRefData);
-    switch (uMsg)
-    {
-    case WM_NOTIFY:
-    {
-        LPNMHDR lph;
-        lph = (LPNMHDR)lParam;
-        if (TTN_LINKCLICK == lph->code)
-        {
-            g_pErrorBalloon.HideToolTip();
-            ShowResetWizard(hwnd);
-            return 0;
-        }
-    }
-
-    default:
-        break;
-    }
-    return DefSubclassProc(hwnd, uMsg, wParam, lParam);
-}
-
-BOOL SubClassTheEditBox(HWND he)
-{
-    if (he)
-    {
-        //SetWindowSubclass(he, ECSubClassProc, ECMAGICNUM, NULL);
-    }
-    return (he != NULL);
-}
-
-void UnSubClassTheEditBox(HWND he)
-{
-    if (he)
-    {
-        //RemoveWindowSubclass(he, ECSubClassProc, ECMAGICNUM);
-    }
-}
 
 HRESULT LogonAccount::RemoveCredPanel()
 {
     HRESULT hr;
 
-    if (!_fHasPwdPanel)
+    if (!_fIsShowingPwdPanel)
         goto Done;
 
     DWORD cookie;
     StartDefer(&cookie);
 
-    // Clear out edit control
-    if (_pePwdEdit)
-    {
-        _pePwdEdit->SetContentString(L"");
-        UnSubClassTheEditBox(_pePwdEdit->GetHWND());     // Provide for trap of the TTN_LINKCLICK event
-    }
-
-
     // Remove password panel
-    hr = FindDescendent(DirectUI::StrToID(TEXT("passwordpanelcontainer")))->Remove(_pePwdPanel);
+    /*hr = FindDescendent(DirectUI::StrToID(TEXT("passwordpanelcontainer")))->Remove(_pePwdPanel);
     if (FAILED(hr))
     {
         //EndDefer(cookie);
         goto Failure;
-    }
+    }*/
+	_pePwdPanel->SetVisible(false);
+	_pePwdPanel->SetLayoutPos(DirectUI::LP_None);
 
     // Unhide status text
     ShowStatus(0);
     ShowStatus(1);
 
-    _pePwdPanel = nullptr;
-    _pePwdEdit = nullptr;
-    _pbPwdInfo = nullptr;
-    _peKbdIcon = nullptr;
+    //_pePwdPanel = nullptr;
+    //_pePwdEdit = nullptr;
+    //_pbPwdInfo = nullptr;
+    //_peKbdIcon = nullptr;
 
 
-    _fHasPwdPanel = FALSE;
+    _fIsShowingPwdPanel = FALSE;
 
     EndDefer(cookie);
 
@@ -983,7 +979,7 @@ void LogonAccount::ShowPasswordIncorrectMessage()
     BOOL fHint = false;
     DWORD dwResult;
     g_szUsername[0] = 0;
-    SubClassTheEditBox(_pePwdEdit->GetHWND());   // Provide for trap of the TTN_LINKCLICK event
+    //SubClassTheEditBox(_pePwdEdit->GetHWND());   // Provide for trap of the TTN_LINKCLICK event
     if (0 < lstrlen(_pvUsername->GetString()))
     {
         wcscpy_s(g_szUsername, _pvUsername->GetString());
@@ -1027,7 +1023,7 @@ void LogonAccount::UpdateNotifications(BOOL fCheckEverything)
     //ILogonUser* pobjUser = NULL;
     WCHAR szTemp[1024], sz[1024];
 
-    if (_fHasPwdPanel)
+    if (_fIsShowingPwdPanel)
         return;
 
     const WCHAR* pszUsername = _pvUsername->GetString();

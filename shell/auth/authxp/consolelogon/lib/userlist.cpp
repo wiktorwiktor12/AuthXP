@@ -6,7 +6,7 @@
 #include "restrictededit.h"
 #include "zoomableelement.h"
 
-DirectUI::IClassInfo* UserList::Class = nullptr;
+/*DirectUI::IClassInfo* UserList::Class = nullptr;
 
 DirectUI::IClassInfo* UserList::GetClassInfoW()
 {
@@ -513,3 +513,4 @@ void UserList::_ShowEnumeratedTilesWorker(int visibleIndex)
 	if (cookie)
 		EndDefer(cookie);
 }
+*/

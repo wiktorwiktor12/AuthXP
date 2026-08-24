@@ -33,7 +33,7 @@ public:
 	//~ End WF::ITypedEventHandler<LCPD::ICredentialField*, LCPD::CredentialFieldChangeKind> Interface
 
 	int m_index;
-	class CDUIUserTileElement* m_owningElement;
+	class LogonAccount* m_owningElement;
 
 private:
 	EventRegistrationToken m_token;

@@ -497,8 +497,8 @@ HRESULT CDUIUserTileElement::_CreateEditField(int index, DirectUI::Element* Pare
 	else
 		RETURN_IF_FAILED(restrictedEdit->SetContentString(content.GetRawBuffer(nullptr)));
 
-	restrictedEdit->m_index = index;
-	restrictedEdit->m_owningElement = this;
+	//restrictedEdit->m_index = index;
+	//restrictedEdit->m_owningElement = this;
 
 	RETURN_IF_FAILED(restrictedEdit->Advise(fieldData->m_dataSourceCredentialField.Get()));
 
@@ -560,7 +560,7 @@ HRESULT CDUIUserTileElement::_CreateCommandLinkField(int index, DirectUI::Elemen
 	RETURN_IF_FAILED(element->SetActive(3));
 
 	element->m_index = index;
-	element->m_owningElement = this;
+	//element->m_owningElement = this;
 
 	RETURN_IF_FAILED(element->Advise(fieldData->m_dataSourceCredentialField.Get()));
 
@@ -601,15 +601,15 @@ HRESULT GetBitmapFromRandomStream(Microsoft::WRL::ComPtr<ABI::Windows::Storage::
 	return S_OK;
 }
 
-HRESULT GetBitmapFromUserSID(CoTaskMemNativeString& SID, HBITMAP* outBitmap)
-{
-	Microsoft::WRL::ComPtr<IUserTileStore> tileStore;
-	RETURN_IF_FAILED(CoCreateInstance(CLSID_UserTileStore, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&tileStore)));
-
-	RETURN_IF_FAILED(tileStore->GetLargePicture(SID.Get(), outBitmap));
-
-	return S_OK;
-}
+//HRESULT GetBitmapFromUserSID(CoTaskMemNativeString& SID, HBITMAP* outBitmap)
+//{
+//	Microsoft::WRL::ComPtr<IUserTileStore> tileStore;
+//	RETURN_IF_FAILED(CoCreateInstance(CLSID_UserTileStore, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&tileStore)));
+//
+//	RETURN_IF_FAILED(tileStore->GetLargePicture(SID.Get(), outBitmap));
+//
+//	return S_OK;
+//}
 
 HRESULT CDUIUserTileElement::_CreateTileImageField(const wchar_t* pszLabel, Microsoft::WRL::ComPtr<LCPD::ICredentialImageField>& tileImageDataSource,
 	DirectUI::Element** OutElement)
@@ -638,7 +638,7 @@ HRESULT CDUIUserTileElement::_CreateTileImageField(const wchar_t* pszLabel, Micr
 
 		CoTaskMemNativeString nativeSID;
 		nativeSID.Initialize(sid.GetRawBuffer(nullptr));
-		RETURN_IF_FAILED(GetBitmapFromUserSID(nativeSID, &bitmap));
+		//RETURN_IF_FAILED(GetBitmapFromUserSID(nativeSID, &bitmap));
 	}
 	else
 	{
@@ -729,8 +729,8 @@ HRESULT CDUIUserTileElement::_CreateCheckboxField(int index, DirectUI::Element* 
 	if (label.Length() > 0)
 		checkbox->SetAccName(label.GetRawBuffer(nullptr));
 
-	checkbox->m_index = index;
-	checkbox->m_owningElement = this;
+	//checkbox->m_index = index;
+	//checkbox->m_owningElement = this;
 
 	RETURN_IF_FAILED(checkbox->Advise(fieldData->m_dataSourceCredentialField.Get()));
 

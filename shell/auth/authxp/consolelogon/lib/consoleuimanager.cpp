@@ -148,7 +148,7 @@ DWORD ConsoleUIManager::UIThreadHostThreadProc()
 	CDUIZoomableElement::Register();
 	CDUIRestrictedEdit::Register();
 	CDUIComboBox::Register();
-	UserList::Register();
+	//UserList::Register();
 	CAdvisableButton::Register();
 	CDUIFieldContainer::Register();
 	CDUILabeledCheckbox::Register();
@@ -230,7 +230,7 @@ DWORD ConsoleUIManager::UIThreadHostThreadProc()
             {
                 goto Failure;
             }
-
+        	g_plf->EnterPreStatusMode(false);
             //if (fShutdownLaunch || fWait)
             //{
             //    g_plf->SetTitle(IDS_PLEASEWAIT);
@@ -280,7 +280,7 @@ DWORD ConsoleUIManager::UIThreadHostThreadProc()
                 peLogoArea->SetAlpha(255);
             }
             //g_plf->HideDateTimeArea();
-            g_plf->ShowDateTimeArea();
+            //g_plf->ShowDateTimeArea();
             //g_plf->EnterSecurityOptionsMode();
             //g_plf->SetTitle(TEXT("HI"));
 
