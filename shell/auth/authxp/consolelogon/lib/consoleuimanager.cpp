@@ -139,13 +139,13 @@ DWORD ConsoleUIManager::UIThreadHostThreadProc()
 
 	CBackgroundWindow   backgroundWindow(HINST_THISCOMPONENT);
 
-	CDUIAnimationStrip::Register();
+	//CDUIAnimationStrip::Register();
 	//CLogonFrame7::Register();
 	LogonFrame::Register();
 	LogonAccount::Register();
 	LogonAccountList::Register();
-	CDUIUserTileElement::Register();
-	CDUIZoomableElement::Register();
+	//CDUIUserTileElement::Register();
+	//CDUIZoomableElement::Register();
 	CDUIRestrictedEdit::Register();
 	CDUIComboBox::Register();
 	//UserList::Register();

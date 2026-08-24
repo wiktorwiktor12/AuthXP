@@ -7,7 +7,7 @@
 #include "logoninterfaces.h"
 
 //wrapper struct to wrap the field datasource so that you can insert fake fields such as for Locked text or the user name text
-struct CFieldWrapper
+/*struct CFieldWrapper
 {
 	Microsoft::WRL::ComPtr<LCPD::ICredentialField> m_dataSourceCredentialField;
 
@@ -85,3 +85,4 @@ private:
 	friend class CDUIZoomableElement;
 	friend class CAdvisableButton;
 };
+*/

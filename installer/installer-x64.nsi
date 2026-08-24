@@ -9,8 +9,8 @@
 # would also be a mess.
 
 Unicode true
-Name "AuthUX"
-Outfile "build\AuthUX-setup-x64.exe"
+Name "AuthXP"
+Outfile "build\AuthXP-setup-x64.exe"
 RequestExecutionLevel admin
 ManifestSupportedOS all
 
@@ -54,7 +54,7 @@ ManifestSupportedOS all
 !insertmacro LANG_LOAD "Korean"
 !insertmacro LANG_LOAD "Japanese"
 
-Section "AuthUX" AuthUX
+Section "AuthXP" AuthXP
 	SectionIn RO
     # Make sure install directories are clean
     RMDir /r "$INSTDIR\"
@@ -65,43 +65,43 @@ Section "AuthUX" AuthUX
 	
 	${If} ${AtLeastBuild} 17763
 	${AndIf} ${AtMostBuild} 18361
-		File "..\x64\Release.RS5\AuthUX.dll"
+		File "..\x64\Release.RS5\AuthXP.dll"
 	${ElseIf} ${AtLeastBuild} 18362
 	${AndIf} ${AtMostBuild} 19040
-		File "..\x64\Release.19H1\AuthUX.dll"
+		File "..\x64\Release.19H1\AuthXP.dll"
 	${ElseIf} ${AtLeastBuild} 19041
 	${AndIf} ${AtMostBuild} 19045
-		File "..\x64\Release.VB\AuthUX.dll"
+		File "..\x64\Release.VB\AuthXP.dll"
 	${ElseIf} ${AtLeastBuild} 20348
 	${AndIf} ${AtMostBuild} 21999
-		File "..\x64\Release.FE\AuthUX.dll"
+		File "..\x64\Release.FE\AuthXP.dll"
 	${ElseIf} ${AtLeastBuild} 22000
 	${AndIf} ${AtMostBuild} 22620
-		File "..\x64\Release.CO\AuthUX.dll"
+		File "..\x64\Release.CO\AuthXP.dll"
 	${ElseIf} ${AtLeastBuild} 22621
 	${AndIf} ${AtMostBuild} 22630
-		File "..\x64\Release.NI\AuthUX.dll"
+		File "..\x64\Release.NI\AuthXP.dll"
 	${ElseIf} ${AtLeastBuild} 22631
 	${AndIf} ${AtMostBuild} 26099
-		File "..\x64\Release.ZN\AuthUX.dll"
+		File "..\x64\Release.ZN\AuthXP.dll"
 	${ElseIf} ${AtLeastBuild} 26100
 	${AndIf} ${AtMostBuild} 26201
-		File "..\x64\Release.GE\AuthUX.dll"
+		File "..\x64\Release.GE\AuthXP.dll"
 	${EndIf}
 
     # Create Uninstall entry
     SetRegView 64
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\AuthUX" \
-                 "DisplayName" "AuthUX"
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\AuthUX" \
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\AuthXP" \
+                 "DisplayName" "AuthXP"
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\AuthXP" \
                  "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\AuthUX" \
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\AuthXP" \
                  "Publisher" "explorer7-team"
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\AuthUX" \
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\AuthXP" \
                  "DisplayVersion" "0.0.2"
-    WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\AuthUX" \
+    WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\AuthXP" \
                  "NoModify" 1
-    WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\AuthUX" \
+    WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\AuthXP" \
                  "NoRepair" 1
 
     # Make LogonController use our server
@@ -109,12 +109,12 @@ Section "AuthUX" AuthUX
     AccessControl::SetRegKeyOwner HKLM "SOFTWARE\Microsoft\WindowsRuntime\ActivatableClassId\Windows.Internal.UI.Logon.Controller.LogonUX" $0
     AccessControl::GrantOnRegKey HKLM "SOFTWARE\Microsoft\WindowsRuntime\ActivatableClassId\Windows.Internal.UI.Logon.Controller.LogonUX" $0 FullAccess
     WriteRegExpandStr HKLM "SOFTWARE\Microsoft\WindowsRuntime\ActivatableClassId\Windows.Internal.UI.Logon.Controller.LogonUX" \
-        "DllPath" "$INSTDIR\AuthUX.dll"
+        "DllPath" "$INSTDIR\AuthXP.dll"
 	
 	AccessControl::SetRegKeyOwner HKLM "SOFTWARE\Microsoft\WindowsRuntime\ActivatableClassId\Windows.Internal.UI.Logon.Controller.LockScreenHost" $0
     AccessControl::GrantOnRegKey HKLM "SOFTWARE\Microsoft\WindowsRuntime\ActivatableClassId\Windows.Internal.UI.Logon.Controller.LockScreenHost" $0 FullAccess
     WriteRegExpandStr HKLM "SOFTWARE\Microsoft\WindowsRuntime\ActivatableClassId\Windows.Internal.UI.Logon.Controller.LockScreenHost" \
-        "DllPath" "$INSTDIR\AuthUX.dll" 
+        "DllPath" "$INSTDIR\AuthXP.dll" 
 SectionEnd
 
 Section "Uninstall"
@@ -135,7 +135,7 @@ Section "Uninstall"
         "DllPath" "%SystemRoot%\system32\logoncontroller.dll"
 
     # Delete uninstall entry
-    DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\AuthUX"
+    DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\AuthXP"
 SectionEnd
 
 Function .onInit
@@ -153,7 +153,7 @@ Function .onInit
         Quit
     ${EndIf}
 	
-	SectionSetSize ${AuthUX} 4800
+	SectionSetSize ${AuthXP} 4800
 	
-	StrCpy $INSTDIR "$PROGRAMFILES64\AuthUX"
+	StrCpy $INSTDIR "$PROGRAMFILES64\AuthXP"
 FunctionEnd

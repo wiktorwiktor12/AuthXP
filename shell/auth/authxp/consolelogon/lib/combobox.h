@@ -56,8 +56,8 @@ public:
 	CCoSimpleArray<const wchar_t*> m_stringArray; //@mod, use CCoSimpleArray instead of hdpa
 	int m_selection;
 
-	int m_index;
-	class CDUIUserTileElement* m_owningElement;
+	//int m_index;
+	class LogonAccount* m_owningElement;
 
 private:
 	EventRegistrationToken m_token;

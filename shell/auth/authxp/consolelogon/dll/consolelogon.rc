@@ -65,6 +65,9 @@ IDB_CLOSEKF               BITMAP  DISCARDABLE     "resources/closekf.bmp"
 STRINGTABLE DISCARDABLE 
 BEGIN
 
+	IDS_USER             "User"
+	IDS_WINSECURITY      "Windows Security"
+
     IDS_WELCOMEFONT       "arial"
     IDS_OPTIONSFONT       "tahoma"
     IDS_ACCOUNTLISTFONT   "tahoma"

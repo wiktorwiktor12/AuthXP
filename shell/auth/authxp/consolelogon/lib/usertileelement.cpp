@@ -13,7 +13,7 @@
 #include "logonguids.h"
 #include "wicutil.h"
 
-DirectUI::IClassInfo* CDUIUserTileElement::Class = nullptr;
+/*DirectUI::IClassInfo* CDUIUserTileElement::Class = nullptr;
 
 CDUIUserTileElement::~CDUIUserTileElement()
 {
@@ -140,37 +140,37 @@ HRESULT CDUIUserTileElement::SetFieldInitialVisibility(DirectUI::Element* field,
 		RETURN_IF_FAILED(fieldData->m_dataSourceCredentialField->get_IsHidden(&isHidden));
 	}
 
-	/*if (kind == LCPD::CredentialFieldKind_CommandLink)
-	{
-		isVisible = !isHidden && (GetTileZoomed() ? bIsVisibleInSelectedTile : bIsVisibleInDeselectedTile);
-	}
-	else if (kind == LCPD::CredentialFieldKind_StaticText)
-	{
-		LCPD::CredentialTextSize size = fieldData->m_size;
-
-		if (fieldData->m_dataSourceCredentialField.Get() != nullptr)
-		{
-			Microsoft::WRL::ComPtr<LCPD::ICredentialTextField> textField;
-			RETURN_IF_FAILED(fieldData->m_dataSourceCredentialField->QueryInterface(IID_PPV_ARGS(&textField)));
-
-			RETURN_IF_FAILED(textField->get_TextSize(&size));
-		}
-
-		if (GetTileZoomed() && size == LCPD::CredentialTextSize_Large)
-		{
-
-			isVisible = true;
-		}
-		else if (!GetTileZoomed() && size == LCPD::CredentialTextSize_Small)
-		{
-
-			isVisible = true;
-		}
-		else
-			isVisible = false;
-
-		isVisible = isVisible && !isHidden && (GetTileZoomed() ? bIsVisibleInSelectedTile : bIsVisibleInDeselectedTile);
-	}*/
+	//if (kind == LCPD::CredentialFieldKind_CommandLink)
+	//{
+	//	isVisible = !isHidden && (GetTileZoomed() ? bIsVisibleInSelectedTile : bIsVisibleInDeselectedTile);
+	//}
+	//else if (kind == LCPD::CredentialFieldKind_StaticText)
+	//{
+	//	LCPD::CredentialTextSize size = fieldData->m_size;
+//
+	//	if (fieldData->m_dataSourceCredentialField.Get() != nullptr)
+	//	{
+	//		Microsoft::WRL::ComPtr<LCPD::ICredentialTextField> textField;
+	//		RETURN_IF_FAILED(fieldData->m_dataSourceCredentialField->QueryInterface(IID_PPV_ARGS(&textField)));
+//
+	//		RETURN_IF_FAILED(textField->get_TextSize(&size));
+	//	}
+//
+	//	if (GetTileZoomed() && size == LCPD::CredentialTextSize_Large)
+	//	{
+//
+	//		isVisible = true;
+	//	}
+	//	else if (!GetTileZoomed() && size == LCPD::CredentialTextSize_Small)
+	//	{
+//
+	//		isVisible = true;
+	//	}
+	//	else
+	//		isVisible = false;
+//
+	//	isVisible = isVisible && !isHidden && (GetTileZoomed() ? bIsVisibleInSelectedTile : bIsVisibleInDeselectedTile);
+	//}
 	isVisible = !isHidden && ((GetTileZoomed() ? bIsVisibleInSelectedTile : bIsVisibleInDeselectedTile) != 0);
 
 	RETURN_IF_FAILED(field->SetLayoutPos(isVisible ? -1 : -3));
@@ -571,14 +571,14 @@ HRESULT CDUIUserTileElement::_CreateCommandLinkField(int index, DirectUI::Elemen
 	SetFieldInitialVisibility(*OutContainer, fieldData);
 
 	//not implemented for now
-	/*if (bStyledAsButton)
-	{
-		element->SetClass(L"GenericButton");
-
-		element->GetParent()->Remove(element);
-
-		CLogonFrame7::GetSingleton()->m_Window->FindDescendent(DirectUI::StrToID(L"DialogButtonFrame"))->Add(element);
-	}*/
+	//if (bStyledAsButton)
+	//{
+	//	element->SetClass(L"GenericButton");
+//
+	//	element->GetParent()->Remove(element);
+//
+	//	CLogonFrame7::GetSingleton()->m_Window->FindDescendent(DirectUI::StrToID(L"DialogButtonFrame"))->Add(element);
+	//}
 
 	scopeExit.release();
 
@@ -1035,3 +1035,4 @@ HRESULT CDUIUserTileElement::_CreateFieldsForSelected()
 
 	return S_OK;
 }
+*/

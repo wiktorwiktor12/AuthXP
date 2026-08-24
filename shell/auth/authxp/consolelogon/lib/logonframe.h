@@ -194,7 +194,7 @@ public:
     void HideUndockButton() { _pbUndock->SetVisible(false); }
     void ShowUndockButton() { _pbUndock->SetVisible(true); }
     void SetUndockButtonLabel(LPCWSTR psz) { Element* pe = _pbUndock->FindDescendent(DirectUI::StrToID(L"label")); if (pe) pe->SetContentString(psz); }
-    void SetStatus(LPCWSTR psz);
+    void SetStatus(LPCWSTR psz, bool bHideAccountPanel = true);
     void SetTitle(UINT uRCID);
     void SetTitle(LPCWSTR pszTitle);
     void SetButtonLabels();
@@ -233,9 +233,12 @@ public:
 	HRESULT OnSecurityOptionSelected(LC::LogonUISecurityOptions SecurityOpt);
 	HRESULT ConfirmEmergencyShutdown();
 	HRESULT ShowLockedScreen();
-    void DisplayLogonDialog(LPCWSTR messageCaptionContent, LPCWSTR messageContent, WORD flags);
+	HRESULT DisplayLogonDialog(const wchar_t* messageCaptionContent, const wchar_t* messageContent, WORD flags,
+	WI::AsyncDeferral<WI::CMarshaledInterfaceResult<LC::IMessageDisplayResult>> completion);
     LRESULT InteractiveLogonRequest(LPCWSTR pszUsername, LPCWSTR pszPassword);
     void NextFlagAnimate(DWORD dwFrame);
+
+	void DisplaySerializationFailed(HSTRING caption, HSTRING message);
 
 #ifdef GADGET_ENABLE_GDIPLUS
     // Animations / Effects
@@ -265,6 +268,7 @@ public:
     DirectUI::Element* _peMsgArea;
     DirectUI::Element* _peLogoArea;
     DirectUI::Element* _peDateTimeArea;
+	LogonAccount* _peLogonAccountFocused = NULL;
 	Microsoft::WRL::ComPtr<LogonViewManager> m_consoleUIManager;
 	Microsoft::WRL::ComPtr<IShutdownChoices> m_shutdownChoices;
 	LC::LogonUIRequestReason m_currentReason;

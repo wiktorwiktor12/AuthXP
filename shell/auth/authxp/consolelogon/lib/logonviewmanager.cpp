@@ -838,7 +838,7 @@ HRESULT LogonViewManager::DisplayCredentialErrorUIThread(
 	else
 	{
 		RETURN_IF_FAILED(m_redirectionManager->OnBeginPainting()); // 816
-		RETURN_IF_FAILED(ShowMessageView(caption, message, messageBoxFlags, completion)); // 817
+		RETURN_IF_FAILED(ShowMessageCredErrorView(caption, message, messageBoxFlags, completion)); // 817
 	}
 
 	completeOnFailure.release();
@@ -1078,6 +1078,7 @@ HRESULT LogonViewManager::ShowCredentialView()
 		{
 			userToSelect->SetKeyFocus();
 			g_plf->_peAccountList->SetSelection(userToSelect);
+			g_plf->_peLogonAccountFocused = userToSelect;
 		}
 
 		ComPtr<LCPD::IOptionalDependencyProvider> optionalDependencyProvider;
@@ -1120,6 +1121,15 @@ HRESULT LogonViewManager::ShowMessageView(
 	HSTRING caption, HSTRING message, UINT messageBoxFlags,
 	WI::AsyncDeferral<WI::CMarshaledInterfaceResult<LC::IMessageDisplayResult>> completion)
 {
+	g_plf->DisplayLogonDialog(WindowsGetStringRawBuffer(caption,nullptr),WindowsGetStringRawBuffer(message,nullptr),messageBoxFlags,completion);
+
+	m_currentViewType = LogonView::Message;
+	return S_OK;
+}
+
+HRESULT LogonViewManager::ShowMessageCredErrorView(HSTRING caption, HSTRING message, UINT messageBoxFlags,
+	WI::AsyncDeferral<WI::CMarshaledInterfaceResult<LC::IMessageDisplayResult>> completion)
+{
 	auto m_MessageDisplayResultCompletion = wil::make_unique_nothrow<WI::AsyncDeferral<WI::CMarshaledInterfaceResult<LC::IMessageDisplayResult>>>(completion);
 	ComPtr<LC::IMessageDisplayResultFactory> factory;
 	RETURN_IF_FAILED(WF::GetActivationFactory(
@@ -1129,17 +1139,19 @@ HRESULT LogonViewManager::ShowMessageView(
 	RETURN_IF_FAILED(m_MessageDisplayResultCompletion->GetResult().Set(messageResult.Get()));
 	m_MessageDisplayResultCompletion->Complete(S_OK);
 	m_MessageDisplayResultCompletion.reset();
+	g_plf->DisplaySerializationFailed(caption, message);
 	//CLogonFrame7::GetSingleton()->DisplayLogonDialog(WindowsGetStringRawBuffer(caption,nullptr),WindowsGetStringRawBuffer(message,nullptr),messageBoxFlags,completion);
-
 	m_currentViewType = LogonView::Message;
 	return S_OK;
 }
 
 HRESULT LogonViewManager::ShowSerializationFailedView(HSTRING caption, HSTRING message)
 {
+	RETURN_IF_FAILED(ShowCredentialView());
+	g_plf->DisplaySerializationFailed(caption, message);
 	//CLogonFrame7::GetSingleton()->DisplayLogonDialog(WindowsGetStringRawBuffer(caption,nullptr),WindowsGetStringRawBuffer(message,nullptr),16 | (int)MessageOptionFlag::Ok);
 
-	m_currentViewType = LogonView::SerializationFailed;
+	//m_currentViewType = LogonView::SerializationFailed;
 	return S_OK;
 }
 

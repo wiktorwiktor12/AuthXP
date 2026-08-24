@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "combobox.h"
 
+#include "logonaccount.h"
 #include "usertileelement.h"
 
 DirectUI::IClassInfo* CDUIComboBox::Class = nullptr;
@@ -100,17 +101,15 @@ void CDUIComboBox::OnEvent(DirectUI::Event* pEvent)
 HRESULT CDUIComboBox::Invoke(LCPD::ICredentialField* sender, LCPD::CredentialFieldChangeKind args)
 {
 	LOG_HR_MSG(E_FAIL,"CDUIComboBox::Invoke\n");
-	if (m_owningElement && m_owningElement->m_containersArray[m_index])
+	if (m_owningElement)
 	{
-		CFieldWrapper* fieldData;
-		m_owningElement->fieldsArray.GetAt(m_index,fieldData);
 
 		bool bShouldUpdateString = false;
 
 		if (args == LCPD::CredentialFieldChangeKind_State)
 		{
 			bool bOldVisibility = GetVisible();
-			m_owningElement->SetFieldVisibility(m_index,m_FieldInfo);
+			m_owningElement->SetFieldInitialVisibility(m_FieldInfo,this);
 			if (bOldVisibility != GetVisible())
 				bShouldUpdateString = true;
 		}
@@ -151,13 +150,13 @@ HRESULT CDUIComboBox::SetSelectionEx(int newSelection)
 	return S_OK;
 }
 
-HRESULT StringStringAllocCopy(const wchar_t* Src, const wchar_t** a2)
+/*HRESULT StringStringAllocCopy(const wchar_t* Src, const wchar_t** a2)
 {
 	const wchar_t* newString = (const wchar_t*)DirectUI::HAlloc((wcslen(Src)+1)*2);
 	memcpy((void*)newString,Src, (wcslen(Src) + 1) * 2);
 	*a2 = newString;
 	return S_OK;
-}
+}*/
 
 int CDUIComboBox::AddStringEx(const wchar_t* String)
 {

@@ -3,7 +3,7 @@
 #include "pch.h"
 #include "DirectUI/DirectUI.h"
 
-class CDUIZoomableElement : public DirectUI::Element
+/*class CDUIZoomableElement : public DirectUI::Element
 	, public Microsoft::WRL::RuntimeClass<Microsoft::WRL::RuntimeClassFlags<Microsoft::WRL::ClassicCom>
 		, WF::ITypedEventHandler<LCPD::ICredentialField*, LCPD::CredentialFieldChangeKind>
 	>
@@ -43,3 +43,4 @@ private:
 	EventRegistrationToken m_token;
 	Microsoft::WRL::ComPtr<LCPD::ICredentialField> m_FieldInfo;
 };
+*/

@@ -1,7 +1,7 @@
 ﻿#include "pch.h"
 #include "animationstrip.h"
 
-DirectUI::IClassInfo* CDUIAnimationStrip::Class = nullptr;
+/*DirectUI::IClassInfo* CDUIAnimationStrip::Class = nullptr;
 
 CDUIAnimationStrip::~CDUIAnimationStrip()
 {
@@ -220,4 +220,4 @@ void CDUIAnimationStrip::RawActionProc(GMA_ACTIONINFO* a1)
 			InvalidateGadget(gadget);
 		}
 	}
-}
+}*/

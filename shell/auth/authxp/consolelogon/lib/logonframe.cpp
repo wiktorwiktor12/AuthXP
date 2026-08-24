@@ -1417,7 +1417,7 @@ void LogonFrame::EnterLogonMode(BOOL fUnLock)
     ShowAccountPanel();
 
     SetTitle(IDS_WELCOME);
-    SetStatus(LoadResString(IDS_BEGIN));
+    SetStatus(LoadResString(IDS_BEGIN),false);
 
     if (!plaAutoSelect)
     {
@@ -1482,6 +1482,9 @@ void LogonFrame::EnterSecurityOptionsMode(LC::LogonUISecurityOptions options, WI
 	if (m_SecurityOptionsCompletion.get() == nullptr)
 		return;
 
+	SetTitle(IDS_SECURITYOPTIONS);
+	SetStatus(LoadResString(IDS_SECURITYOPTIONS),false);
+
     HideWelcomeArea();
     ShowLogoArea();
     ShowAccountPanel();
@@ -1501,9 +1504,6 @@ void LogonFrame::EnterSecurityOptionsMode(LC::LogonUISecurityOptions options, WI
     assert(pe);
     pe->StopAnimation(DirectUI::ANI_AlphaType);
     pe->RemoveLocalValue(BackgroundProp);
-
-    SetTitle(IDS_SECURITYOPTIONS);
-    SetStatus(LoadResString(IDS_SECURITYOPTIONS));
 
     SetButtonLabels();
     SetForegroundWindow(_pnhh->GetHWND());
@@ -1599,9 +1599,42 @@ HRESULT LogonFrame::ShowLockedScreen()
 	HideAccountPanel();
 }
 
-void LogonFrame::DisplayLogonDialog(LPCWSTR messageCaptionContent, LPCWSTR messageContent, WORD flags)
+HRESULT LogonFrame::DisplayLogonDialog(const wchar_t* messageCaptionContent, const wchar_t* messageContent, WORD flags,
+	WI::AsyncDeferral<WI::CMarshaledInterfaceResult<LC::IMessageDisplayResult>> completion)
 {
+	int result = MessageBoxW(GetHWND(),messageContent,messageCaptionContent,MB_ICONINFORMATION);
 
+	int returnFlag = 1;
+	switch (result)
+	{
+	case IDOK:
+		returnFlag = 1;
+		break;
+	case IDCANCEL:
+		returnFlag = 2;
+		break;
+	case IDYES:
+		returnFlag = 6;
+		break;
+	case IDNO:
+		returnFlag = 7;
+		break;
+	default:
+		returnFlag = 1;
+	}
+
+	auto m_MessageDisplayResultCompletion = wil::make_unique_nothrow<WI::AsyncDeferral<WI::CMarshaledInterfaceResult<LC::IMessageDisplayResult>>>(completion);
+
+	ComPtr<LC::IMessageDisplayResultFactory> factory;
+	RETURN_IF_FAILED(WF::GetActivationFactory(
+		Wrappers::HStringReference(RuntimeClass_Windows_Internal_UI_Logon_Controller_MessageDisplayResult).Get(), &factory));
+
+	ComPtr<LC::IMessageDisplayResult> messageResult;
+	RETURN_IF_FAILED(factory->CreateMessageDisplayResult(returnFlag, &messageResult));
+
+	RETURN_IF_FAILED(m_MessageDisplayResultCompletion->GetResult().Set(messageResult.Get()));
+
+	m_MessageDisplayResultCompletion->Complete(S_OK);
 }
 
 LRESULT LogonFrame::InteractiveLogonRequest(LPCWSTR pszUsername, LPCWSTR pszPassword)
@@ -1683,6 +1716,24 @@ void LogonFrame::NextFlagAnimate(DWORD dwFrame)
         }
     }
 #endif
+}
+
+void LogonFrame::DisplaySerializationFailed(HSTRING caption, HSTRING message)
+{
+	HWND target = this->GetHWND();
+	if (_peLogonAccountFocused && _peLogonAccountFocused->_pePwdEdit)
+		target = _peLogonAccountFocused->_pePwdEdit->GetHWND();
+
+	auto rawCaption = WindowsGetStringRawBuffer(caption,NULL);
+	auto rawmessage = WindowsGetStringRawBuffer(message,NULL);
+
+	WCHAR captionContent[256];
+	wcscpy_s(captionContent,rawCaption);
+
+	WCHAR messageContent[256];
+	wcscpy_s(messageContent,rawmessage);
+
+	g_pErrorBalloon.ShowToolTip(GetModuleHandleW(NULL), target, messageContent, captionContent, TTI_ERROR, EB_WARNINGCENTERED | EB_MARKUP, 10000);
 }
 
 LogonFrame::~LogonFrame()
@@ -2042,7 +2093,7 @@ HRESULT LogonFrame::Register()
     return DirectUI::ClassInfo<LogonFrame, HWNDElement, DirectUI::EmptyCreator<LogonFrame>>::Register(L"LogonFrame", NULL, 0);
 }
 
-void LogonFrame::SetStatus(LPCWSTR psz)
+void LogonFrame::SetStatus(LPCWSTR psz, bool bHideAccountPanel)
 {
 	if (psz)
 	{
@@ -2055,6 +2106,10 @@ void LogonFrame::SetStatus(LPCWSTR psz)
 
 		_peMsgArea->FindDescendent(DirectUI::StrToID(L"welcome"))->SetContentString(lowerString.c_str());
 		_peMsgArea->FindDescendent(DirectUI::StrToID(L"welcomeshadow"))->SetContentString(lowerString.c_str());*/
+		if (GetState() != LAS_PostStatus && bHideAccountPanel)
+		{
+			HideAccountPanel();
+		}
 	}
 }
 
@@ -2293,7 +2348,7 @@ void LogonFrame::OnEvent(DirectUI::Event* pEvent)
 {
     if (pEvent->nStage == DirectUI::GMF_BUBBLED)  // Bubbled events
     {
-        g_pErrorBalloon.HideToolTip();
+        //g_pErrorBalloon.HideToolTip();
         if (pEvent->uidType == DirectUI::Button::Click)
         {
             if (pEvent->peTarget == _pbPower)
@@ -2532,7 +2587,7 @@ HRESULT LogonFrame::OnLogUserOn(LogonAccount* pla)
     HideUndockButton();
 
     // Set frame status
-    SetStatus(LoadResString(IDS_LOGGINGON));
+    SetStatus(LoadResString(IDS_LOGGINGON),false);
 
     _peViewer->RemoveListener(this);
     _peAccountList->RemoveListener(this);

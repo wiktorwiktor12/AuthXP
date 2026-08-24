@@ -452,9 +452,10 @@ HRESULT LogonAccount::OnTreeReady(BOOL fPicRes, LPCWSTR pszName, LPCWSTR pszUser
 		RETURN_IF_FAILED(_pUser->get_Sid(sid.ReleaseAndGetAddressOf()));
 
 		nativeSID.Initialize(sid.GetRawBuffer(nullptr));
-		RETURN_IF_FAILED(GetBitmapFromUserSID(nativeSID, &bitmap));
+		HRESULT pfpHr = GetBitmapFromUserSID(nativeSID, &bitmap);
 
-		pv = CreateGraphicFromHBITMAP(bitmap, (USHORT)LogonFrame::PointToPixel(36), (USHORT)LogonFrame::PointToPixel(36), GRAPHIC_NoBlend);
+		if (SUCCEEDED(pfpHr))
+			pv = CreateGraphicFromHBITMAP(bitmap, (USHORT)LogonFrame::PointToPixel(36), (USHORT)LogonFrame::PointToPixel(36), GRAPHIC_NoBlend);
 	}
 
 
@@ -546,7 +547,7 @@ HRESULT LogonAccount::CreateCredPanelElements()
 	UINT numFields;
 	RETURN_IF_FAILED(fields->get_Size(&numFields));
 
-    for (int i = 0; i < numFields; ++i)
+    for (int i = numFields - 1; i >= 0; --i)
     {
     	Microsoft::WRL::ComPtr<LCPD::ICredentialField> field;
     	RETURN_IF_FAILED(fields->GetAt(i, &field));
@@ -648,16 +649,19 @@ HRESULT LogonAccount::_CreateStaticTextField(Microsoft::WRL::ComPtr<LCPD::ICrede
 	RETURN_IF_FAILED(_pParser->CreateElement(L"statictextcontrol", NULL, 0, 0, (DirectUI::Element**)&peStaticTextControl));
 	auto scopeExit = wil::scope_exit([&]() -> void {peStaticTextControl->Destroy(true);});
 
-	Microsoft::WRL::Wrappers::HString label;
-	RETURN_IF_FAILED(field->get_Label(label.ReleaseAndGetAddressOf()));
+	Microsoft::WRL::ComPtr<LCPD::ICredentialTextField> textField;
+	RETURN_IF_FAILED(field->QueryInterface(IID_PPV_ARGS(&textField)));
 
-	RETURN_IF_FAILED(peStaticTextControl->SetContentString(label.GetRawBuffer(NULL)));
+	Microsoft::WRL::Wrappers::HString content;
+	RETURN_IF_FAILED(textField->get_Content(content.ReleaseAndGetAddressOf()));
+
+	RETURN_IF_FAILED(peStaticTextControl->SetContentString(content.GetRawBuffer(NULL)));
 
 	RETURN_IF_FAILED(peStaticTextControl->SetAccessible(true));
 
 	RETURN_IF_FAILED(peStaticTextControl->SetAccRole(30));
 
-	RETURN_IF_FAILED(peStaticTextControl->SetAccName(label.GetRawBuffer(NULL)));
+	RETURN_IF_FAILED(peStaticTextControl->SetAccName(content.GetRawBuffer(NULL)));
 
 	RETURN_IF_FAILED(peStaticTextControl->SetActive(3));
 

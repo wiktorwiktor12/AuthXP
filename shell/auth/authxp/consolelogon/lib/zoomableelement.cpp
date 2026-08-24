@@ -3,7 +3,7 @@
 
 #include "usertileelement.h"
 
-DirectUI::IClassInfo* CDUIZoomableElement::Class = nullptr;
+/*DirectUI::IClassInfo* CDUIZoomableElement::Class = nullptr;
 
 CDUIZoomableElement::CDUIZoomableElement() : m_index(-1)
 	, m_owningElement(nullptr)
@@ -151,3 +151,4 @@ HRESULT CDUIZoomableElement::Register()
 	};
 	return DirectUI::ClassInfo<CDUIZoomableElement, DirectUI::Element>::RegisterGlobal(HINST_THISCOMPONENT, L"ZoomableElement", s_rgProperties, ARRAYSIZE(s_rgProperties));
 }
+*/

@@ -117,6 +117,9 @@ private:
 	HRESULT ShowMessageView(
 		HSTRING caption, HSTRING message, UINT messageBoxFlags,
 		WI::AsyncDeferral<WI::CMarshaledInterfaceResult<LC::IMessageDisplayResult>> completion);
+	HRESULT ShowMessageCredErrorView(
+		HSTRING caption, HSTRING message, UINT messageBoxFlags,
+		WI::AsyncDeferral<WI::CMarshaledInterfaceResult<LC::IMessageDisplayResult>> completion);
 	HRESULT ShowSerializationFailedView(HSTRING caption, HSTRING message);
 	HRESULT StartCredProvsIfNecessary(LC::LogonUIRequestReason reason, BOOLEAN allowDirectUserSwitching, HSTRING unk);
 	HRESULT OnCredProvInitComplete();

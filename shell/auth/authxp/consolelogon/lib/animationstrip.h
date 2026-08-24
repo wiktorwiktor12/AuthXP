@@ -4,7 +4,7 @@
 
 #include "DirectUI/DirectUI.h"
 
-class CDUIAnimationStrip : public DirectUI::Element
+/*class CDUIAnimationStrip : public DirectUI::Element
 {
 public:
 
@@ -31,4 +31,4 @@ public:
 	HIMAGELIST m_imageList;
 	DWORD m_imageCount;
 	int m_index;
-};
+};*/
