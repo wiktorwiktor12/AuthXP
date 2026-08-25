@@ -146,6 +146,20 @@ ORGB(
 
 //
 
+#define TIMER_REFRESHTIPS 1014
+#define TIMER_ANIMATEFLAG 1015
+#define TIMER_UPDATETIME 2002
+
+#define MAX_FLAG_FRAMES 50
+#define FLAG_ANIMATION_COUNT 100
+#define TOTAL_FLAG_FRAMES (FLAG_ANIMATION_COUNT * MAX_FLAG_FRAMES)
+
+extern UINT_PTR g_puTimerId;
+extern UINT_PTR g_puFlagTimerId;
+extern UINT_PTR g_puUpdateTimeId;
+
+extern DWORD sTimerCount;
+
 class LogonFrame : public DirectUI::HWNDElement, public DirectUI::IElementListener
 {
 public:
@@ -203,6 +217,7 @@ public:
     DirectUI::NativeHWNDHost* GetNativeHost() { return _pnhh; }
     void SetNativeHost(DirectUI::NativeHWNDHost* pnhh) { _pnhh = pnhh; }
     void UpdateUserStatus(BOOL fRefreshAll = false);
+	void UpdateTime();
     LogonAccount* FindUserByCred(Microsoft::WRL::ComPtr<LCPD::ICredential>& cred);
     LogonAccount* FindNamedUser(LPCWSTR pszUsername);
     void SelectUser(LPCWSTR pszUsername);
@@ -211,6 +226,8 @@ public:
     void SetAnimations(BOOL fAnimations);
 
     void ResetTheme();
+
+	
 
     BOOL UserListAvailable() { return _fListAvailable; }
     void SetUserListAvailable(BOOL fListAvailable) { _fListAvailable = fListAvailable; }
@@ -240,6 +257,8 @@ public:
 
 	void DisplaySerializationFailed(HSTRING caption, HSTRING message);
 
+	void LoadSettings();
+
 #ifdef GADGET_ENABLE_GDIPLUS
     // Animations / Effects
     HRESULT FxStartup();
@@ -268,10 +287,15 @@ public:
     DirectUI::Element* _peMsgArea;
     DirectUI::Element* _peLogoArea;
     DirectUI::Element* _peDateTimeArea;
+    DirectUI::Element* _peDateArea;
+    DirectUI::Element* _peTimeArea;
 	LogonAccount* _peLogonAccountFocused = NULL;
 	Microsoft::WRL::ComPtr<LogonViewManager> m_consoleUIManager;
 	Microsoft::WRL::ComPtr<IShutdownChoices> m_shutdownChoices;
 	LC::LogonUIRequestReason m_currentReason;
+
+	BOOL settingShouldShowDateAndTime = FALSE;
+	BOOL settingShouldAnimateFlag = FALSE;
 
 private:
     LogonAccount* InternalFindNamedUser(LPCWSTR pszUsername);
@@ -291,9 +315,11 @@ private:
     HBITMAP _hbmpFlags;
     DWORD _dwFlagFrame;
     UINT _nColorDepth;
+	WORD  _lastMinute;
 
 	wistd::unique_ptr<WI::AsyncDeferral<WI::CMarshaledInterfaceResult<LC::ILogonUISecurityOptionsResult>>> m_SecurityOptionsCompletion;
 };
 
 extern LogonFrame* g_plf;
 extern HANDLE g_rgH[3];
+extern BOOL g_fNoAnimations;

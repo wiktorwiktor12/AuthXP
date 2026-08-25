@@ -12,6 +12,7 @@
 #include "logonguids.h"
 #include "restrictededit.h"
 #include "EventDispatcher.h"
+#include "userprofile.h"
 
 using namespace Microsoft::WRL;
 
@@ -568,6 +569,12 @@ HRESULT LogonAccount::CreateCredPanelElements()
 			pePwdPanel->Add(fieldElement);
     }
 
+	auto info = (DirectUI::Button*)_prevEdit->FindDescendent(DirectUI::StrToID(L"info"));
+	auto go = (DirectUI::Button*)_prevEdit->FindDescendent(DirectUI::StrToID(L"go"));
+
+	//info->SetVisible(true);
+	go->SetVisible(true);
+
     // Cache password panel edit control
     DirectUI::Edit* pePwdEdit = (DirectUI::Edit*)pePwdPanel->FindDescendent(DirectUI::StrToID(L"password"));
     assert(pePwdPanel, "Can't create password edit control");
@@ -709,7 +716,8 @@ HRESULT LogonAccount::_CreateEditField(Microsoft::WRL::ComPtr<LCPD::ICredentialF
     if (bIsPasswordField)
         RETURN_IF_FAILED(restrictedEdit->SetAccValue(label.GetRawBuffer(NULL)));
 
-    //StringStringAllocCopy(label.GetRawBuffer(nullptr), &restrictedEdit->m_hintText);
+	if (g_plf->m_consoleUIManager->m_currentReason == LC::LogonUIRequestReason_LogonUIChange)
+		StringStringAllocCopy(label.GetRawBuffer(nullptr), &restrictedEdit->m_hintText);
 
     restrictedEdit->m_maxTextLength = 127;
 
@@ -723,6 +731,30 @@ HRESULT LogonAccount::_CreateEditField(Microsoft::WRL::ComPtr<LCPD::ICredentialF
 	*ppOutElement = peEditFieldContainer;
 
     SetFieldInitialVisibility(field, peEditFieldContainer);
+
+	/*if (!_prevEdit)
+	{
+		_prevEdit = peEditFieldContainer;
+		auto info = (DirectUI::Button*)peEditFieldContainer->FindDescendent(DirectUI::StrToID(L"info"));
+		auto go = (DirectUI::Button*)peEditFieldContainer->FindDescendent(DirectUI::StrToID(L"go"));
+
+		go->SetVisible(true);
+	}
+	else
+	{
+		auto info = (DirectUI::Button*)_prevEdit->FindDescendent(DirectUI::StrToID(L"info"));
+		auto go = (DirectUI::Button*)_prevEdit->FindDescendent(DirectUI::StrToID(L"go"));
+
+		go->SetVisible(false);
+
+		_prevEdit = peEditFieldContainer;
+		info = (DirectUI::Button*)peEditFieldContainer->FindDescendent(DirectUI::StrToID(L"info"));
+		go = (DirectUI::Button*)peEditFieldContainer->FindDescendent(DirectUI::StrToID(L"go"));
+
+		go->SetVisible(true);
+	}*/
+	if (peEditFieldContainer->GetVisible() && !_prevEdit)
+		_prevEdit = peEditFieldContainer;
 
     scopeExit.release();
 
@@ -888,15 +920,15 @@ HRESULT LogonAccount::InsertCredPanel()
     ShowEdit();
 #endif
 
-    if (_pbPwdInfo)
+    /*if (_pbPwdInfo)
     {
         // Hide hint button if no hint provided
         if (_pvHint && *(_pvHint->GetString()) != NULL)
             _pbPwdInfo->SetVisible(true);
         else
             _pbPwdInfo->SetVisible(false);
-    }
-
+    }*/
+	_pbPwdInfo->SetVisible(false);
 
     // Hide status text (do not remove or insert)
     HideStatus(0);
@@ -1038,85 +1070,70 @@ void LogonAccount::UpdateNotifications(BOOL fCheckEverything)
 
     if (pszUsername)
     {
-        //if (SUCCEEDED(hr = GetLogonUserByLogonName(pszUsername, &pobjUser)) && pobjUser)
+        VARIANT varUnreadMail;
+        int iUnreadMailCount = 0;
+        DWORD dwProgramsRunning = 0;
+
+        if (_fLoggedOn)
         {
-            VARIANT_BOOL vbLoggedOn;
-            VARIANT varUnreadMail;
-            BOOL fLoggedOn;
-            int iUnreadMailCount = 0;
-            DWORD dwProgramsRunning = 0;
-
-            //if (FAILED(pobjUser->get_isLoggedOn(&vbLoggedOn)))
+            HKEY hKey;
+            CUserProfile userProfile(pszUsername, NULL);
+            if (ERROR_SUCCESS == RegOpenKeyEx(userProfile, TEXT("SessionInformation"), 0, KEY_QUERY_VALUE, &hKey))
             {
-                vbLoggedOn = VARIANT_TRUE;
+                DWORD dwProgramsRunningSize = sizeof(dwProgramsRunning);
+                RegQueryValueEx(hKey, TEXT("ProgramCount"), NULL, NULL, reinterpret_cast<LPBYTE>(&dwProgramsRunning), &dwProgramsRunningSize);
+                RegCloseKey(hKey);
             }
+            //dwProgramsRunning = 0;
+        }
+        SetRunningApps(dwProgramsRunning);
 
-            fLoggedOn = (vbLoggedOn == VARIANT_TRUE);
+        if (_fLoggedOn)
+        {
+            InsertStatus(LASS_LoggedOn);
 
-            if (fLoggedOn)
+            if (dwProgramsRunning != 0)
             {
-                HKEY hKey;
-                //CUserProfile userProfile(pszUsername, NULL);
-                //
-                //if (ERROR_SUCCESS == RegOpenKeyEx(userProfile, TEXT("SessionInformation"), 0, KEY_QUERY_VALUE, &hKey))
-                //{
-                //    DWORD dwProgramsRunningSize = sizeof(dwProgramsRunning);
-                //    RegQueryValueEx(hKey, TEXT("ProgramCount"), NULL, NULL, reinterpret_cast<LPBYTE>(&dwProgramsRunning), &dwProgramsRunningSize);
-                //    RegCloseKey(hKey);
-                //}
-                dwProgramsRunning = 5;
-            }
-            SetRunningApps(dwProgramsRunning);
-
-            if (fLoggedOn)
-            {
-                InsertStatus(LASS_LoggedOn);
-
-                if (dwProgramsRunning != 0)
-                {
-                    LoadStringW(g_plf->GetHInstance(), (dwProgramsRunning == 1 ? IDS_RUNNINGPROGRAM : IDS_RUNNINGPROGRAMS), szTemp, ARRAYSIZE(szTemp));
-                    wsprintf(sz, szTemp, dwProgramsRunning);
-                    SetStatus(LASS_LoggedOn, sz);
-                    ShowStatus(LASS_LoggedOn);
-                }
-                else
-                {
-                    LoadStringW(g_plf->GetHInstance(), IDS_USERLOGGEDON, szTemp, ARRAYSIZE(szTemp));
-                    SetStatus(LASS_LoggedOn, szTemp);
-                }
+                LoadStringW(g_plf->GetHInstance(), (dwProgramsRunning == 1 ? IDS_RUNNINGPROGRAM : IDS_RUNNINGPROGRAMS), szTemp, ARRAYSIZE(szTemp));
+                wsprintf(sz, szTemp, dwProgramsRunning);
+                SetStatus(LASS_LoggedOn, sz);
+                ShowStatus(LASS_LoggedOn);
             }
             else
             {
-                // if they are not logged on, clean up the logged on text and remove any padding
-                RemoveStatus(LASS_LoggedOn);
+                LoadStringW(g_plf->GetHInstance(), IDS_USERLOGGEDON, szTemp, ARRAYSIZE(szTemp));
+                SetStatus(LASS_LoggedOn, szTemp);
             }
+        }
+        else
+        {
+            // if they are not logged on, clean up the logged on text and remove any padding
+            RemoveStatus(LASS_LoggedOn);
+        }
 
-            if (fLoggedOn || fCheckEverything)
+        if (_fLoggedOn || fCheckEverything)
+        {
+            varUnreadMail.uintVal = 0;
+            //if (FAILED(pobjUser->get_setting(L"UnreadMail", &varUnreadMail)))
+            //{
+            //    varUnreadMail.uintVal = 0;
+            //}
+            iUnreadMailCount = varUnreadMail.uintVal;
+
+            SetUnreadMail((DWORD)iUnreadMailCount);
+            if (iUnreadMailCount != 0)
             {
-                varUnreadMail.uintVal = 5;
-                //if (FAILED(pobjUser->get_setting(L"UnreadMail", &varUnreadMail)))
-                //{
-                //    varUnreadMail.uintVal = 0;
-                //}
-                iUnreadMailCount = varUnreadMail.uintVal;
+                InsertStatus(LASS_Email);
 
-                SetUnreadMail((DWORD)iUnreadMailCount);
-                if (iUnreadMailCount != 0)
-                {
-                    InsertStatus(LASS_Email);
-
-                    LoadStringW(g_plf->GetHInstance(), (iUnreadMailCount == 1 ? IDS_UNREADMAIL : IDS_UNREADMAILS), szTemp, ARRAYSIZE(szTemp));
-                    wsprintf(sz, szTemp, iUnreadMailCount);
-                    SetStatus(LASS_Email, sz);
-                    ShowStatus(LASS_Email);
-                }
-                else
-                {
-                    RemoveStatus(LASS_Email);
-                }
+                LoadStringW(g_plf->GetHInstance(), (iUnreadMailCount == 1 ? IDS_UNREADMAIL : IDS_UNREADMAILS), szTemp, ARRAYSIZE(szTemp));
+                wsprintf(sz, szTemp, iUnreadMailCount);
+                SetStatus(LASS_Email, sz);
+                ShowStatus(LASS_Email);
             }
-
-            //pobjUser->Release();
+            else
+            {
+                RemoveStatus(LASS_Email);
+            }
         }
     }
 }
@@ -1228,6 +1245,6 @@ BOOL LogonAccount::IsPasswordBlank()
 	BOOLEAN bIsLocalNoPassword = false;
 	if (_pUser)
 		RETURN_IF_FAILED(_pUser->get_IsLocalNoPasswordUser(&bIsLocalNoPassword));
-    return bIsLocalNoPassword ? TRUE : FALSE;
+    return (bIsLocalNoPassword && g_plf->m_consoleUIManager->m_currentReason != LC::LogonUIRequestReason_LogonUIChange) ? TRUE : FALSE;
 }
 

@@ -215,6 +215,9 @@
 						<element background=PROP(resbmp(IDB_USERFRAMESEL,7,255,0,0,1,0)) borderthickness="rect(5,5,5,5)" margin="rect(0,0,7rp,0)" alpha="255"/>
 					</if>
 				</if>
+				<if id="atom(sas)">
+                	<element foreground="rgb(56,68,104)" background="argb(0,0,0,0)" font=PROP(resstr(IDS_HELPFONTSIZE))/>
+                </if>
 				<if id="atom(username)">
 					<element foreground="rgb(239,247,255)" contentalign="endellipsis"/>
 				</if>
@@ -395,6 +398,10 @@
 				<styledscrollviewer id="atom(scroller)" sheet="scroller" layoutpos="left" xscrollable="false" margin="rect(26rp,0rp,0rp,0rp)">
 					<logonaccountlist id="atom(accountlist)" sheet="accountlistss" layout=PROP(verticalflowlayout(0,ALIGN_JUSTIFY,ALIGN_JUSTIFY,ALIGN_CENTER)) />
 				</styledscrollviewer>
+				<element id="atom(sas)" sheet="hotaccountlistss" layout="borderlayout()" layoutpos="none" padding="rect(20rp,0rp,0rp,0rp)" accessible="true" accName=PROP(resstr(IDS_UNLOCK))>
+                	<element id="atom(keyboardicon)" layoutpos="left" contentalign="middlecenter" width="58rp" height="58rp" layout="flowlayout(0,2,2)"/>
+                	<element id="atom(username)" layoutpos="left" contentalign="middlecenter" content=PROP(resstr(IDS_UNLOCK))/>
+                </element>
 				<styledscrollviewer id="atom(SecurityOptions)" sheet="scroller" xscrollable="false" layoutpos="client" visible="false">
 					<element layout=PROP(verticalflowlayout(0,ALIGN_LEFT,ALIGN_LEFT,ALIGN_CENTER)) sheet="CommandLinks" padding="rect(5rp, 9rp, 0rp, 9rp)">
 						<button id="atom(SecurityLock)" accname="Lock this Computer" layoutpos="none" layout="flowlayout()" class="SecurityCommandLink">
@@ -460,8 +467,8 @@
 	<element resid="editcontrol" layout="borderlayout()" layoutpos="bottom">
 		<RestrictedEdit id="atom(password)" class="PasswordEdit" layoutpos="left" height="29rp" width="163rp" />
 		<element id="atom(keyboard)" layoutpos="left" />
-		<button id="atom(go)" layoutpos="left" accessible="true" accRole="43" accName=PROP(resstr(IDS_ACDSC_PWD)) />
-		<button id="atom(info)" layoutpos="left" accessible="true" accRole="43" accName=PROP(resstr(IDS_PASSWORDHINTTITLE)) />
+		<button id="atom(go)" visible="false" layoutpos="left" accessible="true" accRole="43" accName=PROP(resstr(IDS_ACDSC_PWD)) />
+		<button id="atom(info)" visible="false" layoutpos="left" accessible="true" accRole="43" accName=PROP(resstr(IDS_PASSWORDHINTTITLE)) />
 	</element>
 	
 //

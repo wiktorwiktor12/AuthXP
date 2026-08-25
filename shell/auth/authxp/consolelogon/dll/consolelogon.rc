@@ -56,7 +56,7 @@ IDB_CLOSEKF               BITMAP  DISCARDABLE     "resources/closekf.bmp"
 //
 // Icon
 //
-
+IDI_KEYBOARD ICON "resources/keyboard.ico"
 /////////////////////////////////////////////////////////////////////////////
 //
 // String Table
@@ -112,7 +112,7 @@ BEGIN
     IDS_UNREADMAILTEMP       "To read your messages, log on and choose E-mail from the Start menu."
     IDS_UNREADMAILACCOUNT    "%s (%d)"
     IDS_WINDOWSNAME          ""
-    IDS_UNLOCK          "Press CTRL + ALT + DELETE to unlock this computer"
+    IDS_UNLOCK          "Press Ctrl+Alt+Delete to begin."
 
     // Accessibility strings for narrator
     IDS_ACDSC_PWD           "Log user on"

@@ -289,7 +289,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>shell\auth\authxp\consolelogon\dll\ConsoleLogon.def</ModuleDefinitionFile>
-      <AdditionalDependencies>runtimeobject.lib;uxtheme.lib;Shlwapi.lib;PowrProf.lib;Wtsapi32.lib;gdiplus.lib;comctl32.lib;shcore.lib;slc.lib;Dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>runtimeobject.lib;uxtheme.lib;Netapi32.lib;Shlwapi.lib;PowrProf.lib;Wtsapi32.lib;gdiplus.lib;comctl32.lib;shcore.lib;slc.lib;Dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(_ConfigurationWithoutSpecifier)'=='Release'">
@@ -317,7 +317,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>shell\auth\authxp\consolelogon\dll\ConsoleLogon.def</ModuleDefinitionFile>
-      <AdditionalDependencies>runtimeobject.lib;uxtheme.lib;Shlwapi.lib;PowrProf.lib;Wtsapi32.lib;gdiplus.lib;comctl32.lib;shcore.lib;slc.lib;Dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>runtimeobject.lib;uxtheme.lib;Netapi32.lib;Shlwapi.lib;PowrProf.lib;Wtsapi32.lib;gdiplus.lib;comctl32.lib;shcore.lib;slc.lib;Dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -351,6 +351,7 @@
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\OptionalDependencyProvider.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\restrictededit.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\userlist.cpp" />
+    <ClCompile Include="shell\auth\authxp\consolelogon\lib\userprofile.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\usertileelement.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\zoomableelement.cpp" />
   </ItemGroup>
@@ -397,6 +398,7 @@
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\optionaldependencyprovider.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\restrictededit.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\userlist.h" />
+    <ClInclude Include="shell\auth\authxp\consolelogon\lib\userprofile.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\usertileelement.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\zoomableelement.h" />
   </ItemGroup>

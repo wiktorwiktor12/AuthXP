@@ -110,4 +110,6 @@ public:
 
     Microsoft::WRL::ComPtr<LCPD::ICredential> _tileData;
 	Microsoft::WRL::ComPtr<LCPD::IUser> _pUser;
+
+	DirectUI::Element* _prevEdit;
 };

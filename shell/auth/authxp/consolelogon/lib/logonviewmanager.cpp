@@ -1066,7 +1066,7 @@ HRESULT LogonViewManager::ShowCredentialView()
 			}
 		}
 
-		LOG_HR_MSG(E_FAIL,"there is a selectedUserOrCred %s , we should zoom it!\n", userName.GetRawBuffer(nullptr));
+		LOG_HR_MSG(E_FAIL,"there is a selectedUserOrCred %s , we should zoom it m_currentReason %i!\n", userName.GetRawBuffer(nullptr),m_currentReason);
 
 		//auto tileToZoom = CLogonFrame7::GetSingleton()->m_LogonUserList->FindTileByCredential(m_selectedCredential);
 		auto userToSelect = g_plf->FindUserByCred(m_selectedCredential);
@@ -1134,9 +1134,9 @@ HRESULT LogonViewManager::ShowMessageView(
 	HSTRING caption, HSTRING message, UINT messageBoxFlags,
 	WI::AsyncDeferral<WI::CMarshaledInterfaceResult<LC::IMessageDisplayResult>> completion)
 {
+	m_currentViewType = LogonView::Message;
 	g_plf->DisplayLogonDialog(WindowsGetStringRawBuffer(caption,nullptr),WindowsGetStringRawBuffer(message,nullptr),messageBoxFlags,completion);
 
-	m_currentViewType = LogonView::Message;
 	return S_OK;
 }
 

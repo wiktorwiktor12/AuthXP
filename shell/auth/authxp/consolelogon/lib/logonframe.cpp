@@ -1366,6 +1366,10 @@ void LogonFrame::EnterLogonMode(BOOL fUnLock)
     DirectUI::StyledScrollViewer* secOpts = (DirectUI::StyledScrollViewer*)FindDescendent(DirectUI::StrToID(L"SecurityOptions"));
     secOpts->SetLayoutPos(DirectUI::LP_None);
 
+	DirectUI::Element* sas = FindDescendent(DirectUI::StrToID(L"sas"));
+	sas->SetLayoutPos(DirectUI::LP_None);
+	sas->SetVisible(FALSE);
+
 	FindDescendent(DirectUI::StrToID(L"scroller"))->SetVisible(TRUE);
 	FindDescendent(DirectUI::StrToID(L"scroller"))->SetLayoutPos(DirectUI::BLP_Left);
 	FindDescendent(DirectUI::StrToID(L"accountlist"))->SetLayoutPos(DirectUI::LP_Auto);
@@ -1516,6 +1520,10 @@ void LogonFrame::EnterSecurityOptionsMode(LC::LogonUISecurityOptions options, WI
     FindDescendent(DirectUI::StrToID(L"scroller"))->SetLayoutPos(-3);
     FindDescendent(DirectUI::StrToID(L"accountlist"))->SetLayoutPos(-3);
 
+	DirectUI::Element* sas = FindDescendent(DirectUI::StrToID(L"sas"));
+	sas->SetLayoutPos(DirectUI::LP_None);
+	sas->SetVisible(FALSE);
+
     DirectUI::StyledScrollViewer* secOpts = (DirectUI::StyledScrollViewer*)FindDescendent(DirectUI::StrToID(L"SecurityOptions"));
 
     FindDescendent(DirectUI::StrToID(L"divider"))->SetLayoutPos(-1);
@@ -1589,14 +1597,49 @@ HRESULT LogonFrame::ConfirmEmergencyShutdown()
 
 HRESULT LogonFrame::ShowLockedScreen()
 {
-	WCHAR content[256];
+	/*WCHAR content[256];
 
 	int StringW = LoadStringW(HINST_THISCOMPONENT, IDS_UNLOCK, content, 256);
 	if (StringW <= 0)
 		return HRESULTFromLastErrorError();
 
 	SetStatus(content);
-	HideAccountPanel();
+	HideAccountPanel();*/
+	
+	FindDescendent(DirectUI::StrToID(L"scroller"))->SetVisible(FALSE);
+	FindDescendent(DirectUI::StrToID(L"scroller"))->SetLayoutPos(DirectUI::LP_None);
+	FindDescendent(DirectUI::StrToID(L"accountlist"))->SetLayoutPos(DirectUI::LP_None);
+
+	DirectUI::StyledScrollViewer* secOpts = (DirectUI::StyledScrollViewer*)FindDescendent(DirectUI::StrToID(L"SecurityOptions"));
+
+	//FindDescendent(DirectUI::StrToID(L"divider"))->SetLayoutPos(DirectUI::LP_Auto);
+	secOpts->SetLayoutPos(DirectUI::LP_None);
+	secOpts->SetVisible(FALSE);
+
+	DirectUI::Element* sas = FindDescendent(DirectUI::StrToID(L"sas"));
+	sas->SetLayoutPos(DirectUI::BLP_Left);
+	sas->SetVisible(TRUE);
+
+	DirectUI::Element* keyboardicon = FindDescendent(DirectUI::StrToID(L"keyboardicon"));
+	keyboardicon->SetVisible(TRUE);
+
+	auto pv = DirectUI::Value::CreateGraphic(MAKEINTRESOURCEW(IDI_KEYBOARD), (USHORT)PointToPixel(36), (USHORT)PointToPixel(36), HINST_THISCOMPONENT,false,false);
+	if (pv)
+	{
+		keyboardicon->SetValue(DirectUI::Element::ContentProp, DirectUI::PI_Local, pv);
+		pv->Release();
+	}
+	SetStatus(L"",false);
+	ShowAccountPanel();
+
+	Element* pe = FindDescendent(DirectUI::StrToID(L"instruct"));
+	assert(pe);
+	pe->SetVisible(FALSE);
+
+	HidePowerButton();
+	HideUndockButton();
+
+	return S_OK;
 }
 
 HRESULT LogonFrame::DisplayLogonDialog(const wchar_t* messageCaptionContent, const wchar_t* messageContent, WORD flags,
@@ -1659,63 +1702,65 @@ LRESULT LogonFrame::InteractiveLogonRequest(LPCWSTR pszUsername, LPCWSTR pszPass
 
 void LogonFrame::NextFlagAnimate(DWORD dwFrame)
 {
-#ifndef ANIMATE_FLAG
-    UNREFERENCED_PARAMETER(dwFrame);
-#else
-    Element* pe;
+	//if (settingShouldAnimateFlag == FALSE)
+	//	UNREFERENCED_PARAMETER(dwFrame);
+	//else
+	{
+		Element* pe;
 
-    if (dwFrame >= MAX_FLAG_FRAMES || g_fNoAnimations)
-    {
-        return;
-    }
+		if (dwFrame >= MAX_FLAG_FRAMES || g_fNoAnimations)
+		{
+			return;
+		}
 
-    pe = FindDescendent(DirectUI::StrToID(L"product"));
-    assert(pe);
+		pe = FindDescendent(DirectUI::StrToID(L"product"));
+		assert(pe);
 
-    if (pe)
-    {
-        HBITMAP hbm = NULL;
-        HDC hdc;
-        DirectUI::Value* pv = NULL;
+		if (pe)
+		{
+			HBITMAP hbm = NULL;
+			HDC hdc;
+			DirectUI::Value* pv = NULL;
 
-        hdc = CreateCompatibleDC(_hdcAnimation);
+			hdc = CreateCompatibleDC(_hdcAnimation);
 
-        if (hdc)
-        {
-            pv = pe->GetValue(Element::ContentProp, PI_Local,0);
-            if (pv)
-            {
-                hbm = (HBITMAP)pv->GetImage(false,1.0f);
-            }
+			if (hdc)
+			{
+				pv = pe->GetValue(Element::ContentProp, DirectUI::PI_Local,0);
+				if (pv)
+				{
+					hbm = (HBITMAP)pv->GetImage(false,1.0f);
+				}
 
-            if (hbm)
-            {
-                _dwFlagFrame = dwFrame;
-                if (_dwFlagFrame >= MAX_FLAG_FRAMES)
-                {
-                    _dwFlagFrame = 0;
-                }
+				if (hbm)
+				{
+					_dwFlagFrame = dwFrame;
+					if (_dwFlagFrame >= MAX_FLAG_FRAMES)
+					{
+						_dwFlagFrame = 0;
+					}
 
 
-                HBITMAP hbmSave = (HBITMAP)SelectObject(hdc, hbm);
-                BitBlt(hdc, 0, 0, 137, 86, _hdcAnimation, 0, 86 * _dwFlagFrame, SRCCOPY);
-                SelectObject(hdc, hbmSave);
+					HBITMAP hbmSave = (HBITMAP)SelectObject(hdc, hbm);
+					BitBlt(hdc, 0, 0, 137, 86, _hdcAnimation, 0, 86 * _dwFlagFrame, SRCCOPY);
+					SelectObject(hdc, hbmSave);
 
-                HGADGET hGad = pe->GetDisplayNode();
-                if (hGad)
-                {
-                    InvalidateGadget(hGad);
-                }
-            }
+					HGADGET hGad = pe->GetDisplayNode();
+					if (hGad)
+					{
+						InvalidateGadget(hGad);
+					}
+				}
 
-            if (pv)
-            {
-                pv->Release();
-            }
-            DeleteDC(hdc);
-        }
-    }
-#endif
+				if (pv)
+				{
+					pv->Release();
+				}
+				DeleteDC(hdc);
+			}
+		}
+	}
+
 }
 
 void LogonFrame::DisplaySerializationFailed(HSTRING caption, HSTRING message)
@@ -1734,6 +1779,25 @@ void LogonFrame::DisplaySerializationFailed(HSTRING caption, HSTRING message)
 	wcscpy_s(messageContent,rawmessage);
 
 	g_pErrorBalloon.ShowToolTip(GetModuleHandleW(NULL), target, messageContent, captionContent, TTI_ERROR, EB_WARNINGCENTERED | EB_MARKUP, 10000);
+}
+
+static HRESULT SHRegGetDWORDW(HKEY hkey, const WCHAR* pszSubKey, const WCHAR* pszValue, void* pvData)
+{
+	DWORD pcbData[6];
+	pcbData[0] = 4;
+	LSTATUS ValueW_0 = SHRegGetValueW(hkey, pszSubKey, pszValue, 16, nullptr, pvData, pcbData);
+	HRESULT result = static_cast<WORD>(ValueW_0) | 0x80070000;
+	if (ValueW_0 <= 0)
+		return ValueW_0;
+	return result;
+}
+
+void LogonFrame::LoadSettings()
+{
+	settingShouldAnimateFlag = FALSE;
+	settingShouldShowDateAndTime = FALSE;
+	SHRegGetDWORDW(HKEY_LOCAL_MACHINE,L"Software\\AuthXP",L"ShouldAnimateFlag",&settingShouldAnimateFlag);
+	SHRegGetDWORDW(HKEY_LOCAL_MACHINE,L"Software\\AuthXP",L"ShouldShowDateAndTime",&settingShouldShowDateAndTime);
 }
 
 LogonFrame::~LogonFrame()
@@ -1773,7 +1837,7 @@ HRESULT LogonFrame::Initialize(HWND hParent, BOOL fDblBuffer, UINT nCreate)
     _dwFlagFrame = 0;
     _nColorDepth = 0;
 
-
+	LoadSettings();
     // Set up notification window
     _hwndNotification = CreateWindowEx(0,
         TEXT("LogonWnd"),
@@ -1814,25 +1878,26 @@ HRESULT LogonFrame::Initialize(HWND hParent, BOOL fDblBuffer, UINT nCreate)
         _nColorDepth = GetDeviceCaps(hDC, BITSPIXEL);
         ReleaseDC(NULL, hDC);
 
-#ifdef ANIMATE_FLAG
-        hDC = GetDC(hParent);
-        _hdcAnimation = CreateCompatibleDC(hDC);
-        if (_hdcAnimation)
-        {
-            _hbmpFlags = (HBITMAP)LoadImage(gHinstance, MAKEINTRESOURCE(IDB_FLAGSTRIP), IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR);
-            if (_hbmpFlags)
-            {
-                HBITMAP hbmOld = (HBITMAP)SelectObject(_hdcAnimation, _hbmpFlags);
-                DeleteObject(hbmOld);
-            }
-            else
-            {
-                DeleteDC(_hdcAnimation);
-                _hdcAnimation = NULL;
-            }
-        }
-        ReleaseDC(hParent, hDC);
-#endif
+    	if (settingShouldAnimateFlag == TRUE)
+    	{
+    		hDC = GetDC(hParent);
+    		_hdcAnimation = CreateCompatibleDC(hDC);
+    		if (_hdcAnimation)
+    		{
+    			_hbmpFlags = (HBITMAP)LoadImage(HINST_THISCOMPONENT, MAKEINTRESOURCE(IDB_FLAGSTRIP), IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR);
+    			if (_hbmpFlags)
+    			{
+    				HBITMAP hbmOld = (HBITMAP)SelectObject(_hdcAnimation, _hbmpFlags);
+    				DeleteObject(hbmOld);
+    			}
+    			else
+    			{
+    				DeleteDC(_hdcAnimation);
+    				_hdcAnimation = NULL;
+    			}
+    		}
+    		ReleaseDC(hParent, hDC);
+    	}
     }
 
     hr = SetActive(DirectUI::AEF_MouseAndKeyboard);
@@ -1918,6 +1983,38 @@ void LogonFrame::UpdateUserStatus(BOOL fRefreshAll)
     pvChildren->Release();
     EndDefer(cookie);
     fUpdating = false;
+}
+
+void LogonFrame::UpdateTime()
+{
+	SYSTEMTIME st;
+	GetLocalTime(&st);
+
+	if (st.wMinute == _lastMinute)
+		return;
+
+	WCHAR buffer[64];
+	int result;
+	
+	result = GetTimeFormatW(LOCALE_USER_DEFAULT, TIME_NOSECONDS, &st, nullptr, buffer, 64);
+	if (result == 0)
+		result = GetTimeFormatW(LOCALE_SYSTEM_DEFAULT, TIME_NOSECONDS, &st, nullptr, buffer, 64);
+		
+	if (result == 0)
+		_peTimeArea->SetContentString(nullptr);
+	else
+		_peTimeArea->SetContentString(buffer);
+
+	result = GetDateFormatW(LOCALE_USER_DEFAULT, DATE_LONGDATE, &st, nullptr, buffer, 64);
+	if (result == 0)
+		result = GetDateFormatW(LOCALE_SYSTEM_DEFAULT, DATE_LONGDATE, &st, nullptr, buffer, 64);
+
+	if (result == 0)
+		_peDateArea->SetContentString(nullptr);
+	else
+		_peDateArea->SetContentString(buffer);
+
+	_lastMinute = st.wMinute;
 }
 
 LogonAccount* LogonFrame::FindUserByCred(Microsoft::WRL::ComPtr<LCPD::ICredential>& cred)
@@ -2108,7 +2205,11 @@ void LogonFrame::SetStatus(LPCWSTR psz, bool bHideAccountPanel)
 		_peMsgArea->FindDescendent(DirectUI::StrToID(L"welcomeshadow"))->SetContentString(lowerString.c_str());*/
 		if (GetState() != LAS_PostStatus && bHideAccountPanel)
 		{
+			HidePowerButton();
+			HideUndockButton();
 			HideAccountPanel();
+			Element* pe = FindDescendent(DirectUI::StrToID(L"instruct"));
+			pe->SetVisible(FALSE);
 		}
 		if (GetState() == LAS_PostStatus && LogonAccount::_peCandidate)
 		{
@@ -2186,11 +2287,8 @@ void LogonFrame::SetButtonLabels()
     }
 }
 
-//TODO: IMPL
 HRESULT LogonFrame::AddAccountFromTile(const Microsoft::WRL::ComPtr<LCPD::ICredential>& tileData, const Microsoft::WRL::ComPtr<LCPD::IUser>& user, OUT LogonAccount** ppla)
 {
-	//*ppla = NULL;
-	//return E_NOTIMPL;
     HRESULT hr;
     LogonAccount* pla = NULL;
 	Wrappers::HString userName;
@@ -2222,7 +2320,6 @@ HRESULT LogonFrame::AddAccountFromTile(const Microsoft::WRL::ComPtr<LCPD::ICrede
 	}
 
 	//TODO: figure out a way to retrieve the password hint nicely, a hacky way to do it would be to find the credentialfield with it, but a way to find it no matter the display language would be needed
-
 	hint.Set(L"");
 
     pla->_tileData = tileData;
@@ -2232,7 +2329,6 @@ HRESULT LogonFrame::AddAccountFromTile(const Microsoft::WRL::ComPtr<LCPD::ICrede
     hr = pla->OnTreeReady(false, userName.GetRawBuffer(0), userName.GetRawBuffer(0), hint.GetRawBuffer(0), TRUE, isLoggedOn, GetHInstance());
     if (FAILED(hr))
         goto Failure;
-
 
     hr = _peAccountList->Add(pla);
     if (FAILED(hr))
@@ -2254,6 +2350,8 @@ HRESULT LogonFrame::AddAccountFromTile(const Microsoft::WRL::ComPtr<LCPD::ICrede
             pEle->SetBorderColor(ORGB(96, 128, 255));
         }
     }
+
+	pla->UpdateNotifications(true);
 
     if (ppla)
         *ppla = pla;
@@ -2406,14 +2504,8 @@ void LogonFrame::OnEvent(DirectUI::Event* pEvent)
     			{
     				ComPtr<IInspectable> inspectable;
     				LOG_IF_FAILED(tile->_tileData.As(&inspectable));
-    				//m_consoleUIManager->m_credProvDataModel->put_SelectedUserOrV1Credential(tile->m_dataSourceUser.Get());
-    				m_consoleUIManager->m_credProvDataModel->put_SelectedUserOrV1Credential(tile->_pUser.Get() ? tile->_pUser.Get() : inspectable.Get());
+    				LOG_IF_FAILED(m_consoleUIManager->m_credProvDataModel->put_SelectedUserOrV1Credential(tile->_pUser.Get() ? tile->_pUser.Get() : inspectable.Get()));
     				LOG_HR_MSG(E_FAIL,"PUTTING THING");
-    				//HRESULT hr = BeginInvoke(m_consoleUIManager->m_Dispatcher.Get(), [=]() -> void
-    				//{
-    				//	UNREFERENCED_PARAMETER(this);
-    				//	thisRef->m_credProvDataModel->put_SelectedUserOrV1Credential(tile->m_dataSourceCredential.Get());
-    				//});
     			}
     			else
     			{
@@ -2682,12 +2774,9 @@ HRESULT LogonFrame::OnUndock()
 }
 
 
-#define TIMER_REFRESHTIPS 1014
-#define TIMER_ANIMATEFLAG 1015
-#define TOTAL_FLAG_FRAMES (FLAG_ANIMATION_COUNT * MAX_FLAG_FRAMES)
-
 UINT_PTR g_puTimerId = 0;
 UINT_PTR g_puFlagTimerId = 0;
+UINT_PTR g_puUpdateTimeId = 0;
 
 DWORD sTimerCount = 0;
 
@@ -2746,6 +2835,22 @@ HRESULT LogonFrame::OnTreeReady(DirectUI::DUIXmlParser* pParser)
         hr = E_OUTOFMEMORY;
         return hr;
     }
+
+	_peDateArea = (DirectUI::Element*)_peDateTimeArea->FindDescendent(DirectUI::StrToID(L"date"));
+	assert(_peDateArea, "Cannot find date area, check the UI file");
+	if (_peDateArea == NULL)
+	{
+		hr = E_OUTOFMEMORY;
+		return hr;
+	}
+
+	_peTimeArea = (DirectUI::Element*)_peDateTimeArea->FindDescendent(DirectUI::StrToID(L"time"));
+	assert(_peTimeArea, "Cannot find time area, check the UI file");
+	if (_peTimeArea == NULL)
+	{
+		hr = E_OUTOFMEMORY;
+		return hr;
+	}
 
     _peMsgArea = (DirectUI::Element*)FindDescendent(DirectUI::StrToID(L"msgarea"));
     assert(_peMsgArea, "Cannot find welcome area, check the UI file");
@@ -2848,10 +2953,10 @@ HRESULT LogonFrame::OnTreeReady(DirectUI::DUIXmlParser* pParser)
     //DEBUG
     //EnterPostStatusMode();
     g_puTimerId = SetTimer(_hwndNotification, TIMER_REFRESHTIPS, 0, NULL);
-#ifdef ANIMATE_FLAG
-    g_puFlagTimerId = SetTimer(_hwndNotification, TIMER_ANIMATEFLAG, 20, NULL);    // start the flag animation
-#endif
+	if (settingShouldAnimateFlag == TRUE)
+		g_puFlagTimerId = SetTimer(_hwndNotification, TIMER_ANIMATEFLAG, 20, NULL);    // start the flag animation
 
+    g_puUpdateTimeId = SetTimer(_hwndNotification, TIMER_UPDATETIME, 1000, NULL);    // start the time update timer
 
     return S_OK;
 
@@ -2864,16 +2969,17 @@ Failure:
 
 void KillFlagAnimation()
 {
-#ifdef ANIMATE_FLAG
-    if (sTimerCount > 0 && sTimerCount < TOTAL_FLAG_FRAMES)
-    {
-        sTimerCount = TOTAL_FLAG_FRAMES + 1;
-        if (g_plf != NULL)
-        {
-            g_plf->NextFlagAnimate(0);
-        }
-    }
-#endif
+	if (g_plf && g_plf->settingShouldAnimateFlag == TRUE)
+	{
+		if (sTimerCount > 0 && sTimerCount < TOTAL_FLAG_FRAMES)
+		{
+			sTimerCount = TOTAL_FLAG_FRAMES + 1;
+			if (g_plf != NULL)
+			{
+				g_plf->NextFlagAnimate(0);
+			}
+		}
+	}
 }
 
 void LogonFrame::OnListenedPropertyChanged(Element* peFrom, const DirectUI::PropertyInfo* ppi, int iIndex, DirectUI::Value* pvOld, DirectUI::Value* pvNew)

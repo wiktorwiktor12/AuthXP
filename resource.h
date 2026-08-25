@@ -236,6 +236,7 @@
 #define IDB_CLOSEKF             131
 
 #define IDR_LOGONUI            1000
+#define IDI_KEYBOARD            1001
 
 // hTheme identification from within the resource
 #define SCROLLBARHTHEME           1

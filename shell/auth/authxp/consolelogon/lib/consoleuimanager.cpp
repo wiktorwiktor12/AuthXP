@@ -6,7 +6,6 @@
 #include <uxtheme.h>
 
 #include "advisablebutton.h"
-#include "animationstrip.h"
 #include "backgroundwindow.h"
 #include "combobox.h"
 #include "labeledcheckbox.h"
@@ -16,7 +15,6 @@
 #include "restrictededit.h"
 #include "DirectUI/DirectUI.h"
 #include "ShellScalingApi.h"
-#include "zoomableelement.h"
 
 using namespace Microsoft::WRL;
 
@@ -124,6 +122,99 @@ void CALLBACK LogonParseError(LPCWSTR pszError, LPCWSTR pszToken, int dLine, voi
 	MessageBoxW(NULL, buf, L"Parser Message", MB_OK);
 }
 
+LRESULT CALLBACK LogonWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	static BOOL sResetTimer = false;
+
+	LogonFrame* pLogonFrame;
+
+	pLogonFrame = g_plf;
+
+	switch (uMsg)
+	{
+	case WM_TIMER:
+		if ((pLogonFrame != NULL) && (pLogonFrame->GetState() == LAS_Logon) && (wParam == TIMER_REFRESHTIPS))
+		{
+			BOOL fRefreshAll = false;
+
+			if (!sResetTimer)
+			{
+				fRefreshAll = true;
+				sResetTimer = true;
+
+				KillTimer(hwnd, g_puTimerId);
+				g_puTimerId = SetTimer(hwnd, TIMER_REFRESHTIPS, 15000, NULL);       // update the values 15 seconds
+				if (pLogonFrame->settingShouldAnimateFlag == TRUE)
+					g_puFlagTimerId = SetTimer(hwnd, TIMER_ANIMATEFLAG, 20, NULL);    // start the flag animation
+			}
+
+			pLogonFrame->UpdateUserStatus(fRefreshAll);
+			return 0;
+		}
+		if ((pLogonFrame != NULL) && wParam == TIMER_UPDATETIME)
+		{
+			pLogonFrame->UpdateTime();
+			return 0;
+		}
+		if ((pLogonFrame != NULL) && pLogonFrame->settingShouldAnimateFlag == TRUE)
+		{
+			if (wParam == TIMER_ANIMATEFLAG)
+			{
+				if (sTimerCount > TOTAL_FLAG_FRAMES)
+				{
+					sTimerCount = 0;
+					KillTimer(hwnd, g_puFlagTimerId);
+					pLogonFrame->NextFlagAnimate(0);
+				}
+				else
+				{
+					sTimerCount++;
+					pLogonFrame->NextFlagAnimate(sTimerCount % MAX_FLAG_FRAMES);
+				}
+				return 0;
+			}
+		}
+
+		break;
+	}
+	return DefWindowProc(hwnd, uMsg, wParam, lParam);
+}
+
+static void DoFadeWindow(HWND hwnd)
+{
+	HDC hdc;
+	int i;
+	RECT rcFrame;
+	COLORREF rgbFinal = RGB(90,126,220);
+
+	hdc = GetDC(hwnd);
+	GetClientRect(hwnd, &rcFrame);
+
+	COLORREF crCurr;
+	HBRUSH hbrFill;
+
+	crCurr = RGB(0,0,0);
+	// draw the left bar
+	for (i = 0; i < 16; i++)
+	{
+		RECT rcCurrFrame;
+
+		rcCurrFrame = rcFrame;
+
+		crCurr = RGB((GetRValue(rgbFinal) / 16)*i,
+					 (GetGValue(rgbFinal) / 16)*i,
+					 (GetBValue(rgbFinal) / 16)*i);
+		hbrFill = CreateSolidBrush(crCurr);
+		if (hbrFill)
+		{
+			FillRect(hdc, &rcCurrFrame, hbrFill);
+			DeleteObject(hbrFill);
+		}
+		GdiFlush();
+	}
+	ReleaseDC(hwnd, hdc);
+}
+
 DWORD ConsoleUIManager::UIThreadHostThreadProc()
 {
 	DWORD dwIndex = WAIT_IO_COMPLETION;
@@ -136,6 +227,15 @@ DWORD ConsoleUIManager::UIThreadHostThreadProc()
 
 	DirectUI::InitThread(2);
 	DirectUI::RegisterAllControls();
+
+	WNDCLASSEX wcx = { 0 };
+	wcx.cbSize = sizeof(WNDCLASSEX);
+	wcx.lpfnWndProc = LogonWindowProc;
+	wcx.hInstance = GetModuleHandleW(NULL);
+	wcx.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+	wcx.lpszClassName = TEXT("LogonWnd");
+	wcx.hCursor = LoadCursor(NULL, IDC_ARROW);
+	RegisterClassEx(&wcx);
 
 	CBackgroundWindow   backgroundWindow(HINST_THISCOMPONENT);
 
@@ -253,15 +353,17 @@ DWORD ConsoleUIManager::UIThreadHostThreadProc()
 
             DirectUI::Element* peLogoArea = g_plf->FindDescendent(DirectUI::StrToID(L"product"));
 
-            //if (!g_fNoAnimations)
-            //{
-            //    pnhh->ShowWindow(SW_SHOW);
-            //    DoFadeWindow(pnhh->GetHWND());
-            //    if (peLogoArea)
-            //    {
-            //        peLogoArea->SetAlpha(0);
-            //    }
-            //}
+            if (!g_fNoAnimations)
+            {
+                pnhh->ShowWindow(SW_SHOW);
+                DoFadeWindow(pnhh->GetHWND());
+                if (peLogoArea)
+                {
+                    peLogoArea->SetAlpha(0);
+                }
+            }
+
+			g_plf->UpdateTime();
 
             // Set visible and focus
             g_plf->SetVisible(true);
@@ -270,17 +372,19 @@ DWORD ConsoleUIManager::UIThreadHostThreadProc()
             // Do initial show
             pnhh->ShowWindow(SW_SHOW);
 
-            //if (!g_fNoAnimations)
-            //{
-            //    DirectUI::EnableAnimations();
-            //}
+            if (!g_fNoAnimations)
+            {
+                DirectUI::EnableAnimations();
+            }
 
             if (peLogoArea)
             {
                 peLogoArea->SetAlpha(255);
             }
-            g_plf->HideDateTimeArea();
-            //g_plf->ShowDateTimeArea();
+        	if (g_plf->settingShouldShowDateAndTime == TRUE)
+        		g_plf->ShowDateTimeArea();
+        	else
+        		g_plf->HideDateTimeArea();
             //g_plf->EnterSecurityOptionsMode();
             //g_plf->SetTitle(TEXT("HI"));
 
