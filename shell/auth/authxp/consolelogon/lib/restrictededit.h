@@ -49,7 +49,7 @@ public:
 	//~ End WF::ITypedEventHandler<LCPD::ICredentialField*, LCPD::CredentialFieldChangeKind> Interface
 
 	HWND m_hwnd;
-	const wchar_t* m_hintText = L"Hint Text Test";
+	const wchar_t* m_hintText = L"";
 	DWORD m_maxTextLength;
 	LCPD::CredProvScenario m_scenario;
 	bool m_bIsCapslockPressed;

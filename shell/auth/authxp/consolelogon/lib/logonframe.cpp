@@ -2110,6 +2110,11 @@ void LogonFrame::SetStatus(LPCWSTR psz, bool bHideAccountPanel)
 		{
 			HideAccountPanel();
 		}
+		if (GetState() == LAS_PostStatus && LogonAccount::_peCandidate)
+		{
+			LogonAccount::_peCandidate->SetStatus(0,psz);
+			LogonAccount::_peCandidate->ShowStatus(0);
+		}
 	}
 }
 
@@ -2547,12 +2552,13 @@ HRESULT LogonFrame::OnLogUserOn(LogonAccount* pla)
     // Set keyfocus back to frame so it isn't pushed anywhere when controls are removed.
     // This will also cause a remove of the password panel from the current account
     SetKeyFocus();
+	pla->SetSelected(false);
 
     // Disable status so that it can't be clicked on anymore
     pla->DisableStatus(0);
     pla->DisableStatus(1);
 
-    pla->RemoveCredPanel();
+    //pla->RemoveCredPanel();
 
     // Clear list of logon accounts except the one logging on
     DirectUI::Value* pvChildren;

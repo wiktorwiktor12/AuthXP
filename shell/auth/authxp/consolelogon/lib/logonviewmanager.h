@@ -168,4 +168,5 @@ private:
 
 	friend class CLogonFrame7;
 	friend class LogonFrame;
+	friend class LogonAccount;
 };

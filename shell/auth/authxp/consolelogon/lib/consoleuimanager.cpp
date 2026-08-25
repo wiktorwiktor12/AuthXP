@@ -279,7 +279,7 @@ DWORD ConsoleUIManager::UIThreadHostThreadProc()
             {
                 peLogoArea->SetAlpha(255);
             }
-            //g_plf->HideDateTimeArea();
+            g_plf->HideDateTimeArea();
             //g_plf->ShowDateTimeArea();
             //g_plf->EnterSecurityOptionsMode();
             //g_plf->SetTitle(TEXT("HI"));

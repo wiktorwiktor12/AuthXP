@@ -2,6 +2,14 @@
 
 #include <cinttypes>
 #include <minidumpapiset.h>
+#include <windows.h>
+#include <wil/result.h>
+#include <string>
+#include <fstream>
+#include <mutex>
+#include <ctime>
+#include <sstream>
+#include <iomanip>
 
 using namespace Microsoft::WRL;
 

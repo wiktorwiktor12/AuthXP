@@ -11,6 +11,9 @@
 #include "labeledcheckbox.h"
 #include "logonguids.h"
 #include "restrictededit.h"
+#include "EventDispatcher.h"
+
+using namespace Microsoft::WRL;
 
 void LogonAccount::SetKeyboardIcon(HICON hIcon)
 {
@@ -295,11 +298,12 @@ BOOL LogonAccount::OnAuthenticateUser()
     //        pobjUser->Release();
     //    }
     //}
-	_tileData->Submit();
     //if (vbLogonSucceeded == VARIANT_TRUE)
+	hr = BeginInvoke(g_plf->m_consoleUIManager->m_Dispatcher.Get(), [=]() -> void
     {
-        OnAuthenticatedUser();
-    }
+		_tileData->Submit();
+    });
+	this->OnAuthenticatedUser();
     //else
     //{
     //    if (pszInPassword == NULL)
@@ -705,7 +709,7 @@ HRESULT LogonAccount::_CreateEditField(Microsoft::WRL::ComPtr<LCPD::ICredentialF
     if (bIsPasswordField)
         RETURN_IF_FAILED(restrictedEdit->SetAccValue(label.GetRawBuffer(NULL)));
 
-    StringStringAllocCopy(label.GetRawBuffer(nullptr), &restrictedEdit->m_hintText);
+    //StringStringAllocCopy(label.GetRawBuffer(nullptr), &restrictedEdit->m_hintText);
 
     restrictedEdit->m_maxTextLength = 127;
 
@@ -1221,6 +1225,9 @@ void LogonAccount::UnreadMailTip()
 
 BOOL LogonAccount::IsPasswordBlank()
 {
-    return FALSE;
+	BOOLEAN bIsLocalNoPassword = false;
+	if (_pUser)
+		RETURN_IF_FAILED(_pUser->get_IsLocalNoPasswordUser(&bIsLocalNoPassword));
+    return bIsLocalNoPassword ? TRUE : FALSE;
 }
 

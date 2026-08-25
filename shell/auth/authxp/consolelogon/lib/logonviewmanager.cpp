@@ -1096,7 +1096,20 @@ HRESULT LogonViewManager::ShowCredentialView()
 			RETURN_IF_FAILED(selectedUser->get_IsLocalNoPasswordUser(&bIsLocalNoPassword));
 
 		if (bautosubmit && bIsLocalNoPassword && m_currentReason != LC::LogonUIRequestReason_LogonUIChange)
-			m_selectedCredential->Submit();
+		{
+			//HRESULT hr = BeginInvoke(m_Dispatcher.Get(),[=]() -> void
+			//{
+			//	m_selectedCredential->Submit();
+			//});
+			//RETURN_IF_FAILED(hr);
+			//g_plf->HideAccountPanel();
+			//g_plf->ShowWelcomeArea();
+			if (userToSelect)
+				userToSelect->OnAuthenticateUser();
+
+			g_plf->HideAccountPanel();
+			g_plf->ShowWelcomeArea();
+		}
 
 		m_currentViewType = LogonView::SelectedCredential;
 
