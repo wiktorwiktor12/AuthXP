@@ -6,6 +6,7 @@
 #include <uxtheme.h>
 
 #include "advisablebutton.h"
+#include "advisableelement.h"
 #include "backgroundwindow.h"
 #include "combobox.h"
 #include "labeledcheckbox.h"
@@ -15,6 +16,7 @@
 #include "restrictededit.h"
 #include "DirectUI/DirectUI.h"
 #include "ShellScalingApi.h"
+#include "submitbutton.h"
 
 using namespace Microsoft::WRL;
 
@@ -238,21 +240,16 @@ DWORD ConsoleUIManager::UIThreadHostThreadProc()
 	RegisterClassEx(&wcx);
 
 	CBackgroundWindow   backgroundWindow(HINST_THISCOMPONENT);
-
-	//CDUIAnimationStrip::Register();
-	//CLogonFrame7::Register();
+	
 	LogonFrame::Register();
 	LogonAccount::Register();
 	LogonAccountList::Register();
-	//CDUIUserTileElement::Register();
-	//CDUIZoomableElement::Register();
 	CDUIRestrictedEdit::Register();
 	CDUIComboBox::Register();
-	//UserList::Register();
 	CAdvisableButton::Register();
-	CDUIFieldContainer::Register();
+	CAdvisableElement::Register();
 	CDUILabeledCheckbox::Register();
-
+	CSubmitButton::Register();
 
 	DirectUI::DUIXmlParser* pParser = NULL;
 	DirectUI::NativeHWNDHost* pnhh = NULL;

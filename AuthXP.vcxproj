@@ -329,8 +329,7 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\advisablebutton.cpp" />
-    <ClCompile Include="shell\auth\authxp\consolelogon\lib\animationstrip.cpp" />
-    <ClCompile Include="shell\auth\authxp\consolelogon\lib\backgroundfetcher.cpp" />
+    <ClCompile Include="shell\auth\authxp\consolelogon\lib\advisableelement.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\backgroundwindow.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\combobox.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\consolebsdrstub.cpp" />
@@ -341,19 +340,15 @@
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\DefaultSelector.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\errorballoon.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\EventDispatcher.cpp" />
-    <ClCompile Include="shell\auth\authxp\consolelogon\lib\fieldcontainer.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\labeledcheckbox.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\logonaccount.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\logonaccountlist.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\logonframe.cpp" />
-    <ClCompile Include="shell\auth\authxp\consolelogon\lib\logonnativehwndhost.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\logonviewmanager.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\OptionalDependencyProvider.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\restrictededit.cpp" />
-    <ClCompile Include="shell\auth\authxp\consolelogon\lib\userlist.cpp" />
+    <ClCompile Include="shell\auth\authxp\consolelogon\lib\submitbutton.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\userprofile.cpp" />
-    <ClCompile Include="shell\auth\authxp\consolelogon\lib\usertileelement.cpp" />
-    <ClCompile Include="shell\auth\authxp\consolelogon\lib\zoomableelement.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -378,8 +373,6 @@
     <ClInclude Include="sdk\inc\xhashmap.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\dll\pch.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\advisablebutton.h" />
-    <ClInclude Include="shell\auth\authxp\consolelogon\lib\animationstrip.h" />
-    <ClInclude Include="shell\auth\authxp\consolelogon\lib\backgroundfetcher.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\backgroundwindow.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\combobox.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\authuxlockaction.h" />
@@ -388,19 +381,15 @@
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\duiutil.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\errorballoon.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\EventDispatcher.h" />
-    <ClInclude Include="shell\auth\authxp\consolelogon\lib\fieldcontainer.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\labeledcheckbox.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\logonaccount.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\logonaccountlist.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\logonframe.h" />
-    <ClInclude Include="shell\auth\authxp\consolelogon\lib\logonnativehwndhost.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\logonviewmanager.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\optionaldependencyprovider.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\restrictededit.h" />
-    <ClInclude Include="shell\auth\authxp\consolelogon\lib\userlist.h" />
+    <ClInclude Include="shell\auth\authxp\consolelogon\lib\submitbutton.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\userprofile.h" />
-    <ClInclude Include="shell\auth\authxp\consolelogon\lib\usertileelement.h" />
-    <ClInclude Include="shell\auth\authxp\consolelogon\lib\zoomableelement.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="shell\auth\authxp\consolelogon\dll\consolelogon.rc" />
@@ -527,6 +516,9 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release.GE|x64'">$(InputPath)resources\logon.uipp</Outputs>
     </CustomBuild>
     <None Include="shell\auth\authxp\consolelogon\dll\ConsoleLogon.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="shell\auth\authxp\consolelogon\lib\advisableelement.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

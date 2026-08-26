@@ -25,13 +25,13 @@ public:
     // Operations
     void InitCredPanel(Element* pePwdPanel, DirectUI::Edit* pePwdEdit, Button* pbPwdInfo, Element* peKbdIcon) { _pePwdPanel = pePwdPanel; _pePwdEdit = pePwdEdit; _pbPwdInfo = pbPwdInfo; _peKbdIcon = peKbdIcon; }
     HRESULT CreateCredPanelElements();
-    HRESULT CreateField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement);
-    HRESULT _CreateCommandLinkField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement);
-    HRESULT _CreateStaticTextField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement);
-    HRESULT _CreateEditField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement);
-    HRESULT _CreateCheckboxField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement);
-    HRESULT _CreateComboBoxField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement);
-    HRESULT _CreateSubmitButton(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement);
+    HRESULT CreateField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement,class CSubmitButton** ppOutSubmitButton);
+    HRESULT _CreateCommandLinkField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement,class CSubmitButton** ppOutSubmitButton);
+    HRESULT _CreateStaticTextField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement,class CSubmitButton** ppOutSubmitButton);
+    HRESULT _CreateEditField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement,class CSubmitButton** ppOutSubmitButton);
+    HRESULT _CreateCheckboxField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement,class CSubmitButton** ppOutSubmitButton);
+    HRESULT _CreateComboBoxField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement,class CSubmitButton** ppOutSubmitButton);
+    HRESULT _CreateSubmitButton(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement,class CSubmitButton** ppOutSubmitButton);
     HRESULT SetFieldInitialVisibility(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element* fieldElement);
     HRESULT SetFieldVisibility(DirectUI::Element* fieldElement, bool bIsVisible);
     HRESULT InsertCredPanel();

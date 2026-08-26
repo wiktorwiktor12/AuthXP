@@ -1,42 +1,42 @@
 ﻿#include "pch.h"
-#include "advisablebutton.h"
+#include "advisableelement.h"
 
 #include "logonaccount.h"
 
-CAdvisableButton::CAdvisableButton() : m_index(-1)
+CAdvisableElement::CAdvisableElement() : m_index(-1)
 	, m_owningElement(nullptr)
 	, m_token(0)
 {
 }
 
-CAdvisableButton::~CAdvisableButton()
+CAdvisableElement::~CAdvisableElement()
 {
 }
 
-DirectUI::IClassInfo* CAdvisableButton::Class = nullptr;
+DirectUI::IClassInfo* CAdvisableElement::Class = nullptr;
 
-DirectUI::IClassInfo* CAdvisableButton::GetClassInfoW()
-{
-	return Class;
-}
-
-DirectUI::IClassInfo* CAdvisableButton::GetClassInfoPtr()
+DirectUI::IClassInfo* CAdvisableElement::GetClassInfoW()
 {
 	return Class;
 }
 
-HRESULT CAdvisableButton::Create(DirectUI::Element* pParent, unsigned long* pdwDeferCookie,
+DirectUI::IClassInfo* CAdvisableElement::GetClassInfoPtr()
+{
+	return Class;
+}
+
+HRESULT CAdvisableElement::Create(DirectUI::Element* pParent, unsigned long* pdwDeferCookie,
                                  DirectUI::Element** ppElement)
 {
-	return DirectUI::CreateAndInit<CAdvisableButton, int>(3, pParent, pdwDeferCookie, ppElement);
+	return DirectUI::CreateAndInit<CAdvisableElement, int>(0,pParent, pdwDeferCookie, ppElement);
 }
 
-HRESULT CAdvisableButton::Register()
+HRESULT CAdvisableElement::Register()
 {
-	return DirectUI::ClassInfo<CAdvisableButton, DirectUI::Button>::RegisterGlobal(HINST_THISCOMPONENT, L"AdvisableButton", nullptr, 0);
+	return DirectUI::ClassInfo<CAdvisableElement, DirectUI::Element>::RegisterGlobal(HINST_THISCOMPONENT, L"AdvisableElement", nullptr, 0);
 }
 
-HRESULT CAdvisableButton::Advise(LCPD::ICredentialField* dataSource)
+HRESULT CAdvisableElement::Advise(LCPD::ICredentialField* dataSource)
 {
 	m_FieldInfo = dataSource;
 
@@ -44,7 +44,7 @@ HRESULT CAdvisableButton::Advise(LCPD::ICredentialField* dataSource)
 	return S_OK;
 }
 
-HRESULT CAdvisableButton::UnAdvise()
+HRESULT CAdvisableElement::UnAdvise()
 {
 	if (m_FieldInfo)
 	{
@@ -56,36 +56,15 @@ HRESULT CAdvisableButton::UnAdvise()
 	return S_OK;
 }
 
-void CAdvisableButton::OnDestroy()
+void CAdvisableElement::OnDestroy()
 {
-	Button::OnDestroy();
+	Element::OnDestroy();
 	UnAdvise();
 }
 
-void CAdvisableButton::OnEvent(DirectUI::Event* pEvent)
+HRESULT CAdvisableElement::Invoke(LCPD::ICredentialField* sender, LCPD::CredentialFieldChangeKind args)
 {
-	if (pEvent->nStage == DirectUI::GMF_DIRECT)
-	{
-		if (pEvent->uidType == DirectUI::Button::Click() || pEvent->uidType == DirectUI::Button::Context())
-		{
-			Microsoft::WRL::ComPtr<LCPD::ICommandLinkField> commandLinkField;
-			if (m_FieldInfo.Get() && SUCCEEDED(m_FieldInfo->QueryInterface(IID_PPV_ARGS(&commandLinkField))))
-			{
-				LOG_IF_FAILED(commandLinkField->Invoke());
-			}
-			else
-			{
-				LOG_HR_MSG(E_FAIL,"m_FieldInfo->QueryInterface failed");
-			}
-		}
-	}
-
-	Button::OnEvent(pEvent);
-}
-
-HRESULT CAdvisableButton::Invoke(LCPD::ICredentialField* sender, LCPD::CredentialFieldChangeKind args)
-{
-	LOG_HR_MSG(E_FAIL,"CAdvisableButton::Invoke\n");
+	LOG_HR_MSG(E_FAIL,"CAdvisableElement::Invoke\n");
 	if (m_owningElement)
 	{
 
@@ -97,7 +76,6 @@ HRESULT CAdvisableButton::Invoke(LCPD::ICredentialField* sender, LCPD::Credentia
 			m_owningElement->SetFieldInitialVisibility(m_FieldInfo,GetParent());
 			if (bOldVisibility != GetParent()->GetVisible())
 				bShouldUpdateString = true;
-			LOG_HR_MSG(E_FAIL,"CAdvisableButton::Invoke old vis %i vis %i should update str %i",bOldVisibility,GetParent()->GetVisible(),bShouldUpdateString);
 		}
 		else if (args == LCPD::CredentialFieldChangeKind_SetString)
 		{
@@ -128,7 +106,7 @@ HRESULT CAdvisableButton::Invoke(LCPD::ICredentialField* sender, LCPD::Credentia
 			}
 		}
 		//m_owningElement->SetFieldInitialVisibility(m_owningElement->m_containersArray[m_index],fieldData);
-		//LOG_HR_MSG(E_FAIL,"CAdvisableButton::Invoke SetFieldInitialVisibility\n");
+		//LOG_HR_MSG(E_FAIL,"CAdvisableElement::Invoke SetFieldInitialVisibility\n");
 	}
 
 	return S_OK;

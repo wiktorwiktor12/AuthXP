@@ -2,7 +2,6 @@
 #include "combobox.h"
 
 #include "logonaccount.h"
-#include "usertileelement.h"
 
 DirectUI::IClassInfo* CDUIComboBox::Class = nullptr;
 

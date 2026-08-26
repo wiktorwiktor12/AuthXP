@@ -3,7 +3,6 @@
 #include <windowsx.h>
 
 #include "logonaccount.h"
-#include "usertileelement.h"
 
 static BYTE _uidCDUIRestrictedEditCapsLockWarning = 0;
 UID CDUIRestrictedEdit::s_CapsLockWarning = UID(&_uidCDUIRestrictedEditCapsLockWarning);

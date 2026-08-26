@@ -2,10 +2,8 @@
 
 #include "pch.h"
 
-#include "logonnativehwndhost.h"
 #include "logonviewmanager.h"
 #include "DirectUI/DirectUI.h"
-#include "userlist.h"
 
 /*class CLogonFrame7 : public DirectUI::HWNDElement
 {

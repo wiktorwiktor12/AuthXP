@@ -35,7 +35,8 @@
 					</if>
 				</if>
 				<if class="StaticText">
-                	<AdvisableButton font="9;normal;shadow;Segoe UI" shadowintensity="75" contentalign="middleleft"/>
+                	<AdvisableElement font="9;normal;shadow;Segoe UI" shadowintensity="75" contentalign="WrapLeft"/>
+
                 </if>
 			</style>
 			
@@ -269,20 +270,21 @@
 			</style>
 			<style resid="passwordpaness">
 				<element background="argb(0,0,0,0)"/>
+				<RestrictedEdit background=PROP(resbmp(IDB_EDITFRAME,6,16711935,0,0,0,0)) borderthickness="rect(3,3,5,5)" fontface="arial" font="16pt"/>
 				<if id="atom(passwordpanelayer)">
 					<element padding="rect(71rp,34rp,0,0)"/>
 				</if>
 				<if id="atom(instruct)">
 					<element fontface=PROP(resstr(IDS_HELPFONT)) font=PROP(resstr(IDS_PWINSTRUCTFONTSIZE)) foreground="white" padding="rect(3rp,0,0,3rp)"/>
 				</if>
-				<if id="atom(password)">
+				<if class="PasswordEdit">
 					<RestrictedEdit background=PROP(resbmp(IDB_EDITFRAME,6,16711935,0,0,0,0)) borderthickness="rect(3,3,5,5)" passwordcharacter="9679" fontface="arial" font="16pt"/>
 				</if>
 				<if id="atom(go)">
-					<button margin="rect(5rp,0,0,0)" content=PROP(resbmp(IDB_GO,3,-1,26rp,26rp,0,0)) padding="rect(0rp,1rp,0,1rp)"/>
+					<SubmitButton margin="rect(5rp,0,0,0)" content=PROP(resbmp(IDB_GO,3,-1,26rp,26rp,0,0)) padding="rect(0rp,1rp,0,1rp)"/>
 
 					<if keyfocused="true">
-						<button content=PROP(resbmp(IDB_GOKF,3,-1,26rp,26rp,0,0))/>
+						<SubmitButton content=PROP(resbmp(IDB_GOKF,3,-1,26rp,26rp,0,0))/>
 					</if>
 				</if>
 				<if id="atom(info)">
@@ -465,9 +467,9 @@
 // Edit Control
 //
 	<element resid="editcontrol" layout="borderlayout()" layoutpos="bottom">
-		<RestrictedEdit id="atom(password)" class="PasswordEdit" layoutpos="left" height="29rp" width="163rp" />
+		<RestrictedEdit id="atom(password)" layoutpos="left" height="29rp" width="163rp" />
 		<element id="atom(keyboard)" layoutpos="left" />
-		<button id="atom(go)" visible="false" layoutpos="left" accessible="true" accRole="43" accName=PROP(resstr(IDS_ACDSC_PWD)) />
+		<SubmitButton id="atom(go)" visible="false" layoutpos="left" accessible="true" accRole="43" accName=PROP(resstr(IDS_ACDSC_PWD)) />
 		<button id="atom(info)" visible="false" layoutpos="left" accessible="true" accRole="43" accName=PROP(resstr(IDS_PASSWORDHINTTITLE)) />
 	</element>
 	
@@ -478,22 +480,27 @@
 		<element id="atom(ForceHeight)" width="0rp" height="30rp"/>
 		<button id="atom(Checkbox)"/>
 		<element id="atom(Label)"/>
+		<SubmitButton id="atom(go)" visible="true" sheet="passwordpaness" accessible="true" accRole="43" accName=PROP(resstr(IDS_ACDSC_PWD)) />
 	</DUILabeledCheckbox>
 	
 //
 // Commandlink Control
 //
-	<AdvisableButton resid="commandlinkcontrol" layout="flowlayout(0,2,0,2)" class="Link" id="atom(CommandLink)" sheet="CommandlinkStyle" layoutpos="bottom">
+	<element resid="commandlinkcontrol" layout="flowlayout(0,2,0,2)" layoutpos="bottom">
 		<element id="atom(ForceHeight)" width="0rp" height="30rp"/>
-	</AdvisableButton>
+		<AdvisableButton sheet="CommandlinkStyle" visible="true" class="Link" id="atom(CommandLink)"/>
+        <SubmitButton id="atom(go)" visible="true" sheet="passwordpaness" accessible="true" accRole="43" accName=PROP(resstr(IDS_ACDSC_PWD)) />
+	</element>
+
 
 //
 // Static Text Control
 //
 
-	<AdvisableButton resid="statictextcontrol" layout="flowlayout(0,2,0,2)" class="StaticText" id="atom(Text)" sheet="CommandlinkStyle" layoutpos="bottom">
-		<element id="atom(ForceHeight)" width="0rp" height="30rp"/>
-	</AdvisableButton>
+	<element resid="statictextcontrol" layout="borderlayout()" class="StaticText" sheet="CommandlinkStyle" layoutpos="bottom">
+		<AdvisableElement class="StaticText" layoutpos="left" content="test content" id="atom(Text)" />
+		<SubmitButton id="atom(go)" visible="false" sheet="passwordpaness" layoutpos="right" accessible="true" accRole="43" accName=PROP(resstr(IDS_ACDSC_PWD)) />
+	</element>
 
 //
 // Password pane

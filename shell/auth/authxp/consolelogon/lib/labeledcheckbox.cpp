@@ -2,7 +2,6 @@
 #include "labeledcheckbox.h"
 
 #include "duiutil.h"
-#include "usertileelement.h"
 
 static BYTE _uidCDUILabeledCheckboxToggled = 0;
 UID CDUILabeledCheckbox::s_Toggled = UID(&_uidCDUILabeledCheckboxToggled);

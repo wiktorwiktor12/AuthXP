@@ -4,6 +4,7 @@
 #include <cassert>
 
 #include "advisablebutton.h"
+#include "advisableelement.h"
 #include "combobox.h"
 #include "errorballoon.h"
 #include "logonframe.h"
@@ -12,7 +13,9 @@
 #include "logonguids.h"
 #include "restrictededit.h"
 #include "EventDispatcher.h"
+#include "submitbutton.h"
 #include "userprofile.h"
+#include "wicutil.h"
 
 using namespace Microsoft::WRL;
 
@@ -163,10 +166,15 @@ void LogonAccount::OnEvent(DirectUI::Event* pEvent)
         {
             if (idPwdGo && (pEvent->peTarget->GetID() == idPwdGo))
             {
-                // Attempt logon
-                OnAuthenticateUser();
-                pEvent->fHandled = true;
-                return;
+            	CSubmitButton* submitButton = (CSubmitButton*)pEvent->peTarget;
+            	if (submitButton->m_owningElement == this)
+            	{
+            		// Attempt logon
+            		OnAuthenticateUser();
+            		pEvent->fHandled = true;
+            		return;
+            	}
+
             }
             else if (idPwdInfo && (pEvent->peTarget->GetID() == idPwdInfo))
             {
@@ -410,6 +418,22 @@ HRESULT GetBitmapFromUserSID(CoTaskMemNativeString& SID, HBITMAP* outBitmap)
 	return S_OK;
 }
 
+HRESULT GetBitmapFromRandomStream(Microsoft::WRL::ComPtr<ABI::Windows::Storage::Streams::IRandomAccessStream> stream, HBITMAP* outBitmap)
+{
+	Microsoft::WRL::ComPtr<IStream> spStream;
+	RETURN_IF_FAILED(CreateStreamOverRandomAccessStream(stream.Get(),IID_PPV_ARGS(&spStream)));
+
+	Microsoft::WRL::ComPtr<IWICImagingFactory> spWICFactory;
+	RETURN_IF_FAILED(CoCreateInstance(CLSID_WICImagingFactory2, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&spWICFactory)));
+
+	Microsoft::WRL::ComPtr<IWICBitmapSource> spWICBitmapSource;
+	RETURN_IF_FAILED(LoadImageWithWIC(spWICFactory.Get(),spStream.Get(),LIWW_NONE,&spWICBitmapSource,nullptr,nullptr));
+
+	//HBITMAP hbmpImage;
+	RETURN_IF_FAILED(ConvertWICBitmapToHBITMAP(spWICFactory.Get(), spWICBitmapSource.Get(), outBitmap));
+	return S_OK;
+}
+
 HRESULT LogonAccount::OnTreeReady(BOOL fPicRes, LPCWSTR pszName, LPCWSTR pszUsername,
     LPCWSTR pszHint, BOOL fPwdNeeded, BOOL fLoggedOn, HINSTANCE hInst)
 {
@@ -459,6 +483,22 @@ HRESULT LogonAccount::OnTreeReady(BOOL fPicRes, LPCWSTR pszName, LPCWSTR pszUser
 		nativeSID.Initialize(sid.GetRawBuffer(nullptr));
 		HRESULT pfpHr = GetBitmapFromUserSID(nativeSID, &bitmap);
 
+		if (SUCCEEDED(pfpHr))
+			pv = CreateGraphicFromHBITMAP(bitmap, (USHORT)LogonFrame::PointToPixel(36), (USHORT)LogonFrame::PointToPixel(36), GRAPHIC_NoBlend);
+	}
+
+	if (!pv)
+	{
+		ComPtr<LCPD::ICredentialField> field;
+		RETURN_IF_FAILED(_tileData->get_LogoImageField(&field));
+
+		Microsoft::WRL::ComPtr<LCPD::ICredentialImageField> imageField;
+		RETURN_IF_FAILED(field->QueryInterface(IID_PPV_ARGS(&imageField)));
+
+		Microsoft::WRL::ComPtr<ABI::Windows::Storage::Streams::IRandomAccessStream> stream;
+		RETURN_IF_FAILED(imageField->get_BitmapStream(&stream));
+
+		HRESULT pfpHr = GetBitmapFromRandomStream(stream,&bitmap);
 		if (SUCCEEDED(pfpHr))
 			pv = CreateGraphicFromHBITMAP(bitmap, (USHORT)LogonFrame::PointToPixel(36), (USHORT)LogonFrame::PointToPixel(36), GRAPHIC_NoBlend);
 	}
@@ -552,6 +592,32 @@ HRESULT LogonAccount::CreateCredPanelElements()
 	UINT numFields;
 	RETURN_IF_FAILED(fields->get_Size(&numFields));
 
+	int adjacentSubmitButtonIndex = -1;
+	ComPtr<LCPD::ICredentialField> submitButtonField;
+	RETURN_IF_FAILED(_tileData->get_SubmitButton(&submitButtonField)); // 40
+	if (submitButtonField)
+	{
+		BOOLEAN isVisibleInDeselectedTile = FALSE;
+		RETURN_IF_FAILED(submitButtonField->get_IsVisibleInDeselectedTile(&isVisibleInDeselectedTile));
+
+		if (!isVisibleInDeselectedTile)
+		{
+			Microsoft::WRL::ComPtr<LCPD::ICredentialSubmitButtonField> submitButtonField2;
+			RETURN_IF_FAILED(submitButtonField->QueryInterface(IID_PPV_ARGS(&submitButtonField2)));
+
+			RETURN_IF_FAILED(submitButtonField2->get_AdjacentID((UINT*)&adjacentSubmitButtonIndex)); // ye this really shouldn't be done, but they do treat the unsigned int as an int, so idgaf
+		}
+		else
+		{
+			//not sure if we need to handle anything here
+			LOG_HR_MSG(E_FAIL,"CASE FOR NOT SURE IF NEEDED TO BE HANDLED HAS BEEN HIT!!");
+		}
+	}
+	else
+	{
+		LOG_HR_MSG(E_FAIL,"SUBMITBUTTONFIELD IS NULL");
+	}
+
     for (int i = numFields - 1; i >= 0; --i)
     {
     	Microsoft::WRL::ComPtr<LCPD::ICredentialField> field;
@@ -562,18 +628,30 @@ HRESULT LogonAccount::CreateCredPanelElements()
     	if (!isVisibleInSelectedTile)
     		continue;
 
+    	int fieldId = -1;
+    	RETURN_IF_FAILED(field->get_ID((UINT*)&fieldId));
+
 		DirectUI::Element* fieldElement = nullptr;
-        LOG_HR_IF_MSG(CreateField(field, &fieldElement),fieldElement==nullptr,"failed to create fieldelement, likely unsupported field");
+		CSubmitButton* submitButton = nullptr;
+        LOG_HR_IF_MSG(CreateField(field, &fieldElement,&submitButton),fieldElement==nullptr,"failed to create fieldelement, likely unsupported field");
 
     	if (fieldElement)
 			pePwdPanel->Add(fieldElement);
+
+    	if (fieldId != -1 && fieldId == adjacentSubmitButtonIndex && fieldElement->GetVisible())
+    	{
+    		submitButton->SetVisible(true);
+    	}
     }
 
-	auto info = (DirectUI::Button*)_prevEdit->FindDescendent(DirectUI::StrToID(L"info"));
-	auto go = (DirectUI::Button*)_prevEdit->FindDescendent(DirectUI::StrToID(L"go"));
-
-	//info->SetVisible(true);
-	go->SetVisible(true);
+	//if (_prevEdit)
+	//{
+	//	auto info = (DirectUI::Button*)_prevEdit->FindDescendent(DirectUI::StrToID(L"info"));
+	//	auto go = (DirectUI::Button*)_prevEdit->FindDescendent(DirectUI::StrToID(L"go"));
+//
+	//	//info->SetVisible(true);
+	//	go->SetVisible(true);
+	//}
 
     // Cache password panel edit control
     DirectUI::Edit* pePwdEdit = (DirectUI::Edit*)pePwdPanel->FindDescendent(DirectUI::StrToID(L"password"));
@@ -594,7 +672,7 @@ HRESULT LogonAccount::CreateCredPanelElements()
     return S_OK;
 }
 
-HRESULT LogonAccount::CreateField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement)
+HRESULT LogonAccount::CreateField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement,class CSubmitButton** ppOutSubmitButton)
 {
 	LCPD::CredentialFieldKind kind;
 	RETURN_IF_FAILED(field->get_Kind(&kind));
@@ -602,33 +680,42 @@ HRESULT LogonAccount::CreateField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>
     switch (kind)
     {
     case LCPD::CredentialFieldKind_CommandLink:
-        return _CreateCommandLinkField(field, ppOutElement);
+        return _CreateCommandLinkField(field, ppOutElement,ppOutSubmitButton);
 
     case LCPD::CredentialFieldKind_StaticText:
-    	return _CreateStaticTextField(field, ppOutElement);
+    	return _CreateStaticTextField(field, ppOutElement,ppOutSubmitButton);
 
     case LCPD::CredentialFieldKind_EditText:
-        return _CreateEditField(field, ppOutElement);
+        return _CreateEditField(field, ppOutElement,ppOutSubmitButton);
 
     case LCPD::CredentialFieldKind_CheckBox:
-        return _CreateCheckboxField(field, ppOutElement);
+        return _CreateCheckboxField(field, ppOutElement,ppOutSubmitButton);
 
     case LCPD::CredentialFieldKind_ComboBox:
-        return _CreateComboBoxField(field, ppOutElement);
+        return _CreateComboBoxField(field, ppOutElement,ppOutSubmitButton);
 
     case LCPD::CredentialFieldKind_SubmitButton:
-        return _CreateSubmitButton(field, ppOutElement);
+        return _CreateSubmitButton(field, ppOutElement,ppOutSubmitButton);
 
     default:
         return E_FAIL;
     }
 }
 
-HRESULT LogonAccount::_CreateCommandLinkField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement)
+HRESULT LogonAccount::_CreateCommandLinkField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement,class CSubmitButton** ppOutSubmitButton)
 {
-    CAdvisableButton* peCommandLinkControl;
-    RETURN_IF_FAILED(_pParser->CreateElement(L"commandlinkcontrol", NULL, 0, 0, (DirectUI::Element**)&peCommandLinkControl));
-    auto scopeExit = wil::scope_exit([&]() -> void {peCommandLinkControl->Destroy(true);});
+    DirectUI::Element* peCommandLinkControlContainer;
+    RETURN_IF_FAILED(_pParser->CreateElement(L"commandlinkcontrol", NULL, 0, 0, (DirectUI::Element**)&peCommandLinkControlContainer));
+    auto scopeExit = wil::scope_exit([&]() -> void {peCommandLinkControlContainer->Destroy(true);});
+
+    CAdvisableButton* peCommandLinkControl = (CAdvisableButton*)peCommandLinkControlContainer->FindDescendent(DirectUI::StrToID(L"CommandLink"));
+	peCommandLinkControl->m_owningElement = this;
+
+	CSubmitButton* submitButton = (CSubmitButton*)peCommandLinkControlContainer->FindDescendent(DirectUI::StrToID(L"go"));
+	submitButton->m_owningElement = this;
+	submitButton->m_fieldData = field;
+	submitButton->SetVisible(false);
+
 
 	Microsoft::WRL::Wrappers::HString label;
 	RETURN_IF_FAILED(field->get_Label(label.ReleaseAndGetAddressOf()));
@@ -645,8 +732,10 @@ HRESULT LogonAccount::_CreateCommandLinkField(Microsoft::WRL::ComPtr<LCPD::ICred
 
 	RETURN_IF_FAILED(peCommandLinkControl->Advise(field.Get()));
 
-    *ppOutElement = peCommandLinkControl;
-	SetFieldInitialVisibility(field, peCommandLinkControl);
+    *ppOutElement = peCommandLinkControlContainer;
+	if (ppOutSubmitButton)
+		*ppOutSubmitButton = submitButton;
+	SetFieldInitialVisibility(field, peCommandLinkControlContainer);
 
 	scopeExit.release();
 
@@ -654,11 +743,11 @@ HRESULT LogonAccount::_CreateCommandLinkField(Microsoft::WRL::ComPtr<LCPD::ICred
 }
 
 HRESULT LogonAccount::_CreateStaticTextField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field,
-	DirectUI::Element** ppOutElement)
+	DirectUI::Element** ppOutElement,class CSubmitButton** ppOutSubmitButton)
 {
-	CAdvisableButton* peStaticTextControl;
-	RETURN_IF_FAILED(_pParser->CreateElement(L"statictextcontrol", NULL, 0, 0, (DirectUI::Element**)&peStaticTextControl));
-	auto scopeExit = wil::scope_exit([&]() -> void {peStaticTextControl->Destroy(true);});
+	DirectUI::Element* peStaticTextControlContainer;
+	RETURN_IF_FAILED(_pParser->CreateElement(L"statictextcontrol", NULL, 0, 0, (DirectUI::Element**)&peStaticTextControlContainer));
+	auto scopeExit = wil::scope_exit([&]() -> void {peStaticTextControlContainer->Destroy(true);});
 
 	Microsoft::WRL::ComPtr<LCPD::ICredentialTextField> textField;
 	RETURN_IF_FAILED(field->QueryInterface(IID_PPV_ARGS(&textField)));
@@ -666,33 +755,50 @@ HRESULT LogonAccount::_CreateStaticTextField(Microsoft::WRL::ComPtr<LCPD::ICrede
 	Microsoft::WRL::Wrappers::HString content;
 	RETURN_IF_FAILED(textField->get_Content(content.ReleaseAndGetAddressOf()));
 
-	RETURN_IF_FAILED(peStaticTextControl->SetContentString(content.GetRawBuffer(NULL)));
+	CAdvisableElement* peInner = static_cast<CAdvisableElement*>(peStaticTextControlContainer->FindDescendent(DirectUI::StrToID(L"Text")));
+	peInner->m_owningElement = this;
 
-	RETURN_IF_FAILED(peStaticTextControl->SetAccessible(true));
+	CSubmitButton* submitButton = static_cast<CSubmitButton*>(peStaticTextControlContainer->FindDescendent(DirectUI::StrToID(L"go")));
+	submitButton->m_owningElement = this;
+	submitButton->m_fieldData = field;
+	submitButton->SetVisible(false);
 
-	RETURN_IF_FAILED(peStaticTextControl->SetAccRole(30));
+	RETURN_IF_FAILED(peInner->SetContentString(content.GetRawBuffer(NULL)));
 
-	RETURN_IF_FAILED(peStaticTextControl->SetAccName(content.GetRawBuffer(NULL)));
+	RETURN_IF_FAILED(peInner->SetAccessible(true));
 
-	RETURN_IF_FAILED(peStaticTextControl->SetActive(3));
+	RETURN_IF_FAILED(peInner->SetAccRole(30));
 
-	RETURN_IF_FAILED(peStaticTextControl->Advise(field.Get()));
+	RETURN_IF_FAILED(peInner->SetAccName(content.GetRawBuffer(NULL)));
 
-	*ppOutElement = peStaticTextControl;
-	SetFieldInitialVisibility(field, peStaticTextControl);
+	RETURN_IF_FAILED(peStaticTextControlContainer->SetActive(3));
+	RETURN_IF_FAILED(peInner->SetActive(3));
+
+	RETURN_IF_FAILED(peInner->Advise(field.Get()));
+
+	*ppOutElement = peStaticTextControlContainer;
+	if (ppOutSubmitButton)
+		*ppOutSubmitButton = submitButton;
+	SetFieldInitialVisibility(field, peStaticTextControlContainer);
 
 	scopeExit.release();
 
 	return S_OK;
 }
 
-HRESULT LogonAccount::_CreateEditField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement)
+HRESULT LogonAccount::_CreateEditField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement,class CSubmitButton** ppOutSubmitButton)
 {
     Element* peEditFieldContainer;
     RETURN_IF_FAILED(_pParser->CreateElement(L"editcontrol", NULL, 0, 0, &peEditFieldContainer));
     auto scopeExit = wil::scope_exit([&]() -> void {peEditFieldContainer->Destroy(true);});
 
 	CDUIRestrictedEdit* restrictedEdit = (CDUIRestrictedEdit*)peEditFieldContainer->FindDescendent(DirectUI::StrToID(L"password"));
+	restrictedEdit->m_owningElement = this;
+
+	CSubmitButton* submitButton = (CSubmitButton*)peEditFieldContainer->FindDescendent(DirectUI::StrToID(L"go"));
+	submitButton->m_owningElement = this;
+	submitButton->m_fieldData = field;
+	submitButton->SetVisible(false);
 
     restrictedEdit->m_scenario = LCPD::CredProvScenario_Logon;
     restrictedEdit->m_fieldData = field;
@@ -719,7 +825,13 @@ HRESULT LogonAccount::_CreateEditField(Microsoft::WRL::ComPtr<LCPD::ICredentialF
 	if (g_plf->m_consoleUIManager->m_currentReason == LC::LogonUIRequestReason_LogonUIChange)
 		StringStringAllocCopy(label.GetRawBuffer(nullptr), &restrictedEdit->m_hintText);
 
+	const wchar_t* textClass = L"ClearTextEdit";
+	if (bIsPasswordField)
+		textClass = L"PasswordEdit";
+
     restrictedEdit->m_maxTextLength = 127;
+
+	RETURN_IF_FAILED(restrictedEdit->SetClass(textClass));
 
     if (bIsPasswordField)
         (restrictedEdit->SetEncodedContentString(content.GetRawBuffer(NULL)));
@@ -729,6 +841,8 @@ HRESULT LogonAccount::_CreateEditField(Microsoft::WRL::ComPtr<LCPD::ICredentialF
 	RETURN_IF_FAILED(restrictedEdit->Advise(field.Get()));
 
 	*ppOutElement = peEditFieldContainer;
+	if (ppOutSubmitButton)
+		*ppOutSubmitButton = submitButton;
 
     SetFieldInitialVisibility(field, peEditFieldContainer);
 
@@ -761,11 +875,16 @@ HRESULT LogonAccount::_CreateEditField(Microsoft::WRL::ComPtr<LCPD::ICredentialF
     return S_OK;
 }
 
-HRESULT LogonAccount::_CreateCheckboxField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement)
+HRESULT LogonAccount::_CreateCheckboxField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement,class CSubmitButton** ppOutSubmitButton)
 {
     CDUILabeledCheckbox* peCheckbox;
     RETURN_IF_FAILED(_pParser->CreateElement(L"checkboxcontrol", NULL, 0, 0, (DirectUI::Element**)&peCheckbox));
     auto scopeExit = wil::scope_exit([&]() -> void {peCheckbox->Destroy(true);});
+
+	CSubmitButton* submitButton = (CSubmitButton*)peCheckbox->FindDescendent(DirectUI::StrToID(L"go"));
+	submitButton->m_owningElement = this;
+	submitButton->m_fieldData = field;
+	submitButton->SetVisible(false);
 
 	Microsoft::WRL::ComPtr<LCPD::ICheckBoxField> checkboxField;
 	RETURN_IF_FAILED(field->QueryInterface(IID_PPV_ARGS(&checkboxField)));
@@ -787,15 +906,19 @@ HRESULT LogonAccount::_CreateCheckboxField(Microsoft::WRL::ComPtr<LCPD::ICredent
     SetFieldInitialVisibility(field,peCheckbox);
 
 	*ppOutElement = peCheckbox;
+	if (ppOutSubmitButton)
+		*ppOutSubmitButton = submitButton;
 
     return S_OK;
 }
 
-HRESULT LogonAccount::_CreateComboBoxField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement)
+HRESULT LogonAccount::_CreateComboBoxField(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement,class CSubmitButton** ppOutSubmitButton)
 {
     CDUIComboBox* comboBox;
     RETURN_IF_FAILED(CDUIComboBox::Create(nullptr, 0, (DirectUI::Element**)&comboBox));
     auto scopeExit = wil::scope_exit([&]() -> void {comboBox->Destroy(true);});
+
+	comboBox->m_owningElement = this;
 
 	RETURN_IF_FAILED(comboBox->Advise(field.Get()));
 
@@ -804,13 +927,15 @@ HRESULT LogonAccount::_CreateComboBoxField(Microsoft::WRL::ComPtr<LCPD::ICredent
     SetFieldInitialVisibility(field, comboBox);
 
     *ppOutElement = comboBox;
+	if (ppOutSubmitButton)
+		*ppOutSubmitButton = nullptr;
 
     scopeExit.release();
 
     return S_OK;
 }
 
-HRESULT LogonAccount::_CreateSubmitButton(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement)
+HRESULT LogonAccount::_CreateSubmitButton(Microsoft::WRL::ComPtr<LCPD::ICredentialField>& field, DirectUI::Element** ppOutElement,class CSubmitButton** ppOutSubmitButton)
 {
     return E_FAIL;
 }
@@ -928,7 +1053,8 @@ HRESULT LogonAccount::InsertCredPanel()
         else
             _pbPwdInfo->SetVisible(false);
     }*/
-	_pbPwdInfo->SetVisible(false);
+	if (_pbPwdInfo)
+		_pbPwdInfo->SetVisible(false);
 
     // Hide status text (do not remove or insert)
     HideStatus(0);
