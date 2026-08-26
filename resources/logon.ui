@@ -109,7 +109,7 @@
 				<if id="atom(contentcontainer)">
 					<element background="rgb(90,126,220)"/>
 				</if>
-				<button background=PROP(resbmp(IDB_SELECTION,6,16711935,0,0,0,0)) borderthickness="rect(8,8,0,8)"/>
+				<button background=PROP(resbmp(IDB_SELECTION,6,0xFF0FF,0,0,0,0)) borderthickness="rect(8,8,0,8)"/>
 			</style>
 			<style resid="toppanelss">
 				<element background="argb(0,0,0,0)"/>
@@ -118,7 +118,7 @@
 					<element background="rgb(0,48,156)" padding="rect(25rp, 0rp, 25rp, 20rp)"/>
 				</if>
 				<if id="atom(divider)">
-					<element background=PROP(resbmp(IDB_HDIVIDERTOP,6,16711935,0,0,0,0))/>
+					<element background=PROP(resbmp(IDB_HDIVIDERTOP,6,0xFF0FF,0,0,0,0))/>
 				</if>
 				<if id="atom(time)">
 					<element foreground="white" fontface="franklin gothic medium" fontsize="24pt"/>
@@ -133,7 +133,7 @@
 					<element background="gradient(argb(0,57,52,173), argb(0,0,48,156), 0)" fontface=PROP(resstr(IDS_OPTIONSFONT))/>
 				</if>
 				<if id="atom(divider)">
-					<element background=PROP(resbmp(IDB_HDIVIDERBOT,6,16711935,0,0,0,0))/>
+					<element background=PROP(resbmp(IDB_HDIVIDERBOT,6,0xFF0FF,0,0,0,0))/>
 				</if>
 				<if id="atom(options)">
 					<element padding="rect(25rp, 20rp, 25rp, 20rp)"/>
@@ -170,13 +170,13 @@
 			<style resid="rightpanelss">
 				<element background="argb(0,0,0,0)"/>
 				<if id="atom(divider)">
-					<element background=PROP(resbmp(IDB_VDIVIDER,6,16711935,0,0,0,0))/>
+					<element background=PROP(resbmp(IDB_VDIVIDER,6,0xFF0FF,0,0,0,0))/>
 				</if>
 				<if vertical="true">
 					<scrollbar layoutpos="nineright" background="rgb(115,146,231)"/>
 				</if>
 				<viewer layoutpos="nineclient"/>
-				<thumb background=PROP(resbmp(IDB_SBTHUMBV,6,16711935,0,0,0,0)) borderthickness="rect(3,3,3,3)"/>
+				<thumb background=PROP(resbmp(IDB_SBTHUMBV,6,0xFF0FF,0,0,0,0)) borderthickness="rect(3,3,3,3)"/>
 				<if id="atom(lineup)">
 					<repeatbutton content=PROP(resbmp(IDB_SBLINEUPV,3,-1,sysmetric(SM_CYVSCROLL),sysmetric(SM_CYVSCROLL),0,0))/>
 				</if>
@@ -200,20 +200,20 @@
 				<if id="atom(userpane)">
 					<element padding="rect(2rp,2rp,14rp,2rp)" borderthickness="rect(5,5,0,5)" bordercolor="rgb(90,126,220)" font=PROP(resstr(IDS_HELPFONTSIZE))/>
 					<if selected="true">
-						<element background=PROP(resbmp(IDB_SELECTION,6,16711935,0,0,0,0))/>
+						<element background=PROP(resbmp(IDB_SELECTION,6,0xFF0FF,0,0,0,0))/>
 					</if>
 				</if>
 				<if selected="true">
 					<logonaccount alpha="255"/>
 				</if>
 				<if id="atom(pictureframe)">
-					<element background=PROP(resbmp(IDB_USERFRAME,7,255,0,0,1,0)) borderthickness="rect(5,5,5,5)" margin="rect(0,0, 7rp,0)"/>
+					<element background=PROP(resbmp(IDB_USERFRAME,7,255,0,0,0,0)) borderthickness="rect(5,5,5,5)" margin="rect(0,0, 7rp,0)"/>
 
 					<if mousefocused="true">
-						<element background=PROP(resbmp(IDB_USERFRAMESEL,7,255,0,0,1,0)) borderthickness="rect(5,5,5,5)" margin="rect(0,0,7rp,0)" alpha="255"/>
+						<element background=PROP(resbmp(IDB_USERFRAMESEL,7,255,0,0,0,0)) borderthickness="rect(5,5,5,5)" margin="rect(0,0,7rp,0)" alpha="255"/>
 					</if>
 					<if selected="true">
-						<element background=PROP(resbmp(IDB_USERFRAMESEL,7,255,0,0,1,0)) borderthickness="rect(5,5,5,5)" margin="rect(0,0,7rp,0)" alpha="255"/>
+						<element background=PROP(resbmp(IDB_USERFRAMESEL,7,255,0,0,0,0)) borderthickness="rect(5,5,5,5)" margin="rect(0,0,7rp,0)" alpha="255"/>
 					</if>
 				</if>
 				<if id="atom(sas)">
@@ -245,11 +245,11 @@
 				<if id="atom(userpane)">
 					<element padding="rect(2rp,2rp,14rp,2rp)" borderthickness="rect(5,5,0,5)" bordercolor="rgb(90,126,220)" font=PROP(resstr(IDS_HELPFONTSIZE))/>
 					<if selected="true">
-						<element background=PROP(resbmp(IDB_SELECTION,6,16711935,0,0,0,0))/>
+						<element background=PROP(resbmp(IDB_SELECTION,6,0xFF0FF,0,0,0,0))/>
 					</if>
 				</if>
 				<if id="atom(pictureframe)">
-					<element background=PROP(resbmp(IDB_USERFRAME,7,255,0,0,1,0)) borderthickness="rect(5,5,5,5)" margin="rect(0,0,7rp,0)"/>
+					<element background=PROP(resbmp(IDB_USERFRAME,7,255,0,0,0,0)) borderthickness="rect(5,5,5,5)" margin="rect(0,0,7rp,0)"/>
 				</if>
 				<if id="atom(username)">
 					<element foreground="rgb(239,247,255)" contentalign="endellipsis"/>
@@ -270,7 +270,7 @@
 			</style>
 			<style resid="passwordpaness">
 				<element background="argb(0,0,0,0)"/>
-				<RestrictedEdit background=PROP(resbmp(IDB_EDITFRAME,6,16711935,0,0,0,0)) borderthickness="rect(3,3,5,5)" fontface="arial" font="16pt"/>
+				<RestrictedEdit background=PROP(resbmp(IDB_EDITFRAME,6,0xFF0FF,0,0,0,0)) borderthickness="rect(3,3,5,5)" fontface="arial" font="16pt"/>
 				<if id="atom(passwordpanelayer)">
 					<element padding="rect(71rp,34rp,0,0)"/>
 				</if>
@@ -278,7 +278,7 @@
 					<element fontface=PROP(resstr(IDS_HELPFONT)) font=PROP(resstr(IDS_PWINSTRUCTFONTSIZE)) foreground="white" padding="rect(3rp,0,0,3rp)"/>
 				</if>
 				<if class="PasswordEdit">
-					<RestrictedEdit background=PROP(resbmp(IDB_EDITFRAME,6,16711935,0,0,0,0)) borderthickness="rect(3,3,5,5)" passwordcharacter="9679" fontface="arial" font="16pt"/>
+					<RestrictedEdit background=PROP(resbmp(IDB_EDITFRAME,6,0xFF0FF,0,0,0,0)) borderthickness="rect(3,3,5,5)" passwordcharacter="9679" fontface="arial" font="16pt"/>
 				</if>
 				<if id="atom(go)">
 					<SubmitButton margin="rect(5rp,0,0,0)" content=PROP(resbmp(IDB_GO,3,-1,26rp,26rp,0,0)) padding="rect(0rp,1rp,0,1rp)"/>

@@ -413,9 +413,18 @@ HRESULT GetBitmapFromUserSID(CoTaskMemNativeString& SID, HBITMAP* outBitmap)
 	Microsoft::WRL::ComPtr<IUserTileStore> tileStore;
 	RETURN_IF_FAILED(CoCreateInstance(CLSID_UserTileStore, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&tileStore)));
 
-	RETURN_IF_FAILED(tileStore->GetLargePicture(SID.Get(), outBitmap));
+	HRESULT hr = tileStore->GetLargePicture(SID.Get(), outBitmap);
+	if (FAILED(hr) || !outBitmap)
+	{
+		hr = tileStore->GetSmallPicture(SID.Get(), outBitmap);
+	}
+	if (FAILED(hr) || !outBitmap)
+	{
+		tileStore->FixCorruptedStoreIfNeeded();
+		hr = tileStore->GetLargePicture(SID.Get(), outBitmap);
+	}
 
-	return S_OK;
+	return hr;
 }
 
 HRESULT GetBitmapFromRandomStream(Microsoft::WRL::ComPtr<ABI::Windows::Storage::Streams::IRandomAccessStream> stream, HBITMAP* outBitmap)
@@ -485,9 +494,39 @@ HRESULT LogonAccount::OnTreeReady(BOOL fPicRes, LPCWSTR pszName, LPCWSTR pszUser
 
 		if (SUCCEEDED(pfpHr))
 			pv = CreateGraphicFromHBITMAP(bitmap, (USHORT)LogonFrame::PointToPixel(36), (USHORT)LogonFrame::PointToPixel(36), GRAPHIC_NoBlend);
+
+		if (!pv)
+		{
+			Microsoft::WRL::ComPtr<LCPD::IUserTileImage> tileImage;
+			LOG_IF_FAILED(_pUser->get_LargeUserTileImage(&tileImage));
+			LOG_HR_IF_NULL_MSG(E_FAIL, tileImage.Get(),"Failed to get large user tile image");
+			if (tileImage)
+			{
+				Microsoft::WRL::Wrappers::HString tilePath;
+
+				auto tileHr = tileImage->get_TilePath(tilePath.ReleaseAndGetAddressOf());
+				if (SUCCEEDED(tileHr) && tilePath.Get())
+					LOG_HR_MSG(E_FAIL, "tile path %s", tilePath.GetRawBuffer(nullptr));
+
+				Microsoft::WRL::ComPtr<ABI::Windows::Storage::Streams::IRandomAccessStream> stream;
+				LOG_IF_FAILED(tileImage->get_TileStream(&stream));
+
+				LCPD::TileStreamType streamType = (LCPD::TileStreamType)-1;
+				LOG_IF_FAILED(tileImage->get_TileStreamType(&streamType));
+
+				if (streamType == LCPD::TileStreamType::TileStreamType_Image && stream)
+				{
+					HRESULT pfpHr = GetBitmapFromRandomStream(stream, &bitmap);
+					if (SUCCEEDED(pfpHr))
+						pv = CreateGraphicFromHBITMAP(bitmap, (USHORT)LogonFrame::PointToPixel(36), (USHORT)LogonFrame::PointToPixel(36), GRAPHIC_NoBlend);
+				}
+			}
+			
+			
+		}
 	}
 
-	if (!pv)
+	if (!pv && !_pUser)
 	{
 		ComPtr<LCPD::ICredentialField> field;
 		RETURN_IF_FAILED(_tileData->get_LogoImageField(&field));
@@ -495,12 +534,18 @@ HRESULT LogonAccount::OnTreeReady(BOOL fPicRes, LPCWSTR pszName, LPCWSTR pszUser
 		Microsoft::WRL::ComPtr<LCPD::ICredentialImageField> imageField;
 		RETURN_IF_FAILED(field->QueryInterface(IID_PPV_ARGS(&imageField)));
 
-		Microsoft::WRL::ComPtr<ABI::Windows::Storage::Streams::IRandomAccessStream> stream;
-		RETURN_IF_FAILED(imageField->get_BitmapStream(&stream));
+		BOOL bShouldUseFieldForImage = FALSE;
+		RETURN_IF_FAILED(imageField->get_IsLogoImageHidden(&bShouldUseFieldForImage));
 
-		HRESULT pfpHr = GetBitmapFromRandomStream(stream,&bitmap);
-		if (SUCCEEDED(pfpHr))
-			pv = CreateGraphicFromHBITMAP(bitmap, (USHORT)LogonFrame::PointToPixel(36), (USHORT)LogonFrame::PointToPixel(36), GRAPHIC_NoBlend);
+		if (bShouldUseFieldForImage)
+		{
+			Microsoft::WRL::ComPtr<ABI::Windows::Storage::Streams::IRandomAccessStream> stream;
+			RETURN_IF_FAILED(imageField->get_BitmapStream(&stream));
+
+			HRESULT pfpHr = GetBitmapFromRandomStream(stream, &bitmap);
+			if (SUCCEEDED(pfpHr))
+				pv = CreateGraphicFromHBITMAP(bitmap, (USHORT)LogonFrame::PointToPixel(36), (USHORT)LogonFrame::PointToPixel(36), GRAPHIC_NoBlend);
+		}
 	}
 
 

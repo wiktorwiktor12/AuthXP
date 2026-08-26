@@ -240,7 +240,7 @@ DWORD ConsoleUIManager::UIThreadHostThreadProc()
 	RegisterClassEx(&wcx);
 
 	CBackgroundWindow   backgroundWindow(HINST_THISCOMPONENT);
-	
+
 	LogonFrame::Register();
 	LogonAccount::Register();
 	LogonAccountList::Register();
