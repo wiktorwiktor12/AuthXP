@@ -524,9 +524,44 @@ HRESULT LogonAccount::OnTreeReady(BOOL fPicRes, LPCWSTR pszName, LPCWSTR pszUser
 			
 			
 		}
+
+		if (!pv)
+		{
+			//TODO: make cleaner
+			static HRESULT(WINAPI * SHGetUserPicturePath_t)(LPCWSTR pszUsername, DWORD dwFlags, LPWSTR pszPath, DWORD cchPathMax) = (decltype(SHGetUserPicturePath_t))(GetProcAddress(LoadLibraryW(L"shell32.dll"),MAKEINTRESOURCEA(261)));
+			WCHAR szUserPicturePath[MAX_PATH];
+			szUserPicturePath[0] = L'\0';
+#define SHGUPP_FLAG_CREATE              0x80000000
+			HRESULT hr = SHGetUserPicturePath_t(pszUsername, SHGUPP_FLAG_CREATE, szUserPicturePath, MAX_PATH);
+			LOG_IF_FAILED_MSG(hr,"RIP GG");
+
+			pv = DirectUI::Value::CreateGraphic(szUserPicturePath, GRAPHIC_NoBlend, 0, 0, 0, 0,0,0);
+			if (pv)
+			{
+				USHORT cx = (USHORT)LogonFrame::PointToPixel(36);
+				USHORT cy = cx;
+
+				DirectUI::Graphic* pg = pv->GetGraphic();
+
+				if (pg->cx > pg->cy)
+				{
+					cy = (USHORT)MulDiv(cx, pg->cy, pg->cx);
+				}
+				else if (pg->cy > pg->cx)
+				{
+					cx = (USHORT)MulDiv(cy, pg->cx, pg->cy);
+				}
+
+				if (cx != pg->cx || cy != pg->cy)
+				{
+					pv->Release();
+					pv = DirectUI::Value::CreateGraphic(szUserPicturePath, GRAPHIC_NoBlend, 0, cx, cy, 0, 0, 0);
+				}
+			}
+		}
 	}
 
-	if (!pv && !_pUser)
+	if (!pv  && !_pUser)
 	{
 		ComPtr<LCPD::ICredentialField> field;
 		RETURN_IF_FAILED(_tileData->get_LogoImageField(&field));
