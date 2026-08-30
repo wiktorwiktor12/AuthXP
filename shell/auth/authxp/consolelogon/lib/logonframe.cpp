@@ -251,8 +251,8 @@ void LogonFrame::EnterSecurityOptionsMode(LC::LogonUISecurityOptions options, WI
 	if (m_SecurityOptionsCompletion.get() == nullptr)
 		return;
 
-	SetTitle(IDS_SECURITYOPTIONS);
-	SetStatus(LoadResString(IDS_SECURITYOPTIONS),false);
+	SetTitle(IDS_WINSECURITY);
+	SetStatus(LoadResString(IDS_WINSECURITY),false);
 
     HideWelcomeArea();
     ShowLogoArea();
@@ -321,6 +321,43 @@ void LogonFrame::EnterSecurityOptionsMode(LC::LogonUISecurityOptions options, WI
 	bool showSecCancel = TRUE;
     FindDescendent(DirectUI::StrToID(L"CancelSecurityOptions"))->SetVisible(showSecCancel ? TRUE : FALSE);
     FindDescendent(DirectUI::StrToID(L"CancelSecurityOptions"))->SetLayoutPos(showSecCancel ? -1 : -3);
+
+	bool bPastFirst = false;
+	if (showLock)
+	{
+		FindDescendent(DirectUI::StrToID(L"SecurityLock"))->SetKeyFocus();
+		bPastFirst = true;
+	}
+
+	if (showSwitchUser && !bPastFirst)
+	{
+		FindDescendent(DirectUI::StrToID(L"SecuritySwitchUser"))->SetKeyFocus();
+		bPastFirst = true;
+	}
+
+	if (showLogOff && !bPastFirst)
+	{
+		FindDescendent(DirectUI::StrToID(L"SecurityLogOff"))->SetKeyFocus();
+		bPastFirst = true;
+	}
+
+	if (showChange && !bPastFirst)
+	{
+		FindDescendent(DirectUI::StrToID(L"SecurityChange"))->SetKeyFocus();
+		bPastFirst = true;
+	}
+
+	if (showTaskMan && !bPastFirst)
+	{
+		FindDescendent(DirectUI::StrToID(L"SecurityTaskManager"))->SetKeyFocus();
+		bPastFirst = true;
+	}
+
+	if (!bPastFirst)
+	{
+		FindDescendent(DirectUI::StrToID(L"CancelSecurityOptions"))->SetKeyFocus();
+		bPastFirst = true;
+	}
 
     //FindDescendent(DirectUI::StrToID(L"DialogButtons"))->SetVisible(TRUE);
     //FindDescendent(DirectUI::StrToID(L"DialogButtons"))->SetLayoutPos(-1);
@@ -1224,6 +1261,19 @@ void LogonFrame::OnInput(DirectUI::InputEvent* pEvent)
 {
     if (pEvent->nStage == DirectUI::GMF_DIRECT || pEvent->nStage == DirectUI::GMF_BUBBLED)
     {
+        if (pEvent->nDevice == DirectUI::GINPUT_MOUSE)
+        {
+        	//TODO: this is temp for now, until i can figure out why LogonFrame::OnPropertyChanged isnt called when setkeyfocus is called
+        	DirectUI::MouseEvent* pme = (DirectUI::MouseEvent*)pEvent;
+        	if ( pme->bButton && pme->nCode == DirectUI::GMOUSE_DOWN)
+        	{
+        		g_pErrorBalloon.HideToolTip();
+        		SetKeyFocus();
+        		_peAccountList->SetSelection(NULL);
+        		pEvent->fHandled = true;
+        		return;
+        	}
+        }
         if (pEvent->nDevice == DirectUI::GINPUT_KEYBOARD)
         {
             DirectUI::KeyboardEvent* pke = (DirectUI::KeyboardEvent*)pEvent;

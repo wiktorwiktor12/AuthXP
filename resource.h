@@ -198,7 +198,13 @@
 #define IDS_SECURITYOPTIONS     49
 #define IDS_UNLOCK     50
 #define IDS_USER              51
-#define IDS_WINSECURITY       52
+#define IDS_WINSECURITY       1800
+#define IDS_LOCKCOMPUTER         1801
+#define IDS_LOGOFF         1803
+#define IDS_CHANGEPASSWORD         1804
+#define IDS_TASKMANAGER         1805
+#define IDS_CANCEL         1806
+#define IDS_SWITCHUSER         1807
 #define IDS_ACDSC_PWD           100
 
 #define IDB_BACKGROUND          100

@@ -694,6 +694,12 @@ HRESULT LogonViewManager::ReportResultUIThread(
 	m_requestCredentialsComplete.reset();
 
 	ComPtr<WF::IAsyncOperation<LCPD::ReportResultInfo*>> asyncOp;
+
+	if (!m_credProvDataModel.Get())
+		RETURN_IF_FAILED(StartCredProvsIfNecessary(reason, true, nullptr));
+
+	RETURN_HR_IF_NULL_MSG(E_FAIL,m_credProvDataModel.Get(),"CRED PROV IS NULL");
+
 	RETURN_IF_FAILED(m_credProvDataModel->ReportResultAsync(ntStatus, ntSubStatus, userSid, &asyncOp)); // 635
 
 	ComPtr<LogonViewManager> thisRef = this;

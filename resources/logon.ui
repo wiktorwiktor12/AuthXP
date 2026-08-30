@@ -12,7 +12,7 @@
 	<stylesheets>
 			
 			<style resid="CheckboxStyle">
-				<element background="argb(0, 0, 0, 0)" foreground="white" fontface="Segoe UI"/>
+				<element background="argb(0, 0, 0, 0)" foreground="white" fontface="Tahoma"/>
 				<if id="atom(Checkbox)">
 					<button width="sysmetric(71)" height="sysmetric(72)" margin="rect(0rp, 0rp, 5rp, 0rp)"/>
 					<if keyfocused="true">
@@ -26,7 +26,7 @@
 			
 			<style resid="CommandlinkStyle">
 				<if class="Link">
-					<AdvisableButton font="9;normal;shadow|underline;Segoe UI" shadowintensity="75" cursor="hand" contentalign="middleleft"/>
+					<AdvisableButton font="9;normal;shadow|underline;Tahoma" shadowintensity="75" cursor="hand" contentalign="middleleft"/>
 					<if keyfocused="true">
 						<button contentalign="middlecenter|focusrect"/>
 					</if>
@@ -35,7 +35,7 @@
 					</if>
 				</if>
 				<if class="StaticText">
-                	<AdvisableElement font="9;normal;shadow;Segoe UI" shadowintensity="75" contentalign="WrapLeft"/>
+                	<AdvisableElement font="9;normal;shadow;Tahoma" shadowintensity="75" contentalign="WrapLeft"/>
 
                 </if>
 			</style>
@@ -270,7 +270,7 @@
 			</style>
 			<style resid="passwordpaness">
 				<element background="argb(0,0,0,0)"/>
-				<RestrictedEdit background=PROP(resbmp(IDB_EDITFRAME,6,0xFF0FF,0,0,0,0)) borderthickness="rect(3,3,5,5)" fontface="arial" font="16pt"/>
+				<RestrictedEdit background=PROP(resbmp(IDB_EDITFRAME,6,16711935,0,0,0,0)) borderthickness="rect(3,3,5,5)" fontface="arial" font="16pt"/>
 				<if id="atom(passwordpanelayer)">
 					<element padding="rect(71rp,34rp,0,0)"/>
 				</if>
@@ -278,7 +278,7 @@
 					<element fontface=PROP(resstr(IDS_HELPFONT)) font=PROP(resstr(IDS_PWINSTRUCTFONTSIZE)) foreground="white" padding="rect(3rp,0,0,3rp)"/>
 				</if>
 				<if class="PasswordEdit">
-					<RestrictedEdit background=PROP(resbmp(IDB_EDITFRAME,6,0xFF0FF,0,0,0,0)) borderthickness="rect(3,3,5,5)" passwordcharacter="9679" fontface="arial" font="16pt"/>
+					<RestrictedEdit background=PROP(resbmp(IDB_EDITFRAME,6,16711935,0,0,0,0)) borderthickness="rect(3,3,5,5)" passwordcharacter="9679" fontface="arial" font="16pt"/>
 				</if>
 				<if id="atom(go)">
 					<SubmitButton margin="rect(5rp,0,0,0)" content=PROP(resbmp(IDB_GO,3,-1,26rp,26rp,0,0)) padding="rect(0rp,1rp,0,1rp)"/>
@@ -406,33 +406,30 @@
                 </element>
 				<styledscrollviewer id="atom(SecurityOptions)" sheet="scroller" xscrollable="false" layoutpos="client" visible="false">
 					<element layout=PROP(verticalflowlayout(0,ALIGN_LEFT,ALIGN_LEFT,ALIGN_CENTER)) sheet="CommandLinks" padding="rect(5rp, 9rp, 0rp, 9rp)">
-						<button id="atom(SecurityLock)" accname="Lock this Computer" layoutpos="none" layout="flowlayout()" class="SecurityCommandLink">
-							<element content="Lock this Computer" shortcut="auto"/>
+						<button id="atom(SecurityLock)" accname=PROP(resstr(IDS_LOCKCOMPUTER)) layoutpos="none" layout="flowlayout()" class="SecurityCommandLink">
+							<element content=PROP(resstr(IDS_LOCKCOMPUTER)) shortcut="auto"/>
 						</button>
-						<button id="atom(SecuritySwitchUser)" accname="Switch User" layoutpos="none" layout="flowlayout()" class="SecurityCommandLink">
-							<element content="Switch User" shortcut="auto"/>
+						<button id="atom(SecuritySwitchUser)" accname=PROP(resstr(IDS_SWITCHUSER)) layoutpos="none" layout="flowlayout()" class="SecurityCommandLink">
+							<element content=PROP(resstr(IDS_SWITCHUSER)) shortcut="auto"/>
 						</button>
-						<button id="atom(SecurityLogOff)" accname="Log Off" layoutpos="none" layout="flowlayout()" class="SecurityCommandLink">
-							<element content="Log Off" shortcut="auto"/>
+						<button id="atom(SecurityLogOff)" accname=PROP(resstr(IDS_LOGOFF)) layoutpos="none" layout="flowlayout()" class="SecurityCommandLink">
+							<element content=PROP(resstr(IDS_LOGOFF)) shortcut="auto"/>
 						</button>
-						<button id="atom(SecurityChange)" accname="Change a password" layoutpos="none" layout="flowlayout()" class="SecurityCommandLink">
-							<element content="Change a password" shortcut="auto"/>
+						<button id="atom(SecurityChange)" accname=PROP(resstr(IDS_CHANGEPASSWORD)) layoutpos="none" layout="flowlayout()" class="SecurityCommandLink">
+							<element content=PROP(resstr(IDS_CHANGEPASSWORD)) shortcut="auto"/>
 						</button>
-						<button id="atom(SecurityTaskManager)" accname="Start Task Manager" layoutpos="none" layout="flowlayout()" class="SecurityCommandLink">
-							<element content="Start Task Manager" shortcut="auto"/>
+						<button id="atom(SecurityTaskManager)" accname=PROP(resstr(IDS_TASKMANAGER)) layoutpos="none" layout="flowlayout()" class="SecurityCommandLink">
+							<element content=PROP(resstr(IDS_TASKMANAGER)) shortcut="auto"/>
 						</button>
-						<button id="atom(SecurityTaskManager)" accname="Start Task Manager" layoutpos="none" layout="flowlayout()" class="SecurityCommandLink">
-							<element content="Start Task Manager" shortcut="auto"/>
-						</button>
-						<button id="atom(CancelSecurityOptions)" accname="Cancel" layoutpos="none" layout="flowlayout()" class="CancelLink">
-							<element content="Cancel" shortcut="auto" class="CancelLink"/>
+						<button id="atom(CancelSecurityOptions)" accname=PROP(resstr(IDS_CANCEL)) layoutpos="none" layout="flowlayout()" class="CancelLink">
+							<element content=PROP(resstr(IDS_CANCEL)) shortcut="auto" class="CancelLink"/>
 						</button>
 						<element id="atom(DialogButtons)" layout="flowlayout(0,1,2,2)" layoutpos="none" sheet="GenericButtons" padding="rect(0rp, 10rp, 0rp, 0rp)" margin="rect(0rp, 30rp, 0rp, 5rp)">
 						    <button margin="rect(0rp, 0rp, 0rp, 6rp)" layout="flowlayout(0,2,2,2)" active="keyboard|mouse" accessible="true" accrole="pushbutton" class="pushbutton">
 						        <element padding="rect(8rp,0rp,8rp,0rp)" shortcut="auto" content="OK" foreground="buttontext"/>
 				            </button>
 						    <button margin="rect(0rp, 0rp, 0rp, 6rp)" layout="flowlayout(0,2,2,2)" active="keyboard|mouse" accessible="true" accrole="pushbutton" class="pushbutton">
-						        <element padding="rect(8rp,0rp,8rp,0rp)" shortcut="auto" content="Cancel" foreground="buttontext"/>
+						        <element padding="rect(8rp,0rp,8rp,0rp)" shortcut="auto" content=PROP(resstr(IDS_CANCEL)) foreground="buttontext"/>
 						    </button>
 						</element>
 
