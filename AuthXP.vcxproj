@@ -331,11 +331,12 @@
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\advisablebutton.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\advisableelement.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\backgroundwindow.cpp" />
+    <ClCompile Include="shell\auth\authxp\consolelogon\lib\classicshutdown.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\combobox.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\consolebsdrstub.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\authuxlock.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\authuxlockaction.cpp" />
-    <ClCompile Include="shell\auth\authxp\consolelogon\lib\authux.cpp" />
+    <ClCompile Include="shell\auth\authxp\consolelogon\lib\authxp.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\consoleuimanager.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\DefaultSelector.cpp" />
     <ClCompile Include="shell\auth\authxp\consolelogon\lib\errorballoon.cpp" />
@@ -374,6 +375,7 @@
     <ClInclude Include="shell\auth\authxp\consolelogon\dll\pch.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\advisablebutton.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\backgroundwindow.h" />
+    <ClInclude Include="shell\auth\authxp\consolelogon\lib\classicshutdown.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\combobox.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\authuxlockaction.h" />
     <ClInclude Include="shell\auth\authxp\consolelogon\lib\consoleuimanager.h" />

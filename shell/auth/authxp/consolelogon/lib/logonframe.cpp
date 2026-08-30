@@ -7,6 +7,7 @@
 #include <WtsApi32.h>
 #include <uxtheme.h>
 
+#include "classicshutdown.h"
 #include "logoninterfaces.h"
 #include "duiutil.h"
 #include "errorballoon.h"
@@ -591,6 +592,25 @@ void LogonFrame::LoadSettings()
 	settingShouldShowDateAndTime = FALSE;
 	SHRegGetDWORDW(HKEY_LOCAL_MACHINE,L"Software\\AuthXP",L"ShouldAnimateFlag",&settingShouldAnimateFlag);
 	SHRegGetDWORDW(HKEY_LOCAL_MACHINE,L"Software\\AuthXP",L"ShouldShowDateAndTime",&settingShouldShowDateAndTime);
+
+	WCHAR modulePath[MAX_PATH] = {};
+	GetModuleFileNameW(HINST_THISCOMPONENT, modulePath, MAX_PATH);
+
+	std::wstring classicShutdownPath(modulePath);
+	size_t slashPos = classicShutdownPath.find_last_of(L'\\');
+	if (slashPos != std::wstring::npos)
+	{
+		classicShutdownPath.resize(slashPos + 1);
+	}
+	classicShutdownPath += L"ClassicShutdown.dll";
+
+	wcscpy_s(settingClassicShutdownPath, classicShutdownPath.c_str());
+
+	DWORD cbData = sizeof(settingClassicShutdownPath);
+	if (ERROR_SUCCESS == SHRegGetValueW(HKEY_LOCAL_MACHINE, L"Software\\AuthXP", L"ClassicShutdownPath", SRRF_RT_REG_SZ, NULL, settingClassicShutdownPath, &cbData))
+	{
+		// read success
+	}
 }
 
 LogonFrame::~LogonFrame()
@@ -1449,72 +1469,25 @@ HRESULT LogonFrame::OnLogUserOn(LogonAccount* pla)
     return S_OK;
 }
 
-typedef enum _SHUTDOWNSTYLE
+DWORD WINAPI ShutDownDialogThreadProc(LPVOID param)
 {
-	SDS_USER = 0,
-	SDS_WIN95,
-	SDS_WIN98,
-	SDS_WINME,
-	SDS_WIN2K,
-	SDS_WINXP,
-	SDS_WINXP_GINA,
-	SDS_WIN03_GINA,
-	SDS_COUNT
-} SHUTDOWNSTYLE;
-
-/**
-  * LOS_USER is passed to DisplayLogoffDialog to use the style from
-  * registry. It *can* be set in registry, and if it is, then the shutdown
-  * style will be mapped to one of these.
-  */
-typedef enum _LOGOFFSTYLE
-{
-	LOS_USER = 0,
-	LOS_WIN98,
-	LOS_WIN2K,
-	LOS_WINXP,
-	LOS_WINXP_GINA,
-	LOS_COUNT
-} LOGOFFSTYLE;
-
-typedef enum _SHUTDOWNTYPE
-{
-	SHTDN_NONE        = 0,
-	SHTDN_LOGOFF      = (1 << 0),
-	SHTDN_SHUTDOWN    = (1 << 1),
-	SHTDN_RESTART     = (1 << 2),
-	SHTDN_RESTART_DOS = (1 << 3),
-	SHTDN_SLEEP       = (1 << 4),
-	SHTDN_HIBERNATE   = (1 << 5),
-	SHTDN_DISCONNECT  = (1 << 6),
-	SHTDN_ALL         = SHTDN_LOGOFF | SHTDN_SHUTDOWN | SHTDN_RESTART |
-						SHTDN_RESTART_DOS |SHTDN_SLEEP | SHTDN_HIBERNATE |
-						SHTDN_DISCONNECT
-} SHUTDOWNTYPE;
-
-/* Options for Windows 2000, XP GINA, and Server 2003 GINA styled shutdown dialogs. */
-typedef struct _SHUTDOWNOPTIONS
-{
-	HBITMAP  hbmBrand;
-	HBITMAP  hbmBar;
-	BOOL     fSolidBanner;
-	COLORREF crBanner;
-} SHUTDOWNOPTIONS, *PSHUTDOWNOPTIONS;
+	DisplayShutdownDialog(NULL,SDS_WINXP,SHTDN_NONE,NULL);
+	return S_OK;
+}
 
 HRESULT LogonFrame::OnPower()
 {
-    //TODO
-
-	/*static auto ClassicShutdownDll = LoadLibrary(TEXT("ClassicShutdown.dll"));
+	HMODULE ClassicShutdownDll = LoadClassicShutdownDll();
 
 	if (!ClassicShutdownDll)
+	{
+		HRESULT(STDMETHODCALLTYPE* ExitWindowsDialog)(HWND hwndParent,DWORD a2) = decltype(ExitWindowsDialog)(GetProcAddress(LoadLibraryW(L"shell32.dll"), MAKEINTRESOURCEA(60)));
+		ExitWindowsDialog(GetHWND(),0);
+
 		return S_OK;
+	}
 
-	HRESULT(*DisplayShutdownDialog)(HWND,SHUTDOWNSTYLE,SHUTDOWNTYPE,PSHUTDOWNOPTIONS) = (decltype(DisplayShutdownDialog))(GetProcAddress(ClassicShutdownDll, "DisplayShutdownDialog"));
-	if (!DisplayShutdownDialog)
-		return E_FAIL;
-
-	DisplayShutdownDialog(0,SDS_WINXP,SHTDN_NONE,NULL);*/
+	CreateThread(0,0,ShutDownDialogThreadProc,0,0,0);
 
     return S_OK;
 }
