@@ -88,7 +88,7 @@ Section "AuthXP" AuthXP
 	${AndIf} ${AtMostBuild} 26201
 		File "..\x64\Release.GE\AuthXP.dll"
 	${EndIf}
-
+	
     # Create Uninstall entry
     SetRegView 64
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\AuthXP" \
@@ -96,9 +96,9 @@ Section "AuthXP" AuthXP
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\AuthXP" \
                  "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\AuthXP" \
-                 "Publisher" "explorer7-team"
+                 "Publisher" "wiktorwiktor12"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\AuthXP" \
-                 "DisplayVersion" "0.0.2"
+                 "DisplayVersion" "0.0.1"
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\AuthXP" \
                  "NoModify" 1
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\AuthXP" \
@@ -115,6 +115,16 @@ Section "AuthXP" AuthXP
     AccessControl::GrantOnRegKey HKLM "SOFTWARE\Microsoft\WindowsRuntime\ActivatableClassId\Windows.Internal.UI.Logon.Controller.LockScreenHost" $0 FullAccess
     WriteRegExpandStr HKLM "SOFTWARE\Microsoft\WindowsRuntime\ActivatableClassId\Windows.Internal.UI.Logon.Controller.LockScreenHost" \
         "DllPath" "$INSTDIR\AuthXP.dll" 
+SectionEnd
+
+Section /o "ClassicShutdown" ClassicShutdown
+    SetOutPath "$INSTDIR\en-us"
+    File "en-US\ClassicShutdown.dll.mui"
+	SetOutPath "$INSTDIR\ja-JP"
+    File "ja-JP\ClassicShutdown.dll.mui"
+
+    SetOutPath "$INSTDIR\"
+    File "classicshutdown.dll"
 SectionEnd
 
 Section "Uninstall"
@@ -154,6 +164,7 @@ Function .onInit
     ${EndIf}
 	
 	SectionSetSize ${AuthXP} 4800
+	SectionSetSize ${ClassicShutdown} 100
 	
 	StrCpy $INSTDIR "$PROGRAMFILES64\AuthXP"
 FunctionEnd

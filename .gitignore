@@ -30,6 +30,9 @@ bld/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
+[Rr]elease.*/
+[Dd]ebug.*/
+build/*
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
@@ -92,6 +95,8 @@ StyleCopReport.xml
 *.pidb
 *.svclog
 *.scc
+installer/**/*.mui
+installer/**/*.dll
 
 # Chutzpah Test files
 _Chutzpah*
@@ -351,3 +356,4 @@ MigrationBackup/
 
 .idea/
 installer/build/**
+*.uipp
