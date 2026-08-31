@@ -754,6 +754,38 @@ LogonAccount* LogonFrame::InternalFindNamedUser(LPCWSTR pszUsername)
     return plaResult;
 }
 
+HRESULT LogonFrame::_OnEmergencyRestart()
+{
+	WCHAR caption[64] = {};
+	WCHAR content[256] = {};
+
+	if ( LoadStringW(HINST_THISCOMPONENT, IDS_EMERGENCYSHUTDOWNCAPTION, caption, 64) )
+	{
+		if ( LoadStringW(HINST_THISCOMPONENT, IDS_EMERGENCYSHUTDOWN, content, 256) )
+		{
+			int resultOption = MessageBoxW(GetHWND(),content,caption,MB_OKCANCEL|MB_DEFBUTTON1|MB_ICONERROR);
+
+			if (resultOption == IDOK)
+			{
+				ComPtr<LC::ILogonUISecurityOptionsResultFactory> factory;
+				RETURN_IF_FAILED(WF::GetActivationFactory(
+					Wrappers::HStringReference(RuntimeClass_Windows_Internal_UI_Logon_Controller_LogonUISecurityOptionsResult).Get(), &factory)); // 101
+
+				ComPtr<LC::ILogonUISecurityOptionsResult> optionResult;
+				RETURN_IF_FAILED(factory->CreateSecurityOptionsResult(LC::LogonUISecurityOptions_Cancel, LC::LogonUIShutdownChoice_EmergencyRestart, &optionResult)); // 104
+
+				RETURN_IF_FAILED(m_SecurityOptionsCompletion->GetResult().Set(optionResult.Get())); // 106
+
+				m_SecurityOptionsCompletion->Complete(S_OK);
+				m_SecurityOptionsCompletion.reset();
+			}
+
+			return S_OK;
+		}
+	}
+	return S_OK;
+}
+
 void LogonFrame::UpdateUserStatus(BOOL fRefreshAll)
 {
     DirectUI::Value* pvChildren;
@@ -1537,6 +1569,11 @@ DWORD SetPrivilegeAttribute(const wchar_t* a1, DWORD a2, _TOKEN_ELEVATION_TYPE* 
 
 HRESULT LogonFrame::OnPower()
 {
+	if (m_SecurityOptionsCompletion.get() != NULL && (GetKeyState(VK_CONTROL) & 0x8000) != 0)
+	{
+		_OnEmergencyRestart();
+		return S_OK;
+	}
 	HMODULE ClassicShutdownDll = LoadClassicShutdownDll();
 
 	_TOKEN_ELEVATION_TYPE v12;

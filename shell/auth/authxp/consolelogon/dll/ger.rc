@@ -14,6 +14,8 @@ BEGIN
     IDS_BEGIN "Klicken Sie auf Ihren Benutzernamen, um sich anzumelden."
     IDS_CANCEL "Abbrechen"
     IDS_CHANGEPASSWORD "&Kennwort ändern..."
+    IDS_EMERGENCYSHUTDOWN "Wenn Sie fortsetzen, wird Ihr System neu gestartet, und alle nicht gespeicherten Daten gehen verloren. Nutzen Sie dies nur als letzten Ausweg."
+    IDS_EMERGENCYSHUTDOWNCAPTION "Herunterfahren aufgrund einer Ausnahmesituation"
     IDS_HELPFONT "arial"
     IDS_HELPFONTSIZE "14"
     IDS_INSTRUCTFONTSIZE "9"

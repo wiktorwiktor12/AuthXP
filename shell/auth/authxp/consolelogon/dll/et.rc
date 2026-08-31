@@ -14,6 +14,8 @@ BEGIN
     IDS_BEGIN "Alustamiseks klõpsake oma kasutajanime"
     IDS_CANCEL "Loobu"
     IDS_CHANGEPASSWORD "Muuda &parool..."
+    IDS_EMERGENCYSHUTDOWN "Kui jätkate, siis arvuti rebuudib ja kõik salvestamata andmed lähevad kaotsi. Kasutage seda vaid hädakorral."
+    IDS_EMERGENCYSHUTDOWNCAPTION "Hädasulgemine"
     IDS_HELPFONT "Arial"
     IDS_HELPFONTSIZE "14"
     IDS_INSTRUCTFONTSIZE "9"

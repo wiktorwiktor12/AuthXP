@@ -14,6 +14,8 @@ BEGIN
     IDS_BEGIN "Haga clic en su nombre para comenzar"
     IDS_CANCEL "Cancelar"
     IDS_CHANGEPASSWORD "Cam&biar contraseña..."
+    IDS_EMERGENCYSHUTDOWN "Si continua, su máquina se reiniciará y perderá todos los trabajos que no hayan sido guardados. Utilice esto sólo como último recurso."
+    IDS_EMERGENCYSHUTDOWNCAPTION "Apagado de emergencia"
     IDS_HELPFONT "arial"
     IDS_HELPFONTSIZE "14"
     IDS_INSTRUCTFONTSIZE "9"

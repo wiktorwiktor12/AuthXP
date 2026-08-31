@@ -14,6 +14,8 @@ BEGIN
     IDS_BEGIN "Щоб розпочати роботу, клацніть ім'я користувача"
     IDS_CANCEL "Скасувати"
     IDS_CHANGEPASSWORD "З&міна пароля..."
+    IDS_EMERGENCYSHUTDOWN "Якщо продовжити роботу, комп'ютер буде перезавантажений із втратою всіх незбережених даних.  Використовуйте цей варіант лише в разі крайньої потреби."
+    IDS_EMERGENCYSHUTDOWNCAPTION "Аварійне завершення роботи"
     IDS_HELPFONT "arial"
     IDS_HELPFONTSIZE "14"
     IDS_INSTRUCTFONTSIZE "9"

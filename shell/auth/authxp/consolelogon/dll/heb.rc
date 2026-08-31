@@ -14,6 +14,8 @@ BEGIN
     IDS_BEGIN "‏‏כדי להתחיל, לחץ על שם המשתמש שלך"
     IDS_CANCEL "ביטול"
     IDS_CHANGEPASSWORD "&שינוי הסיסמה..."
+    IDS_EMERGENCYSHUTDOWN "‏‏אם תמשיך, תתבצע הפעלה מחדש של המחשב ונתונים שלא נשמרו יאבדו. השתמש באפשרות זו כמוצא אחרון בלבד."
+    IDS_EMERGENCYSHUTDOWNCAPTION "‏‏כיבוי חירום"
     IDS_HELPFONT "arial"
     IDS_HELPFONTSIZE "14"
     IDS_INSTRUCTFONTSIZE "9"

@@ -14,6 +14,8 @@ BEGIN
     IDS_BEGIN "Za početak pritisnite svoje korisničko ime"
     IDS_CANCEL "Odustani"
     IDS_CHANGEPASSWORD "&Promijeni lozinku..."
+    IDS_EMERGENCYSHUTDOWN "Ako nastavite, vaš će se stroj ponovno pokrenuti i svi podaci koji nisu spremljeni bit će izgubljeni.  Koristite ovo samo kao krajnje sredstvo."
+    IDS_EMERGENCYSHUTDOWNCAPTION "Izvanredno isključivanje"
     IDS_HELPFONT "arial"
     IDS_HELPFONTSIZE "14"
     IDS_INSTRUCTFONTSIZE "9"

@@ -14,6 +14,8 @@ BEGIN
     IDS_BEGIN "Klicka på ditt namn när du vill logga in"
     IDS_CANCEL "Avbryt"
     IDS_CHANGEPASSWORD "&Ändra lösenord..."
+    IDS_EMERGENCYSHUTDOWN "Om du fortsätter kommer datorn att startas om och information som inte sparats går förlorad. Använd detta alternativ i sista hand."
+    IDS_EMERGENCYSHUTDOWNCAPTION "Nödstopp - Windows avslutas"
     IDS_HELPFONT "arial"
     IDS_HELPFONTSIZE "14"
     IDS_INSTRUCTFONTSIZE "9"

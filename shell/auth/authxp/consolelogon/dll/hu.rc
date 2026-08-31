@@ -14,6 +14,8 @@ BEGIN
     IDS_BEGIN "A kezdéshez kattintson a felhasználónévre"
     IDS_CANCEL "Mégse"
     IDS_CHANGEPASSWORD "&Jelszó módosítása..."
+    IDS_EMERGENCYSHUTDOWN "Amennyiben folytatja, számítógépe újraindul és minden nem mentett adat elvész.  Csak végső megoldásként használja ezt."
+    IDS_EMERGENCYSHUTDOWNCAPTION "Vészleállítás"
     IDS_HELPFONT "arial"
     IDS_HELPFONTSIZE "14"
     IDS_INSTRUCTFONTSIZE "9"

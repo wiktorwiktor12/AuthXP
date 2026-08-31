@@ -298,6 +298,7 @@ public:
 
 private:
     LogonAccount* InternalFindNamedUser(LPCWSTR pszUsername);
+	HRESULT _OnEmergencyRestart();
 
     static int _nDPI;
     DirectUI::DUIXmlParser* _pParser;

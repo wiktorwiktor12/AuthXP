@@ -14,6 +14,8 @@ BEGIN
     IDS_BEGIN "Začněte klepnutím na uživatelské jméno."
     IDS_CANCEL "Storno"
     IDS_CHANGEPASSWORD "Z&měnit heslo..."
+    IDS_EMERGENCYSHUTDOWN "Budete-li pokračovat, pak se počítač restartuje a všechna neuložená data budou ztracena. Tuto možnost použijte pouze v krajním případě."
+    IDS_EMERGENCYSHUTDOWNCAPTION "Nouzové vypnutí"
     IDS_HELPFONT "Arial"
     IDS_HELPFONTSIZE "14"
     IDS_INSTRUCTFONTSIZE "9"

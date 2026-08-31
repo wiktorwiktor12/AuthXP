@@ -14,6 +14,8 @@ BEGIN
     IDS_BEGIN "เมื่อต้องการเริ่มต้น ให้คลิกชื่อผู้ใช้ของคุณ"
     IDS_CANCEL "ยกเลิก"
     IDS_CHANGEPASSWORD "เปลี่ยน&รหัสผ่าน..."
+    IDS_EMERGENCYSHUTDOWN "ถ้าคุณดำเนินการต่อ เครื่องของคุณจะเริ่มระบบของคอมพิวเตอร์ใหม่ และข้อมูลใดๆ ที่ยังไม่ได้บันทึกไว้จะสูญหาย  ให้ใช้วิธีนี้เป็นวิธีสุดท้ายเท่านั้น"
+    IDS_EMERGENCYSHUTDOWNCAPTION "การปิดแบบฉุกเฉิน"
     IDS_HELPFONT "Tahoma"
     IDS_HELPFONTSIZE "14"
     IDS_INSTRUCTFONTSIZE "9"

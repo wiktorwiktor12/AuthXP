@@ -14,6 +14,8 @@ BEGIN
     IDS_BEGIN "Para começar, clique no seu\nnome de usuário"
     IDS_CANCEL "Cancelar"
     IDS_CHANGEPASSWORD "&Alterar senha..."
+    IDS_EMERGENCYSHUTDOWN "Se você continuar, a máquina será reiniciada e os dados não salvos serão perdidos. Use esta opção somente como último recurso."
+    IDS_EMERGENCYSHUTDOWNCAPTION "Desligamento de emergência"
     IDS_HELPFONT "Arial"
     IDS_HELPFONTSIZE "14"
     IDS_INSTRUCTFONTSIZE "9"

@@ -14,6 +14,8 @@ BEGIN
     IDS_BEGIN "Aloita valitsemalla käyttäjänimi"
     IDS_CANCEL "Peruuta"
     IDS_CHANGEPASSWORD "&Muuta salasana..."
+    IDS_EMERGENCYSHUTDOWN "Jos jatkat, tietokoneesi käynnistyy uudelleen ja kaikki tallentamaton tieto häviää. Käytä tätä vain viimeisenä keinona."
+    IDS_EMERGENCYSHUTDOWNCAPTION "Hätäsammutus"
     IDS_HELPFONT "Arial"
     IDS_HELPFONTSIZE "14"
     IDS_INSTRUCTFONTSIZE "9"

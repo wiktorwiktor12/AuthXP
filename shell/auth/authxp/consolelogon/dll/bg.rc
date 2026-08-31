@@ -14,6 +14,8 @@ BEGIN
     IDS_BEGIN "За да започнете, щракнете върху потребителското си име"
     IDS_CANCEL "Отказ"
     IDS_CHANGEPASSWORD "&Смяна на парола..."
+    IDS_EMERGENCYSHUTDOWN "Ако продължите, вашата машина ще се рестартира и всички незаписани данни ще бъдат загубени.  Използвайте това само в краен случай."
+    IDS_EMERGENCYSHUTDOWNCAPTION "Аварийно изключване"
     IDS_HELPFONT "Arial"
     IDS_HELPFONTSIZE "14"
     IDS_INSTRUCTFONTSIZE "9"

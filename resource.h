@@ -205,6 +205,8 @@
 #define IDS_TASKMANAGER         1805
 #define IDS_CANCEL         1806
 #define IDS_SWITCHUSER         1807
+#define IDS_EMERGENCYSHUTDOWNCAPTION         1540
+#define IDS_EMERGENCYSHUTDOWN         1541
 #define IDS_ACDSC_PWD           100
 
 #define IDB_BACKGROUND          100

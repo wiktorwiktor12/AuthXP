@@ -14,6 +14,8 @@ BEGIN
     IDS_BEGIN "Klik på dit brugernavn for at starte"
     IDS_CANCEL "Annuller"
     IDS_CHANGEPASSWORD "&Skift adgangskode..."
+    IDS_EMERGENCYSHUTDOWN "Hvis du fortsætter, vil computeren genstarte, og alle data, der ikke er gemt, vil gå tabt. Brug kun dette som en sidste udvej."
+    IDS_EMERGENCYSHUTDOWNCAPTION "Nødlukning"
     IDS_HELPFONT "arial"
     IDS_HELPFONTSIZE "14"
     IDS_INSTRUCTFONTSIZE "9"

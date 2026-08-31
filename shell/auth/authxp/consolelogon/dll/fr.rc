@@ -14,6 +14,8 @@ BEGIN
     IDS_BEGIN "Pour commencer, cliquez sur votre nom d'utilisateur"
     IDS_CANCEL "Annuler"
     IDS_CHANGEPASSWORD "&Modifier le mot de passe..."
+    IDS_EMERGENCYSHUTDOWN "Si vous continuez, votre ordinateur va redémarrer et les données non enregistrées seront perdues. N'effectuez cette action qu'en dernier recours."
+    IDS_EMERGENCYSHUTDOWNCAPTION "Arrêt d'urgence"
     IDS_HELPFONT "arial"
     IDS_HELPFONTSIZE "14"
     IDS_INSTRUCTFONTSIZE "9"

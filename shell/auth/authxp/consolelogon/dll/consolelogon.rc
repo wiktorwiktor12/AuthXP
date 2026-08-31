@@ -126,6 +126,9 @@ BEGIN
     IDS_SWITCHUSER "S&witch User"
     IDS_CANCEL "Cancel"
 
+    IDS_EMERGENCYSHUTDOWNCAPTION "Emergency shutdown"
+    IDS_EMERGENCYSHUTDOWN "If you continue your machine will reboot and any un-saved data will be lost.  Use this only as a last resort."
+
 END
 // English (U.S.) resources
 /////////////////////////////////////////////////////////////////////////////

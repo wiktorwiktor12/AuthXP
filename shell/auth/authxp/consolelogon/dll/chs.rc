@@ -14,6 +14,8 @@ BEGIN
     IDS_BEGIN "要开始，请单击您的用户名"
     IDS_CANCEL "取消"
     IDS_CHANGEPASSWORD "更改密码(&C)..."
+    IDS_EMERGENCYSHUTDOWN "如果继续，您的机器会重新启动，未保存的数据将丢失。如非绝对必要，请勿采取此步骤。"
+    IDS_EMERGENCYSHUTDOWNCAPTION "紧急关机"
     IDS_HELPFONT "宋体"
     IDS_HELPFONTSIZE "14"
     IDS_INSTRUCTFONTSIZE "9"

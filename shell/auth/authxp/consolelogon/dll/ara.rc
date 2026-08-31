@@ -14,6 +14,8 @@ BEGIN
     IDS_BEGIN "انقر فوق اسم المستخدم للبدء"
     IDS_CANCEL "إلغاء الأمر"
     IDS_CHANGEPASSWORD "ت&غيير كلمة المرور..."
+    IDS_EMERGENCYSHUTDOWN "‏‏إذا قمت بالمتابعة فسوف يقوم الجهاز بإعادة التمهيد وستفقد أية بيانات لم يتم حفظها. استخدم هذا الإجراء فقط كحل أخير."
+    IDS_EMERGENCYSHUTDOWNCAPTION "إيقاف تشغيل طارئ"
     IDS_HELPFONT "arial"
     IDS_HELPFONTSIZE "14"
     IDS_INSTRUCTFONTSIZE "9"

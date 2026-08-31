@@ -14,6 +14,8 @@ BEGIN
     IDS_BEGIN "Για να ξεκινήσετε, κάντε κλικ στο δικό σας όνομα χρήστη"
     IDS_CANCEL "Άκυρο"
     IDS_CHANGEPASSWORD "&Αλλαγή κωδικού..."
+    IDS_EMERGENCYSHUTDOWN "Εάν συνεχίσετε, ο υπολογιστής σας θα ξεκινήσει πάλι και όσα δεδομένα δεν έχουν αποθηκευτεί θα χαθούν.  Χρησιμοποιήστε το ως τελευταία επιλογή."
+    IDS_EMERGENCYSHUTDOWNCAPTION "Αναγκαστικός τερματισμός λειτουργίας"
     IDS_HELPFONT "Arial Greek"
     IDS_HELPFONTSIZE "12"
     IDS_INSTRUCTFONTSIZE "9"

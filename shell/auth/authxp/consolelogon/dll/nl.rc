@@ -14,6 +14,8 @@ BEGIN
     IDS_BEGIN "Klik op uw gebruikersnaam om te beginnen"
     IDS_CANCEL "Annuleren"
     IDS_CHANGEPASSWORD "&Wachtwoord wijzigen..."
+    IDS_EMERGENCYSHUTDOWN "Als u nu doorgaat, wordt de computer opnieuw opgestart en verliest u niet-opgeslagen gegevens. Gebruik deze optie alleen in noodgevallen."
+    IDS_EMERGENCYSHUTDOWNCAPTION "Noodafsluiting van systeem"
     IDS_HELPFONT "arial"
     IDS_HELPFONTSIZE "14"
     IDS_INSTRUCTFONTSIZE "9"

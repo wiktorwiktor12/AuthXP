@@ -14,6 +14,8 @@ BEGIN
     IDS_BEGIN "Başlamak için kullanıcı adınızı seçin"
     IDS_CANCEL "İptal"
     IDS_CHANGEPASSWORD "&Parola Değiştir..."
+    IDS_EMERGENCYSHUTDOWN "Devam ederseniz makineniz yeniden başlatılacak ve kaydedilmemiş verilerinizi kaybedeceksiniz  Bunu en son seçenek olarak kullanın."
+    IDS_EMERGENCYSHUTDOWNCAPTION "Acil durum oturum kapatması"
     IDS_HELPFONT "arial"
     IDS_HELPFONTSIZE "14"
     IDS_INSTRUCTFONTSIZE "9"

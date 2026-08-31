@@ -14,6 +14,8 @@ BEGIN
     IDS_BEGIN "시작하려면 사용자 이름을 클릭하십시오."
     IDS_CANCEL "취소"
     IDS_CHANGEPASSWORD "암호 변경(&C)..."
+    IDS_EMERGENCYSHUTDOWN "계속 진행하면 시스템이 다시 부팅되고 저장되지 않은 데이터는 모두 손실됩니다. 최후의 방법으로만 사용하십시오."
+    IDS_EMERGENCYSHUTDOWNCAPTION "응급 시스템 종료"
     IDS_HELPFONT "굴림"
     IDS_HELPFONTSIZE "10"
     IDS_INSTRUCTFONTSIZE "9"

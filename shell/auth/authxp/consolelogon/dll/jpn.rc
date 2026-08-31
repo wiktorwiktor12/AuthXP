@@ -14,6 +14,8 @@ BEGIN
     IDS_BEGIN "開始するにはユーザー名をクリックしてください。"
     IDS_CANCEL "キャンセル"
     IDS_CHANGEPASSWORD "パスワードの変更(&C)..."
+    IDS_EMERGENCYSHUTDOWN "続行すると、コンピュータが再起動し、保存していないデータが失われます。緊急時シャットダウンは最後の手段として使用してください。"
+    IDS_EMERGENCYSHUTDOWNCAPTION "緊急時シャットダウン"
     IDS_HELPFONT "MS UI Gothic"
     IDS_HELPFONTSIZE "12"
     IDS_INSTRUCTFONTSIZE "9"

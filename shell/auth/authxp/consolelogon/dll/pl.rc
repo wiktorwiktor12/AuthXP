@@ -14,6 +14,8 @@ BEGIN
     IDS_BEGIN "Aby rozpocząć, kliknij swoją nazwę użytkownika"
     IDS_CANCEL "Anuluj"
     IDS_CHANGEPASSWORD "Zmień &hasło..."
+    IDS_EMERGENCYSHUTDOWN "Jeśli będziesz kontynuować, nastąpi ponowny rozruch komputera i wszystkie niezapisane dane zostaną utracone. Używaj tego jako ostatniej z możliwości."
+    IDS_EMERGENCYSHUTDOWNCAPTION "Zamknięcie awaryjne"
     IDS_HELPFONT "arial"
     IDS_HELPFONTSIZE "14"
     IDS_INSTRUCTFONTSIZE "9"
