@@ -1475,9 +1475,72 @@ DWORD WINAPI ShutDownDialogThreadProc(LPVOID param)
 	return S_OK;
 }
 
+__int64 __fastcall SHOpenEffectiveToken(DWORD DesiredAccess, int a2, void** a3)
+{
+	HANDLE CurrentThread; // rax
+	__int64 result; // rax
+	HANDLE v8; // rax
+	HANDLE CurrentProcess; // rax
+
+	*a3 = 0;
+	CurrentThread = GetCurrentThread();
+	if (OpenThreadToken(CurrentThread, DesiredAccess, 0, a3))
+		return 0;
+	result = ResultFromKnownLastError();
+	if ((int)result >= 0)
+		return result;
+	if (a2 && (DWORD)result == -2147024891)
+	{
+		v8 = GetCurrentThread();
+		if (OpenThreadToken(v8, DesiredAccess, 1, a3))
+			return 0;
+
+		result = ResultFromKnownLastError();
+	}
+
+	if ((DWORD)result != -2147023888)
+		return result;
+
+	CurrentProcess = GetCurrentProcess();
+	if (OpenProcessToken(CurrentProcess, DesiredAccess, a3))
+		return 0;
+
+	return ResultFromKnownLastError();
+}
+
+DWORD SetPrivilegeAttribute(const wchar_t* a1, DWORD a2, _TOKEN_ELEVATION_TYPE* a3)
+{
+	DWORD LastError; // ebx
+	DWORD ReturnLength; // [rsp+30h] [rbp-40h] BYREF
+	HANDLE TokenHandle; // [rsp+38h] [rbp-38h] BYREF
+	_LUID Luid; // [rsp+40h] [rbp-30h] BYREF
+	struct _TOKEN_PRIVILEGES NewState; // [rsp+48h] [rbp-28h] BYREF
+	struct _TOKEN_PRIVILEGES PreviousState; // [rsp+58h] [rbp-18h] BYREF
+
+	if (LookupPrivilegeValueW(0, L"SeShutdownPrivilege", &Luid) && (int)SHOpenEffectiveToken(0x28u, 1, &TokenHandle) >= 0)
+	{
+		NewState.Privileges[0].Luid = Luid;
+		NewState.PrivilegeCount = 1;
+		NewState.Privileges[0].Attributes = a2;
+		ReturnLength = 16;
+		if (AdjustTokenPrivileges(TokenHandle, 0, &NewState, 0x10u, &PreviousState, &ReturnLength) && a3)
+			*a3 = (_TOKEN_ELEVATION_TYPE)PreviousState.Privileges[0].Attributes;
+		LastError = GetLastError();
+		CloseHandle(TokenHandle);
+	}
+	else
+	{
+		return GetLastError();
+	}
+	return LastError;
+}
+
 HRESULT LogonFrame::OnPower()
 {
 	HMODULE ClassicShutdownDll = LoadClassicShutdownDll();
+
+	_TOKEN_ELEVATION_TYPE v12;
+	SetPrivilegeAttribute(0, 2, &v12);
 
 	if (!ClassicShutdownDll)
 	{
