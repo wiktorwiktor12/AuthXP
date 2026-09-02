@@ -1,35 +1,41 @@
-# AuthUX
+# AuthXP
 
-**AuthUX** is a project based on [the ConsoleLogon decompilation](//github.com/explorer7-team/ConsoleLogon) which aims to replicate the Windows 7 logon screen.
+**AuthXP** is a project based on [the ConsoleLogon decompilation](//github.com/world-windows-federation/ConsoleLogon) which aims to replicate the Windows 7 logon screen.
 
 > [!WARNING]
 > **THIS PROJECT IS IN EARLY DEVELOPMENT AND MIGHT BE UNSTABLE. Use at your own risk. We are not liable for any damages that may or may not occur.**
 >
 > **PLEASE DISABLE BITLOCKER BEFORE USING THIS**
 > 
-> **PLEASE HAVE A USB DRIVE WITH A WINDOWS INSTALLER READY BEFORE HAND TO BE ABLE TO RECOVER YOUR WINDOWS INSTALL IN THE EVENT OF AUTHUX BRICKING YOUR SYSTEM**
+> **PLEASE HAVE A USB DRIVE WITH A WINDOWS INSTALLER READY BEFORE HAND TO BE ABLE TO RECOVER YOUR WINDOWS INSTALL IN THE EVENT OF AuthXP BRICKING YOUR SYSTEM**
+
+## Installer Installation
+
+In the releases section of the repository, there is a download for a NSIS installer. This installer automates the installation and uninstallation process for AuthXP. If you wish to manually install, then read the section below.
+
+**PLEASE NOTE: The NSIS installer only supports x64 systems.**
 
 ## Manual Installation
 
 > [!WARNING]
-> **To ensure a stable experience, you should ensure that you install a version of AuthUX compiled for your version of Windows.**
+> **To ensure a stable experience, you should ensure that you install a version of AuthXP compiled for your version of Windows.**
 
-In order to install AuthUX, you need to write to protected registry keys which you ordinarily do not have permission to write to. An easy way to do this is to [download RunTI](https://github.com/aubymori/RunTI) and use it to run a Command Prompt (`cmd.exe`) window as the special internal TrustedInstaller user account. The keys which you must write to are:
+In order to install AuthXP, you need to write to protected registry keys which you ordinarily do not have permission to write to. An easy way to do this is to [download RunTI](https://github.com/aubymori/RunTI) and use it to run a Command Prompt (`cmd.exe`) window as the special internal TrustedInstaller user account. The keys which you must write to are:
 
 - `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsRuntime\ActivatableClassId\Windows.Internal.UI.Logon.Controller.LogonUX\DllPath`
 - `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsRuntime\ActivatableClassId\Windows.Internal.UI.Logon.Controller.LockScreenHost\DllPath`
 
-If you ran a TrustedInstaller `cmd.exe` instance as per the above recommendation, then the following commands will override those keys for you. Note that these commands presume the location of your AuthUX binaries to be `%SystemRoot%\System32\AuthUX.dll` (so in other words, you should move the files to System32; they will not conflict with anything):
+If you ran a TrustedInstaller `cmd.exe` instance as per the above recommendation, then the following commands will override those keys for you. Note that these commands presume the location of your AuthXP binaries to be `%SystemRoot%\System32\AuthXP.dll` (so in other words, you should move the files to System32; they will not conflict with anything):
 
 ```cmd
-reg add HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsRuntime\ActivatableClassId\Windows.Internal.UI.Logon.Controller.LogonUX /v DllPath /t REG_SZ /d %SystemRoot%\System32\AuthUX.dll /f
-reg add HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsRuntime\ActivatableClassId\Windows.Internal.UI.Logon.Controller.LockScreenHost /v DllPath /t REG_SZ /d %SystemRoot%\System32\AuthUX.dll /f
+reg add HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsRuntime\ActivatableClassId\Windows.Internal.UI.Logon.Controller.LogonUX /v DllPath /t REG_SZ /d %SystemRoot%\System32\AuthXP.dll /f
+reg add HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsRuntime\ActivatableClassId\Windows.Internal.UI.Logon.Controller.LockScreenHost /v DllPath /t REG_SZ /d %SystemRoot%\System32\AuthXP.dll /f
 ```
 
-If these steps have been followed properly, then the logon screen will immediately start using AuthUX.
+If these steps have been followed properly, then the logon screen will immediately start using AuthXP.
 
 > [!NOTE]
-> **An easy and safe way you can test whether or not AuthUX is working is by pressing CTRL+ALT+DEL on your keyboard to display the security options screen.** If an error occurred during setup, then the security options screen will likely fail to display and you will be taken back to the desktop, where you should immediately revert the values. [See the Uninstallation section of this document for more information.](#uninstallation)
+> **An easy and safe way you can test whether or not AuthXP is working is by pressing CTRL+ALT+DEL on your keyboard to display the security options screen.** If an error occurred during setup, then the security options screen will likely fail to display and you will be taken back to the desktop, where you should immediately revert the values. [See the Uninstallation section of this document for more information.](#uninstallation)
 
 ## Manual Uninstallation
 
@@ -64,7 +70,7 @@ This repository relies on Git submodules for the DirectUI library (dui70). In or
 To clone the repository with submodules, run:
 
 ```cmd
-git clone --recurse-submodules https://github.com/explorer7-team/AuthUX.git
+git clone --recurse-submodules https://github.com/wiktorwiktor12/AuthXP.git
 ```
 
 To fetch submodules after cloning the repository, run:
@@ -102,4 +108,4 @@ The following table should aid you in determining which value to use:
 
 *Italicised entries are not currently supported. The minimum supported is currently RS5.*
 
-Once that's all configured, you should just be able to compile the project by just building the solution. You should get a resulting `AuthUX.dll` file, [which you can use to install with the same installation instructions as above.](#installation)
+Once that's all configured, you should just be able to compile the project by just building the solution. You should get a resulting `AuthXP.dll` file, [which you can use to install with the same installation instructions as above.](#installation)
