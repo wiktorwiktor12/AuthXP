@@ -15,6 +15,7 @@ CDUIRestrictedEdit::CDUIRestrictedEdit()
 
 CDUIRestrictedEdit::~CDUIRestrictedEdit()
 {
+
 }
 
 DirectUI::IClassInfo* CDUIRestrictedEdit::GetClassInfoW()

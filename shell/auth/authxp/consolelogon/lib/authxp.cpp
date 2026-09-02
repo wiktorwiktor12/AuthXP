@@ -553,19 +553,6 @@ HRESULT AuthXP::Hide()
 
 HRESULT AuthXP::Stop()
 {
-	HANDLE logFile = CreateFileW(L"C:\\log.txt",GENERIC_READ | GENERIC_WRITE|FILE_APPEND_DATA ,0,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
-
-	auto fileCloser = wil::scope_exit([&]() -> void {if (logFile != INVALID_HANDLE_VALUE) CloseHandle(logFile);});
-
-	if (logFile != INVALID_HANDLE_VALUE)
-	{
-		WORD bom = 0xFEFF;
-		WriteFile(logFile, &bom, sizeof(bom), NULL, NULL);
-
-		const WCHAR log[] = L"AuthXP::Stop called\n";
-		WriteFile(logFile,log,_ARRAYSIZE(log)*sizeof(WCHAR),NULL,NULL);
-	}
-
 	Wrappers::SRWLock::SyncLockExclusive lock = m_Lock.LockExclusive();
 	if (SUCCEEDED(CheckUIStarted()))
 	{
@@ -594,28 +581,9 @@ HRESULT AuthXP::Stop()
 		);
 		RETURN_IF_FAILED(hr); // 426
 
-		if (logFile != INVALID_HANDLE_VALUE)
-		{
-			const WCHAR log[] = L"Created async helper\n";
-			WriteFile(logFile,log,_ARRAYSIZE(log)*sizeof(WCHAR),NULL,NULL);
-		}
-
 		RETURN_IF_FAILED(WaitForCompletion<IAsyncActionCompletedHandler>(cleanupAction.Get())); // 428
+	}
 
-		if (logFile != INVALID_HANDLE_VALUE)
-		{
-			const WCHAR log[] = L"Waited for completion async helper\n";
-			WriteFile(logFile,log,_ARRAYSIZE(log)*sizeof(WCHAR),NULL,NULL);
-		}
-	}
-	else
-	{
-		if (logFile != INVALID_HANDLE_VALUE)
-		{
-			const WCHAR log[] = L"UI NOT STARTED!!\n";
-			WriteFile(logFile,log,_ARRAYSIZE(log)*sizeof(WCHAR),NULL,NULL);
-		}
-	}
 	//RETURN_IF_WIN32_BOOL_FALSE(FreeConsole()); // 431
 	return S_OK;
 }

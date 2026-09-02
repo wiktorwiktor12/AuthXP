@@ -734,14 +734,12 @@ HRESULT LogonViewManager::ReportResultUIThread(
 	return S_OK;
 }
 
-static bool InvokeTaskMan = false;
-
 HRESULT LogonViewManager::ShowSecurityOptionsUIThread(
 	LC::LogonUISecurityOptions options,
 	WI::AsyncDeferral<WI::CMarshaledInterfaceResult<LC::ILogonUISecurityOptionsResult>> completion)
 {
 	//CLogonFrame7::GetSingleton()->ShowSecurityOptions(options,completion);
-	if (!InvokeTaskMan)
+	if (!g_plf->settingForceTaskManager)
 		g_plf->EnterSecurityOptionsMode(options,completion);
 	else
 	{
@@ -894,7 +892,9 @@ HRESULT LogonViewManager::CleanupUIThread(WI::AsyncDeferral<WI::CNoResult> compl
 		ComPtr<WFC::IObservableVector<IInspectable*>> usersAndV1Creds;
 		RETURN_IF_FAILED(m_credProvDataModel->get_UsersAndV1Credentials(&usersAndV1Creds)); // 834
 		RETURN_IF_FAILED(usersAndV1Creds->remove_VectorChanged(m_usersChangedToken)); // 835
-		RETURN_IF_FAILED(m_credProvDataModel->remove_SelectedUserChanged(m_selectedUserChangeToken)); // 836
+
+		//RETURN_IF_FAILED(m_credProvDataModel->remove_SelectedUserChanged(m_selectedUserChangeToken)); // 836
+		RETURN_IF_FAILED(m_credProvDataModel->remove_SelectedUserOrV1CredentialChanged(m_selectedUserChangeToken)); // 836
 	}
 
 	m_inputSwitchControl.Reset();
@@ -997,7 +997,7 @@ HRESULT LogonViewManager::ShowCredentialView()
 			for (UINT x = 0; x < credsize; x++)
 			{
 				ComPtr<LCPD::ICredential> cred;
-				RETURN_IF_FAILED(credentials->GetAt(i, &cred));
+				RETURN_IF_FAILED(credentials->GetAt(x, &cred));
 
 				GUID guid;
 				RETURN_IF_FAILED(cred->get_ProviderId(&guid));

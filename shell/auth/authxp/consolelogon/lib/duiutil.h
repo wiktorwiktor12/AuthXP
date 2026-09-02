@@ -129,8 +129,9 @@ static HRESULT SetBackgroundFromHBITMAP(DirectUI::Element* element, HBITMAP bitm
 	DeleteObject(bitmap);
 	if (GraphicFromHBITMAP)
 	{
+		auto scopeExit = wil::scope_exit([&]() -> void { GraphicFromHBITMAP->Release(); });
 		RETURN_IF_FAILED(element->SetValue(DirectUI::Element::BackgroundProp, 1, GraphicFromHBITMAP));
-		GraphicFromHBITMAP->Release();
+		//GraphicFromHBITMAP->Release();
 	}
 	else
 		return E_FAIL;

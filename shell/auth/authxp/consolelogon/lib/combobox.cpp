@@ -17,7 +17,7 @@ CDUIComboBox::~CDUIComboBox()
 		DirectUI::HFree((void*)m_stringArray[i]);
 	}
 
-	DirectUI::Combobox::~Combobox();
+	//DirectUI::Combobox::~Combobox();
 }
 
 DirectUI::IClassInfo* CDUIComboBox::GetClassInfoW()
@@ -62,6 +62,15 @@ HRESULT CDUIComboBox::UnAdvise()
 	if (m_FieldInfo)
 	{
 		RETURN_IF_FAILED(m_FieldInfo->remove_FieldChanged(m_token)); // 25
+
+
+		Microsoft::WRL::ComPtr<LCPD::IComboBoxField> comboBoxField;
+		RETURN_IF_FAILED(m_FieldInfo->QueryInterface(IID_PPV_ARGS(&comboBoxField)));
+
+		Microsoft::WRL::ComPtr<WFC::IObservableVector<HSTRING>> observableItems;
+		RETURN_IF_FAILED(comboBoxField->get_Items(&observableItems));
+
+		RETURN_IF_FAILED(observableItems->remove_VectorChanged(m_itemsChangedToken));
 
 		m_FieldInfo.Reset();
 	}

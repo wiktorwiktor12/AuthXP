@@ -294,6 +294,7 @@ public:
 
 	BOOL settingShouldShowDateAndTime = FALSE;
 	BOOL settingShouldAnimateFlag = FALSE;
+	BOOL settingForceTaskManager = FALSE;
 	WCHAR settingClassicShutdownPath[MAX_PATH];
 
 private:

@@ -9,6 +9,17 @@
 > 
 > **PLEASE HAVE A USB DRIVE WITH A WINDOWS INSTALLER READY BEFORE HAND TO BE ABLE TO RECOVER YOUR WINDOWS INSTALL IN THE EVENT OF AuthXP BRICKING YOUR SYSTEM**
 
+## AuthXP Settings
+
+Settings in AuthXP are stored in the HKLM/Software/AuthXP key, these include
+
+| Setting Name          | Key Type  | Description                                                                                               |
+|-----------------------|-----------|-----------------------------------------------------------------------------------------------------------|
+| ShouldAnimateFlag     | REG_DWORD | Whether the prototype xp animated flag should be used instead of a static image. <br/>0 for no, 1 for yes |
+| ShouldShowDateAndTime | REG_DWORD | Whether the build 3683 style date and time should be displayed top right. <br/>0 for no, 1 for yes        |
+| ForceTaskManager      | REG_DWORD | Whether instead of showing the security options screen, it should force it to select task manager.<br/>0 for no, 1 for yes        |
+| ClassicShutdownPath   | REG_SZ    | Path to a ClassicShutdown.dll, useful for if you would like ClassicShutdown to be in installed in a different place to AuthXP |
+
 ## Installer Installation
 
 In the releases section of the repository, there is a download for a NSIS installer. This installer automates the installation and uninstallation process for AuthXP. If you wish to manually install, then read the section below.

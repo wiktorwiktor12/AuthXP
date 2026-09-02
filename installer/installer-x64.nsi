@@ -98,7 +98,7 @@ Section "AuthXP" AuthXP
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\AuthXP" \
                  "Publisher" "wiktorwiktor12"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\AuthXP" \
-                 "DisplayVersion" "0.0.1"
+                 "DisplayVersion" "1.0.0"
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\AuthXP" \
                  "NoModify" 1
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\AuthXP" \

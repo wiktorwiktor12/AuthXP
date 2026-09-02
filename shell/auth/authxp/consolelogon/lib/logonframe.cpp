@@ -592,6 +592,7 @@ void LogonFrame::LoadSettings()
 	settingShouldShowDateAndTime = FALSE;
 	SHRegGetDWORDW(HKEY_LOCAL_MACHINE,L"Software\\AuthXP",L"ShouldAnimateFlag",&settingShouldAnimateFlag);
 	SHRegGetDWORDW(HKEY_LOCAL_MACHINE,L"Software\\AuthXP",L"ShouldShowDateAndTime",&settingShouldShowDateAndTime);
+	SHRegGetDWORDW(HKEY_LOCAL_MACHINE,L"Software\\AuthXP",L"ForceTaskManager",&settingForceTaskManager);
 
 	WCHAR modulePath[MAX_PATH] = {};
 	GetModuleFileNameW(HINST_THISCOMPONENT, modulePath, MAX_PATH);
@@ -621,6 +622,22 @@ LogonFrame::~LogonFrame()
         _pvList->Release();
     if (_hdcAnimation)
         DeleteDC(_hdcAnimation);
+	if (_hbmpFlags)
+		DeleteObject(_hbmpFlags);
+
+	if (_hwndNotification)
+	{
+		if (g_puTimerId)
+			KillTimer(_hwndNotification, g_puTimerId);
+		if (g_puFlagTimerId)
+			KillTimer(_hwndNotification, g_puFlagTimerId);
+		if (g_puUpdateTimeId)
+			KillTimer(_hwndNotification, g_puUpdateTimeId);
+		DestroyWindow(_hwndNotification);
+	}
+
+
+
     g_plf = NULL;
 }
 

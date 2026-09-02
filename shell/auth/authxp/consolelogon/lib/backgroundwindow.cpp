@@ -35,9 +35,9 @@ CBackgroundWindow::~CBackgroundWindow(void)
 HWND    CBackgroundWindow::Create(void)
 
 {
-    HWND    hwnd;
+    HWND    hwnd = NULL;
 
-#if     DEBUG
+#if     _DEBUG
 
     hwnd = NULL;
 
