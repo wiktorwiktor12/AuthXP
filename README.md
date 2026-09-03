@@ -1,6 +1,6 @@
 # AuthXP
 
-**AuthXP** is a project based on [the ConsoleLogon decompilation](//github.com/world-windows-federation/ConsoleLogon) which aims to replicate the Windows 7 logon screen.
+**AuthXP** is a project based on [the ConsoleLogon decompilation](//github.com/world-windows-federation/ConsoleLogon) which aims to replicate the Windows XP logon screen.
 
 > [!WARNING]
 > **THIS PROJECT IS IN EARLY DEVELOPMENT AND MIGHT BE UNSTABLE. Use at your own risk. We are not liable for any damages that may or may not occur.**
